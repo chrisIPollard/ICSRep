@@ -24,7 +24,7 @@
 			
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				// your error code
+				console.log(jqXHR);
 			}
 		}); 
 	
