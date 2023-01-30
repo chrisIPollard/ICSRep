@@ -7,6 +7,7 @@
 		<meta charset="utf-8">
 
 		<title>Interacting with APIs</title>
+		<link href="libs/css/style.css" rel="stylesheet">
 		<meta name="description" content="Interacting with APIs">
 		<meta name="author" content="chrisIPollard">
 
@@ -14,37 +15,60 @@
 
 	<body>
 
-		<table>
-            <tr>
-                <th>Get Airport Weather</th>
-                <th>
+		<table id="tbl">
+			<tr>
+                <th>API Function</th>
+                <th>API Selections</th>
+                <th>Submit Buttons</th>
+            </tr>
+			<tr>
+                <td>Get Airport Weather</td>
+                <td>
 					<select id="selAirport">
 					<option value="EGCC">Manchester</option>
 					<option value="EGNM">Leeds Bradford</option>
 					<option value="EGPH">Edinburgh</option>
 					<option value="EGPK">Glasgow Prestwick</option>
 					</select>
-				</th>
-                <th>
-					<button id="btnRun">Run</button>
-				</th>
+				</td>
+                <td>
+					<button id="btnRun1">Run</button>
+				</td>
             </tr>
             <tr>
-                <td>TBD</td>
-                <td>Selections here</td>
-                <td>submit button here</td>
+                <td>Get Weather by Lat/Lng</td>
+                <td>
+					Latitude: <input type="text" id="selLat" placeholder="53.958332" pattern="[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)" 
+					minlength="1" maxlength="10">
+					Longitude: <input type="text" id="selLng" placeholder="-1.080278" pattern="[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)" 
+					minlength="1" maxlength="10">
+				</td>
+                <td>
+					<button id="btnRun2">Run</button>
+				</td>
             </tr>
             <tr>
-                <td>TBD</td>
-                <td>Selections here</td>
-                <td>submit button here</td>
+                <td>Who is My Neighbour?</td>
+                <td>
+					<select id="selCountry">
+						<option value="2782113">Austria</option>
+						<option value="630336">Belarus</option>
+						<option value="2802361">Belgium</option>
+						<option value="3017382">France</option>
+						<option value="2921044">Germany</option>
+						<option value="3175395">Italy</option>
+					</select>
+				</td>
+                <td>
+					<button id="btnRun3">Run</button>
+				</td>
             </tr>
         </table>
 			
                 <td><div id="divResults">
 			
 					<table>
-						<tr><th>Get Airport Weather Results</th></tr>
+						<tr><th>Get Weather Results</th></tr>
 						<tr>
 							<td align="right">
 								Clouds: 
@@ -74,43 +98,21 @@
 							</td>
 		
 						</tr>
-		
+								
 						<tr>
-							<td align="right">
-								Wind Direction: 
-							</td>
-							<td id="txtWindDirection">
+							<th>
+								Your Neighbour is: 
+							</th>
+							<td id="txtNeighbour">
 								
 							</td>
 		
 						</tr>
-		
-						<tr>
-							<td align="right">
-								Wind Speed (km): 
-							</td>
-							<td id="txtWindSpeed">
-								
-							</td>
-		
-						</tr>
-						
-		
-					</table>
+
+						</table>
 		
 				</div></td>
             
-		
-
-
-		
-
-		
-
-		
-
-		
-
 		<script type="application/javascript" src="libs/js/jquery-2.2.3.min.js"></script>
 		<script type="application/javascript" src="libs/js/script.js"></script>
 
