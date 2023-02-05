@@ -10,31 +10,18 @@
 		<title>My Country</title>
 		<meta name="description" content="My Country">
 		<meta name="author" content="chrisIPollard">
+
+                <!-- leaflet stylesheets: -->
+
                 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
                    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
                    crossorigin=""/>
 
+                
                 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
                 integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-                crossorigin="">
+                crossorigin=""></script>
         
-                //the getLocation function is called when the page loads. It checks if the browser supports geolocation and, if so, calls navigator.geolocation.getCurrentPosition to get the user's location. The showPosition function is then called with the position object, which contains the latitude and longitude in the coords.latitude and coords.longitude properties, respectively:
-                
-                function getLocation() {
-                if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
-                } else {
-                document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
-                }
-                }
-
-                function showPosition(position) {
-                document.getElementById("location").innerHTML = "Latitude: " + position.coords.latitude + 
-                "<br>Longitude: " + position.coords.longitude;
-                }
-                getLocation();
-                </script>
-                    
                 <style>
                 #map {
                         height: 500px;
@@ -43,13 +30,14 @@
                 </style>
         </head>
 
+        <div id="find-me"></div><br />
+        <p id="status"></p>
+        <a id="map-link" target="_blank"></a>
+
         <body>
                 <div id="map"></div>
-                <script>
-                      var map = L.map('map').setView([position.coords.latitude, position.coords.longitude], 6);
-                      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                      }).addTo(map);
-                </script>
+                
+        <script src="js/script.js"></script>
         </body>
 </html>
+                
