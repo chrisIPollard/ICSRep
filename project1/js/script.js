@@ -2,19 +2,11 @@
 
 let latitude;
 let longitude;
-let lat;
-let lng;
-let coordinates = [];
 
-//2. this bit will be rewritten as a function, but I need to return the coordinates before I can develop it:
+//2. these are placeholder coordinates so I can tell at a glance if the functions are working:
 
-
-if (coordinates[0]) {lat = coordinates[0]}
-else
-{lat = 19.8968};
-if (coordinates[1]) {lng = coordinates[1]}
-else
-{lng = -155.5828};
+let startLat = 19.8968;
+let startLng = -155.5828;
 
 //3. Basics for leaflet:
 
@@ -22,62 +14,83 @@ src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
                 integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
                 crossorigin=""
 
-var map = L.map('map').setView([lat, lng], 6);
+var map = L.map('map').setView([startLat, startLng], 6);
                       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                       }).addTo(map);
 
 
-//4. Geolocation - this successfully gets the lat & lng and converts them to HTML, but returning the array on line 49 results in 'undefined' values when I console log the results via inspecting the webpage, after the function has run:
+//4. Geolocation (change/fix the event!):
 
-function geoFindMe(coordinates) {
-
-	const status = document.querySelector('#status');
-	const mapLink = document.querySelector('#map-link');
+// document.getElementById('placeholder').onclick = function geoFindMe(coordinates) {
   
+// 	// API call as a function: 
+
+// function APILatLngCall(position){
+
+// 	console.log(position.coords.latitude);
+
+// 	$.ajax({
+// 		url: "php/getCountryCodeFromLatLng.php",
+// 		type: 'POST',
+// 		dataType: 'json',
+// 		data: {
+// 			lat: position.coords.latitude,
+// 			lng: position.coords.longitude
+// 		},
+// 		success: function(result) {
+
+// 			console.log(JSON.stringify(result));
+
+// 			if (result.status.name == "ok") {
+
+// 				$('#txtCountryCode').html(result['data']['code']);
+								
+// 			}
+		
+// 		},
+// 		error: function(jqXHR, textStatus, errorThrown) {
+// 			console.log(jqXHR);
+// 		}
+// 	}); 
+
+// };
+  
+// 	function error() {
+// 	  console.log('Unable to retrieve your location');
+// 	}
+
+// this is the bit that runs the geolocation method using the API function from above:
+
+// 	if (!navigator.geolocation) {
+// 		console.log('Geolocation is not supported by your browser');
+// 	} else {
+// 		console.log('Locating');
+// 	  navigator.geolocation.getCurrentPosition(APILatLngCall, error);
+// 	}
+  
+// }
+
+// 5. here I am creating an event to use the country code from the dropdown to take the relevant country perimeter coordimnates from the local json 'countryBorders' file so they can be put in the map to mark a perimeter. However this generates the error code: 'SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data'. I have commented out further code to determine that the issue seems to relate to the data type not being recognised, however I have identified it as json data on line 79:
+
+document.getElementById('btnRun1').onclick = function btnfunc1(){
+const url = 'json/countryBorders.geo.json';
+	fetch(url)
+	.then(res => res.json())
+	.then((res) => {console.log(res);})
+    
+}
+    
+//     data => {
+//     useData(data);})
+// }
 	
-	mapLink.textContent = '';
-  
-	function success(position) {
-	  latitude  = position.coords.latitude;
-	  longitude = position.coords.longitude;
-  
-	  status.textContent = '';
-	  
-	  mapLink.textContent = `Latitude: ${latitude} °, Longitude: ${longitude} °`;
-
-	  return coordinates = [latitude, longitude];
-	}
-  
-	function error() {
-	  status.textContent = 'Unable to retrieve your location';
-	}
-  
-	if (!navigator.geolocation) {
-	  status.textContent = 'Geolocation is not supported by your browser';
-	} else {
-	  status.textContent = 'Locating…';
-	  navigator.geolocation.getCurrentPosition(success, error);
-	}
-  
-  }
-  
-  document.querySelector('#find-me').addEventListener('click', geoFindMe(coordinates));
-
-// 5. Here I've stripped back the above function to create a function that I could use in code to call the lat coordinates. However the problem persists - when I console log the function via inspecting the webpage it returns undefined, not the coordinates:
-
-
-  function getLat() {
-	
-	function success(position) {
-	  return position.coords.latitude;
-	}
-	function error() {
-		return 1;
-	  }
-  
-	if (!navigator.geolocation) {
-	  return 2;
-	} else {
-	  navigator.geolocation.getCurrentPosition(success, error);
-	}};
+// function useData(data){
+//   console.log(data);}
+ 
+// 	// data.forEach(features){
+//   //   if (properties.iso_a2 == $('#btnRun1').val())
+//   //   {
+//   //       console.log(geometry.coordinates);
+//   //   }
+//   //   }}
