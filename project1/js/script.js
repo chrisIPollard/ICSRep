@@ -20,7 +20,7 @@ var map = L.map('map').setView([startLat, startLng], 6);
                       }).addTo(map);
 
 
-//4. Geolocation (change/fix the event!):
+// //4. Geolocation (change/fix the event!):
 
 // document.getElementById('placeholder').onclick = function geoFindMe(coordinates) {
   
@@ -71,26 +71,27 @@ var map = L.map('map').setView([startLat, startLng], 6);
   
 // }
 
-// 5. here I am creating an event to use the country code from the dropdown to take the relevant country perimeter coordimnates from the local json 'countryBorders' file so they can be put in the map to mark a perimeter. However this generates the error code: 'SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data'. I have commented out further code to determine that the issue seems to relate to the data type not being recognised, however I have identified it as json data on line 79:
+//5. here I am making an ajax request to use the dropdown in the index file to use the country code as '$('#btnRun1').val()' to use the PHP file 'getCoordinatesFromLocalFile' to match to the relevant country in the local json 'countryBorders' file then to return the perimeter coordinates. However this generates the error code: 'SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data':
 
-document.getElementById('btnRun1').onclick = function btnfunc1(){
-const url = 'json/countryBorders.geo.json';
-	fetch(url)
-	.then(res => res.json())
-	.then((res) => {console.log(res);})
-    
-}
-    
-//     data => {
-//     useData(data);})
-// }
-	
-// function useData(data){
-//   console.log(data);}
- 
-// 	// data.forEach(features){
-//   //   if (properties.iso_a2 == $('#btnRun1').val())
-//   //   {
-//   //       console.log(geometry.coordinates);
-//   //   }
-//   //   }}
+document.getElementById('btnRun1').onclick = function getCountryCoordinates(){
+
+        $.ajax({
+          url: 'php/getCoordinatesFromLocalFile.php',
+          type: 'GET',
+          data: {countryCode: $('#btnRun1').val()},
+
+          success: function(result) {
+
+            if (result.status.name == "ok") {
+
+              console.log(result);
+              return result;
+                    
+            }
+          
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+          }
+        }); 
+    }
