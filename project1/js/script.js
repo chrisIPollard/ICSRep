@@ -82,12 +82,12 @@ document.getElementById('btnRun1').onclick = function getCountryCoordinates(){
 
           success: function(result) {
 
-            if (result.status.name == "ok") {
+            //if (result.status.name == "ok") {
 
               console.log(result);
               return result;
                     
-            }
+            //}
           
           },
           error: function(jqXHR, textStatus, errorThrown) {
