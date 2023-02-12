@@ -3,6 +3,8 @@
 let latitude;
 let longitude;
 
+
+
 //2. these are placeholder coordinates so I can tell at a glance if the functions are working:
 
 let startLat = 19.8968;
@@ -19,6 +21,8 @@ var map = L.map('map').setView([startLat, startLng], 6);
                         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                       }).addTo(map);
 
+                      
+                      
 
 // //4. Geolocation (change/fix the event!):
 
@@ -71,23 +75,27 @@ var map = L.map('map').setView([startLat, startLng], 6);
   
 // }
 
-//5. here I am making an ajax request to use the dropdown in the index file to use the country code as '$('#btnRun1').val()' to use the PHP file 'getCoordinatesFromLocalFile' to match to the relevant country in the local json 'countryBorders' file then to return the perimeter coordinates. However this generates the error code: 'SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data':
+//5. here I am making an ajax request to use the dropdown in the index file to use the country code as '$('#btnRun1').val()' to use the PHP file 'getCoordinatesFromLocalFile' to match to the relevant country in the local json 'countryBorders' file then to return the perimeter coordinates. 
+
+
 
 document.getElementById('btnRun1').onclick = function getCountryCoordinates(){
+  console.log($('#selCountry').val());
 
         $.ajax({
           url: 'php/getCoordinatesFromLocalFile.php',
           type: 'GET',
-          data: {countryCode: $('#btnRun1').val()},
+          data: {countryCode: $('#selCountry').val()},
 
           success: function(result) {
 
-            //if (result.status.name == "ok") {
-
               console.log(result);
-              return result;
-                    
-            //}
+
+//6 This should take the coordinates from the geo.json file and add them as a feature, then adjust the map to view the feature:
+
+              L.geoJSON(result).addTo(map);
+              map.fitBounds(L.geoJSON(result).getBounds()); 
+            
           
           },
           error: function(jqXHR, textStatus, errorThrown) {
