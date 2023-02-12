@@ -1,17 +1,19 @@
 <?php
 
-$jsonCountryBordersData = file_get_contents('json/countryBorders.geo.json');
+$jsonCountryBordersData = file_get_contents('countryBorders.geo.json');
 
 $decoded_json = json_decode($jsonCountryBordersData, true);
 
-foreach($features as $feature) {
+foreach($decoded_json['features'] as $feature) {
 
-    if ($feature[properties][iso_a2] == ['countryCode'])
+    if ($feature['properties']['iso_a2'] == $_REQUEST['countryCode'])
+
     {
-        echo $feature[geometry][coordinates];
-        $output['result'] = $feature[geometry][coordinates];
+                $output['result'] = $feature['geometry'];
     }
 
 }
+
+echo json_encode($output);
 
 ?>
