@@ -90,20 +90,16 @@ document.getElementById('btnRun1').onclick = function getCountryCoordinates(){
 
           success: function(result) {
 
-              console.log(result);
+              console.log(result.result);
 
 //6 This should take the coordinates from the geo.json file and add them as a feature, then adjust the map to view the feature:
           
-              coordinates = result;
+              coordinates = result.result;
               console.log(coordinates);
              // console.log(coordinates["result"]);
              // console.log(coordinates['type']);
               console.log(typeof coordinates);
-             // coordinates = coordinates.slice(10,2683);
-             // console.log(coordinates);
-              coordinates = JSON.parse(coordinates);
-              console.log(typeof coordinates);
-              L.geoJSON(coordinates).addTo(map);
+              var borders = L.geoJSON(coordinates).addTo(map);
               map.fitBounds(L.geoJSON(result).getBounds()); 
             
           
