@@ -21,7 +21,7 @@ sort($newArray);
 //$output['countryCodes'] = $newArray;
 echo json_encode($newArray);
 $output['countryCodes'] = json_encode($newArray);
-echo json_encode($output);
+//echo json_encode($output);
 
 
 ?>
