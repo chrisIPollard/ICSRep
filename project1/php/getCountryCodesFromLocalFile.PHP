@@ -21,7 +21,6 @@ sort($newArray);
 //$output['countryCodes'] = $newArray;
 echo json_encode($newArray);
 $output['countryCodes'] = json_encode($newArray);
-$output['countryCodes'] = $_POST['countryCodes'];
 echo json_encode($output);
 
 
