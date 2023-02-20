@@ -3,6 +3,7 @@
 let latitude;
 let longitude;
 let coordinates;
+let select = document.getElementById("selCountry");
 
 
 
@@ -76,34 +77,58 @@ var map = L.map('map').setView([startLat, startLng], 6);
   
 // }
 
-//5. here I am making an ajax request to use the dropdown in the index file to use the country code as '$('#btnRun1').val()' to use the PHP file 'getCoordinatesFromLocalFile' to match to the relevant country in the local json 'countryBorders' file then to return the perimeter coordinates. 
+//5. This is an Ajax request to a local GeoJSON file via a PHP file. It returns country coordinates to leaflet and views the country, however it should be changed to run at the start. 
 
-
-
-document.getElementById('btnRun1').onclick = function getCountryCoordinates(){
-  console.log($('#selCountry').val());
+//document.getElementById('btnRun1').onclick = function getCountryCoordinates(){
+        //console.log($('#selCountry').val());
 
         $.ajax({
           url: 'php/getCoordinatesFromLocalFile.php',
           type: 'GET',
+          dataType: "json",
           data: {countryCode: $('#selCountry').val()},
 
           success: function(result) {
 
-              console.log(result.result);
+          //console.log(result.result);
+       
+          coordinates = result.result;
+          //console.log(coordinates);
+          //console.log(typeof coordinates);
+          var borders = L.geoJSON(coordinates).addTo(map);
+          map.fitBounds(borders.getBounds());},
 
-//6 This should take the coordinates from the geo.json file and add them as a feature, then adjust the map to view the feature:
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+          }
+        }); 
+   // }
+
+//6 This is an is an Ajax request to a local GeoJSON file via a PHP file. It returns country names and codes in alphabetical pairs to populate the drop down as the JSON object 'countryCodes'.  
+
+document.getElementById('btnRun1').onclick = function getCountryCodes(){
+  
+        $.ajax({
+          url: 'php/getCountryCodesFromLocalFile.php',
+          type: 'GET',
+          dataType: "json",
           
-              coordinates = result.result;
-              console.log(coordinates);
-             // console.log(coordinates["result"]);
-             // console.log(coordinates['type']);
-              console.log(typeof coordinates);
-              var borders = L.geoJSON(coordinates).addTo(map);
-              map.fitBounds(L.geoJSON(result).getBounds()); 
-            
+          success: function(countryCodes) {
+
+          console.log(countryCodes);
+
           
-          },
+          console.log(countryCodes.countryCodes.length);
+            function populateDropdown() {
+            for (let i = 0; i < countryCodes.countryCodes.length; i++) {
+            var optn = countryCodes.countryCodes[i];
+            var opt = document.createElement("option");
+            opt.textContent = i[0];
+            opt.value = i[1];
+            select.appendChild(opt);
+            }}
+            },
+       
           error: function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
           }
