@@ -106,7 +106,7 @@ var map = L.map('map').setView([startLat, startLng], 6);
 
 //6 This is an is an Ajax request to a local GeoJSON file via a PHP file. It returns country names and codes in alphabetical pairs to populate the drop down as the JSON object 'countryCodes'.  
 
-document.getElementById('btnRun1').onclick = function getCountryCodes(){
+$(function getCountryCodes(){
   
         $.ajax({
           url: 'php/getCountryCodesFromLocalFile.php',
@@ -118,19 +118,19 @@ document.getElementById('btnRun1').onclick = function getCountryCodes(){
           console.log(countryCodes);
 
           
-          console.log(countryCodes.countryCodes.length);
-            function populateDropdown() {
-            for (let i = 0; i < countryCodes.countryCodes.length; i++) {
-            var optn = countryCodes.countryCodes[i];
-            var opt = document.createElement("option");
-            opt.textContent = i[0];
-            opt.value = i[1];
-            select.appendChild(opt);
-            }}
+          // console.log(countryCodes.countryCodes.length);
+          //   $(function populateDropdown() {
+          //   for (let i = 0; i < countryCodes.countryCodes.length; i++) {
+          //   var optn = countryCodes.countryCodes[i];
+          //   var opt = document.createElement("option");
+          //   opt.textContent = i[0];
+          //   opt.value = i[1];
+          //   select.appendChild(opt);
+          //   }})
             },
        
           error: function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR);
           }
         }); 
-    }
+    });
