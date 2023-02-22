@@ -11,39 +11,44 @@
 		<meta name="description" content="My Country">
 		<meta name="author" content="chrisIPollard">
 
-                <!-- leaflet stylesheets: -->
-
+                <!-- leaflet external stylesheet & script-->
                 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
                    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
                    crossorigin=""/>
 
-                
                 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
                 integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
                 crossorigin=""></script>
-        
-                <style>
-                #map {
-                        height: 500px;
-                        width: 100%;
-                      }
-                </style>
-        </head>
 
-<h1> test</h1>
+                <!-- jQuery link -->
+                <script type="application/javascript" src="js/jquery-2.2.3.min.js"></script>    
+
+                <!-- link to local external stylesheet-->
+                <link rel="stylesheet" href="css/styles.css">
+
+        </head>
+        <body>
 
         <select id="selCountry">
-                <option id="txtCountryCode" value="">My Country</option>
+
+                <option id="txtCountryCode">My Country</option>
 
         </select>
 
         <button id="btnRun1">Run</button>
+
+        <button id="togglePopup">Toggle Info</button>
+                        
+        <div id="dataPopup">
+                <p>placeholder for API data</p>
+                <button id="closePopup">Close</button>
+        </div>
                 
-
-        <body>
-                <div id="map"></div>
-
-        <script type="application/javascript" src="js/jquery-2.2.3.min.js"></script>        
+        <div id="map">
+        </div>
+        
+        <!-- link to local external javascript-->
         <script src="js/script.js"></script>
+
         </body>
 </html>
