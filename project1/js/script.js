@@ -14,9 +14,10 @@ let startLng = -155.5828;
 
 //3. Basics for leaflet:
 
-src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-                integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-                crossorigin=""
+// this is in the index and doesn't work if moved from there: 
+// src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+//                 integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+//                 crossorigin=""
 
 var map = L.map('map').setView([startLat, startLng], 6);
                       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -46,36 +47,33 @@ function APILatLngCall(position){
 		},
 		success: function(result) {
 
-			console.log(JSON.stringify(result));
+			
+      localCountryCode = result['countryCode'];
 
 			if (result.status.name == "ok") {
-        localCountryCode = result['countryCode'];
-        console.log(localCountryCode);
-
-
-				$('#txtCountryCode').value(localCountryCode);
+        
+        				$('#txtCountryCode').val(localCountryCode);
 
         //sending the code to the local file to get country coordinates:
-				// $(function getCountryCoordinates(){
-        // console.log(result['data']['code']);
+				$(function getCountryCoordinates(){
 
-        // $.ajax({
-        //   url: 'php/getCoordinatesFromLocalFile.php',
-        //   type: 'GET',
-        //   dataType: "json",
-        //   data: {countryCode: result['data']['code']},
+        $.ajax({
+          url: 'php/getCoordinatesFromLocalFile.php',
+          type: 'GET',
+          dataType: "json",
+          data: {countryCode: localCountryCode},
 
-        //   success: function(result) {
+          success: function(result) {
   
-        //   coordinates = result.result;
-        //   var borders = L.geoJSON(coordinates).addTo(map);
-        //   map.fitBounds(borders.getBounds());},
+          coordinates = result.result;
+          var borders = L.geoJSON(coordinates).addTo(map);
+          map.fitBounds(borders.getBounds());},
 
-        //   error: function(jqXHR, textStatus, errorThrown) {
-        //     console.log(jqXHR);
-        //   }
-        // }); 
-        // })				
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+          }
+        }); 
+        })				
 			}
 		
 		},
@@ -161,3 +159,20 @@ $(function getCountryCodes(){
           }
         }); 
     });
+
+//7 this relates to #dataPopup and its children:
+
+const popup = document.getElementById('dataPopup').style.display;
+
+document.getElementById('closePopup').onclick = function closeDataPopup(){
+popup = 'none';}
+  
+  // This part generates the popup when the page loads, I may want to move this inside the function that calls the relevant data when it is built.
+  window.onload = () => {
+  popup = 'block';
+  };
+
+  // This is the toggle in the nav bar
+  $("togglePopup").click(function(){
+    $(popup).toggle();
+  });
