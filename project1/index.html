@@ -28,19 +28,28 @@
 
         </head>
         <body>
+        <div id="navBar">
+                <select id="selCountry">
+                        <option id="txtCountryCode">My Country</option>
+                </select>
 
-        <select id="selCountry">
+                <button id="btnRun1">Run</button>
 
-                <option id="txtCountryCode">My Country</option>
-
-        </select>
-
-        <button id="btnRun1">Run</button>
-
-        <button id="togglePopup">Toggle Info</button>
+                <button id="togglePopup">Info</button>
+        </div>
                         
         <div id="dataPopup">
-                <p>placeholder for API data</p>
+                <ul>
+                <div id='popupCountry'> <h3>Loading...</h3></div>
+                <div id='popupCountryCode'></div>
+                <div id='popupContinent'></div>
+                <div id='popupCapital'></div>
+                <div id='popupWeather'></div>
+                <div id='popupTemperature'></div>
+                <div id='popupLanguages'></div>
+                <div id='popupPopulation'></div>
+                <div id='popupArea'></div>
+                </ul>
                 <button id="closePopup">Close</button>
         </div>
                 
