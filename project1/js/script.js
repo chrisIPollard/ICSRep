@@ -91,6 +91,10 @@ $(wikiData(latitude, longitude))
               $('#popupLanguages').html('<li>Languages: ' + result['data'][0]['languages'] + '</li>');
               $('#popupPopulation').html('<li>Population: ' + result['data'][0]['population'] + '</li>');
               $('#popupArea').html('<li>Area (km2): ' + result['data'][0]['areaInSqKm'] + '</li>');
+
+              //ex rate:
+              $(exchangeRate (result['data'][0]['currencyCode']));
+
             }
           
           },
@@ -347,6 +351,17 @@ function weather(capital) {
 
 });
 };
+
+// exchange rate function:
+function exchangeRate (currencyCode){ 
+  
+$.get('https://openexchangerates.org/api/latest.json', {app_id: 'f9d4247ca1f5440bb89696cedb79436d'}, function(data) {
+  $('#popupCurrency').html('<li>Currency: ' + currencyCode + ' at ' + data.rates.currencyCode +' to USD</li>'); 
+    let exRates = data;
+    console.log(currencyCode);
+    console.log('rate is' + exRates.rates.currencyCode);
+    console.log("Currently trading at " + data.rates.currencyCode + " to the dollar.");
+});}
 
 // Making a wiki function:
 
