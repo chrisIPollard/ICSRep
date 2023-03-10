@@ -371,7 +371,7 @@ $($.ajax({
     
     console.log(result);
     let hereMarker = L.marker([result.data[0]['lat'], result.data[0]['lng']]);
-    hereMarker.bindPopup( '<a href=' + result.data[0]['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
+    hereMarker.bindPopup( '<a href=https://' + result.data[0]['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
     hereMarker.openTooltip();
     hereMarker.addTo(map);
 
