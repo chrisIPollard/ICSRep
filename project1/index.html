@@ -19,6 +19,10 @@
                 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
                 integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
                 crossorigin=""></script>
+                
+                <!-- easy-button -->
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+                <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
 
                 <!-- jQuery link -->
                 <script type="application/javascript" src="js/jquery-2.2.3.min.js"></script>    
@@ -33,9 +37,6 @@
                         <option id="txtCountryCode">My Country</option>
                 </select>
 
-                <button id="btnRun1">Run</button>
-
-                <button id="togglePopup">Info</button>
         </div>
                         
         <div id="dataPopup">
@@ -46,6 +47,7 @@
                 <div id='popupCapital'></div>
                 <div id='popupWeather'></div>
                 <div id='popupTemperature'></div>
+                <div id='popupCurrency'></div>
                 <div id='popupLanguages'></div>
                 <div id='popupPopulation'></div>
                 <div id='popupArea'></div>
