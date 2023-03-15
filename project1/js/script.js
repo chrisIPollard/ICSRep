@@ -26,6 +26,7 @@ var map = L.map('map').setView([startLat, startLng], 6);
 
                     L.easyButton('<img src="img/data.jpg">', function(btn, map){
                       $(document.getElementById('dataPopup')).toggle();
+                      $(document.getElementById('wikiPopup')).toggle();
                     }).addTo(map);                      
                       
 
@@ -170,7 +171,7 @@ $(wikiData(latitude, longitude))
 //5. This is an Ajax request to a local GeoJSON file via a PHP file. It returns country coordinates to leaflet and views the country. 
 
 document.getElementById('selCountry').onchange = function getCountryCoordinates(){
-        console.log($('#selCountry').val());
+  console.log($('#selCountry').val());
 
 // this is populating the data overlay with the dropdown value. Repetition of earlier code - tidy up. 
 
@@ -279,31 +280,24 @@ $(function getCountryCodes(){
         }); 
     });
 
-// This part generates the popup when the page loads, I may want to move this inside the function that calls the relevant data when it is built.
+//7 this relates to the popups:
+
+const popup = document.getElementById('dataPopup');
+const wPopup = document.getElementById('wikiPopup');
+
+document.getElementById('closePopup').onclick = function closeDataPopup(){
+popup.style.display = 'none';}
+
+// This part generates the popup when the page loads.
 
 window.onload = () => {
 popup.style.display = 'block';
-
+wPopup.style.display = 'block';
 };
 
-    // these are button effects. A little unwieldy because I had to avoid quicker 'active' methods because some of the PHP calls leave those IDs active permanently.   
+// these are button effects:
 
-    document.getElementById('btnRun1').addEventListener('mousedown', function() {
-      btnRun1.classList.add('clicked'); 
-    });
-
-    document.getElementById('btnRun1').addEventListener('mouseup', function() {
-      btnRun1.classList.remove('clicked'); 
-    });
-
-    document.getElementById('togglePopup').addEventListener('mousedown', function() {
-      togglePopup.classList.add('clicked'); 
-    });
-
-    document.getElementById('togglePopup').addEventListener('mouseup', function() {
-      togglePopup.classList.remove('clicked'); 
-    });
-    
+  
     document.getElementById('closePopup').addEventListener('mousedown', function() {
       closePopup.classList.add('clicked'); 
     });
@@ -313,29 +307,35 @@ popup.style.display = 'block';
     });
 
 
-// This section is to make the main popup dragable. 
-const popupMove = document.getElementById('dataPopup');
+// This section is to make the popups dragable. 
+
+function dragpopup (thisPopup){
 let mousePos = { x: 0, y: 0 };
 let popupPos = { x: 0, y: 0 };
 let isDragging = false;
-popupMove.addEventListener('mousedown', (e) => {
+thisPopup.addEventListener('mousedown', (e) => {
   isDragging = true;
   mousePos.x = e.clientX;
   mousePos.y = e.clientY;
-  popupPos.x = popupMove.offsetLeft;
-  popupPos.y = popupMove.offsetTop;
+  popupPos.x = popup.offsetLeft;
+  popupPos.y = popup.offsetTop;
 });
 document.addEventListener('mousemove', (e) => {
   if (isDragging) {
     const deltaX = e.clientX - mousePos.x;
     const deltaY = e.clientY - mousePos.y;
-    popupMove.style.left = `${popupPos.x + deltaX}px`;
-    popupMove.style.top = `${popupPos.y + deltaY}px`;
+    thisPopup.style.left = `${popupPos.x + deltaX}px`;
+    thisPopup.style.top = `${popupPos.y + deltaY}px`;
   }
 });
 document.addEventListener('mouseup', () => {
   isDragging = false;
-});
+});}
+
+$(dragpopup (popup));
+
+// Some issues with the wiki popup jumping so this is turned off for now. 
+//$(dragpopup (wPopup));
 
 
 //this is the weather function to place within other calls above
@@ -414,7 +414,8 @@ function wikiMarker (dataPlace){
 //making a wikiCountry function: 
 
 function wikiCountryData(country){
-console.log(country);
+country = country.replace(/\s/g, '-');
+
 $($.ajax({
     url: "php/getWikiCountryInfo.php",
     type: 'POST',
@@ -425,26 +426,36 @@ $($.ajax({
     success: function(result) {
   
       console.log(JSON.stringify(result));
-  
-      if (result.status.name == "ok") {
-           
-      // $(wikiCountryMarker (result.data[0]));
- 
-  
-      }
+    for (let i = 0; i < 10; i ++){
+    $(countryOrPlace (result.data[i], country));
+    }
+
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log(jqXHR);
     }
   }))}
   
-  //this is for avoiding repetition above:
+//  these are for avoiding repetition above:
   
-  // function wikiMarker (dataPlace){
-  //   let summary = dataPlace['summary'];
-  //     summary = summary.substring(0, summary.length-5);
-  //   let hereMarker = L.marker([dataPlace['lat'], dataPlace['lng']]);
-  //   hereMarker.bindPopup( '<a href=https://' + dataPlace['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
-  //   hereMarker.openTooltip();
-  //   hereMarker.addTo(map);
-  // }
+  function wikiCountryMarker (dataPlace){
+    let summary = dataPlace['summary'];
+      summary = summary.substring(0, summary.length-5);
+    let hereMarker = L.marker([dataPlace['lat'], dataPlace['lng']]);
+    hereMarker.bindPopup( '<a href=https://' + dataPlace['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
+    hereMarker.openTooltip();
+    hereMarker.addTo(map);
+  }
+
+  function countryOrPlace (newData, country) {
+      country = country.replace(/-/g, ' ');
+      if (newData['title'] == country )
+      {
+        let summary = newData['summary'];
+        summary = summary.substring(0, summary.length-6);
+        console.log(summary);
+        $('#popupSummary').html('<p>' + summary + '... ' + '<a id=\'wiki\' href=\'https://' + newData['wikipediaUrl'] + '\'>' + '(Wikipedia entry)' + '</a></p>'); 
+      }
+      else
+      $(wikiCountryMarker (newData));
+      }
