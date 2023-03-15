@@ -6,19 +6,21 @@
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
-  
+    
   }
 
 /* nav bar buttons */
-#selCountry, #btnRun1, #togglePopup {
+#selCountry {
   background-color: #FDFD96;
-  padding: 3px;
+  padding: 10px;
   margin: 1px;
   border: none;
   color: #023020;
   border-radius: 4px;
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   font-family: "Open Sans", sans-serif;
+  padding: 15px;
+  min-height: 50px;
 }  
 
 /* styling for buttons when they are clicked: */
@@ -34,7 +36,7 @@
 #dataPopup {
     position: fixed;
     left: 10%;
-    top: 20%;
+    top: 15%;
     background-color: darkgreen;
     color: yellow;
     border-radius: 10px;
@@ -49,6 +51,29 @@
     cursor: move;
   }
 
+#wikiPopup {
+    position: fixed;
+    left: 10%;
+    bottom: 5%;
+    background-color: darkgreen;
+    color: yellow;
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 1.4rem;
+    max-height: fit-content;
+    max-width: 90%;
+    animation: fadeIn 0.5s ease-in-out;
+    z-index: 9998;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    text-shadow: 0 0 10px rgba(0,0,0,0.5);
+    font-family: "Open Sans", sans-serif;
+    cursor: move;
+  }
+
+#wiki {
+  color: #FDFD96;
+}
+
 /* popup close button */
 #closePopup {
   background-color: #FDFD96;
@@ -62,55 +87,70 @@
   opacity: 0.9;
 }  
 
-/* not convinced by these: do some research */
-
 @media (max-width: 500px) {
-  #popup {
-    font-size: 1.4rem;
-    width: 90%;
+  #dataPopup {
+    font-size: 1.3rem;
+    max-width: 90%;
+    left: 10%;
+    top: 12%;
   }
-
-  #selCountry, #btnRun1, #togglePopup {
-    font-size: 1.4rem;
-    padding: 10px;
-    min-height: 50px;
-  }
-
-  #map {
-    height: calc(100vh - 30px);
-      width: 50%;
-    }
-
-
-  }
+}
 
   @media (min-width: 501px){
-    #popup {
-      font-size: 1.8rem;
-      width: 90%;
-    }
-    #selCountry, #btnRun1, #togglePopup {
-      font-size: 1.8rem;
-      padding: 15px;
-      min-height: 70px;
+    #dataPopup {
+      font-size: 1.4rem;
+      max-width: 90%;
     }
 
-    #map {
-      height: calc(100vh - 30px);
-        width: 50%;
-      }
-
-
     }
+
+  @media (min-width: 601px){
+    #dataPopup {
+      font-size: 1.5rem;
+      max-width: 90%;
+    }
+
+  #selCountry {
+    font-size: 1.8rem;
+    padding: 15px;
+    min-height: 70px;
+  }
+}
+
+  @media (max-width: 501px){
+    #dataPopup {
+      font-size: 1.5rem;
+      max-width: 90%;
+    }
+
+  }
+
+  @media (min-width: 601px){
+    #wikiPopup {
+      max-width: 75%;
+    }
+  }
+
+  @media (min-width: 751px){
+    #wikiPopup {
+      max-width: 50%;
+    }
+  }
 
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
 
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
 /*this is styling for the #map*/
 #map {
-  height: calc(100vh - 30px);
+  height: calc(100% - 100px);
     width: 100%;
   }
 
