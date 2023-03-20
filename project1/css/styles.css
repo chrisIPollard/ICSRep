@@ -33,7 +33,7 @@
 
 /*this is styling for the #dataPopup*/
 
-#dataPopup {
+#dataPopup, #weatherPopup {
     position: fixed;
     left: 10%;
     top: 15%;
@@ -75,7 +75,7 @@
 }
 
 /* popup close button */
-#closePopup {
+#closePopup, closeWePopup {
   background-color: #FDFD96;
   padding: 3px;
   margin: 1px;
@@ -88,7 +88,7 @@
 }  
 
 @media (max-width: 500px) {
-  #dataPopup {
+  #dataPopup, #weatherPopup {
     font-size: 1.3rem;
     max-width: 90%;
     left: 10%;
@@ -97,7 +97,7 @@
 }
 
   @media (min-width: 501px){
-    #dataPopup {
+    #dataPopup, #weatherPopup {
       font-size: 1.4rem;
       max-width: 90%;
     }
@@ -105,7 +105,7 @@
     }
 
   @media (min-width: 601px){
-    #dataPopup {
+    #dataPopup, #weatherPopup {
       font-size: 1.5rem;
       max-width: 90%;
     }
@@ -116,14 +116,6 @@
     min-height: 70px;
   }
 }
-
-  @media (max-width: 501px){
-    #dataPopup {
-      font-size: 1.5rem;
-      max-width: 90%;
-    }
-
-  }
 
   @media (min-width: 601px){
     #wikiPopup {
