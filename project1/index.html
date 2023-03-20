@@ -24,6 +24,18 @@
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
                 <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
 
+                <!-- extra markers -->
+                <link rel="stylesheet" href="css/leaflet.extra-markers.min.css">
+                <script src="js/leaflet.extra-markers.min.js"></script>
+
+                <!-- marker cluster:         -->
+                <link rel="stylesheet" href="css/MarkerCluster.css" />
+                <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+                <script src="js/leaflet.markercluster.js"></script>
+
+                <!-- icons -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
                 <!-- jQuery link -->
                 <script type="application/javascript" src="js/jquery-2.2.3.min.js"></script>    
 
@@ -45,16 +57,25 @@
                 <div id='popupCountryCode'></div>
                 <div id='popupContinent'></div>
                 <div id='popupCapital'></div>
-                <div id='popupWeather'></div>
-                <div id='popupTemperature'></div>
                 <div id='popupCurrency'></div>
                 <div id='popupLanguages'></div>
                 <div id='popupPopulation'></div>
                 <div id='popupArea'></div>
+                <div id='timeZone'></div>
                 </ul>
-                <button id="closePopup">Close</button>
-        </div>
+                </div>
         
+        <div id="weatherPopup">
+                <ul>
+                <div id='placeName'></div>
+                <div id='description'></div>
+                <div id='temperature'> <h3>Loading...</h3></div>
+                <div id='windspeed'></div>
+                <div id='windDirection'></div>
+                <div id='elevation'></div>
+                </ul>
+                </div>
+
         <div id="wikiPopup">
                 <div id='popupSummary'> <h3>Loading...</h3></div>
         </div>
