@@ -81,8 +81,8 @@ hereMarker.openTooltip();
 hereMarker.addTo(map);
 
 //using the wiki function:
-$(wikiData(latitude, longitude))
-$(weatherAPI (latitude, longitude))
+wikiData(latitude, longitude)
+weatherAPI (latitude, longitude)
 
 	$.ajax({
 		url: "php/getCountryCodeFromLatLng.php",
@@ -117,7 +117,7 @@ $(weatherAPI (latitude, longitude))
           success: function(result) {
     
             //this line for the wikiCountry function:
-            $(wikiCountryData(result['data'][0]['countryName']));
+            wikiCountryData(result['data'][0]['countryName']);
 
           //  $(weather(result['data'][0]['capital'])); 
        
@@ -129,7 +129,7 @@ $(weatherAPI (latitude, longitude))
               $('#popupArea').html('<li>Area (km2): ' + giveCommas(result['data'][0]['areaInSqKm']) + '</li>');  
 
               //this line is for the exchange rate function:
-            $(exchangeRate (result['data'][0]['currencyCode']));
+            exchangeRate (result['data'][0]['currencyCode']);
             }
           
           },
@@ -214,10 +214,10 @@ document.getElementById('selCountry').onchange = function getCountryCoordinates(
             //console.log(JSON.stringify(result));
 
             //this line for the wikiCountry function:
-            $(wikiCountryData(result['data'][0]['countryName']));
+            wikiCountryData(result['data'][0]['countryName']);
             
             // weather
-            $(ddWeatherAPI (result['data'][0]['capital']))
+            ddWeatherAPI (result['data'][0]['capital'])
 
           if (result.status.name == "ok") {
               $('#popupContinent').html('<li>Continent: ' + result['data'][0]['continent'] + '</li>');
@@ -384,7 +384,7 @@ $($.ajax({
 
     if (result.status.name == "ok") {
       for (let i = 0; i < 5; i ++){
-    $(wikiMarker (result.data[i]));
+    wikiMarker (result.data[i]);
       }
     }
   },
