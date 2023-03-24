@@ -37,11 +37,6 @@ let startLng = -155.5828;
 
 //3. Basics for leaflet:
 
-// this is in the index and doesn't work if moved from there: 
-// src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-//                 integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-//                 crossorigin=""
-
 var map = L.map('map').setView([startLat, startLng], 6);
                       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -60,7 +55,83 @@ $(document.getElementById('weatherPopup')).hide();
                     L.easyButton('<img src="img/wiki.jpg">', function(btn, map){
                       $(document.getElementById('wikiPopup')).toggle();
                     }).addTo(map);                  
-                      
+
+// This part generates the popup when the page loads.
+
+const popup = document.getElementById('dataPopup');
+const wPopup = document.getElementById('wikiPopup');
+const wePopup = document.getElementById('weatherPopup');
+
+window.onload = () => {
+popup.style.display = 'block';
+wPopup.style.display = 'block';
+};
+
+// This section is to make the popups dragable. 
+
+function dragpopup (thisPopup){
+let mousePos = { x: 0, y: 0 };
+let popupPos = { x: 0, y: 0 };
+let isDragging = false;
+thisPopup.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  mousePos.x = e.clientX;
+  mousePos.y = e.clientY;
+  popupPos.x = popup.offsetLeft;
+  popupPos.y = popup.offsetTop;
+});
+document.addEventListener('mousemove', (e) => {
+  if (isDragging) {
+    const deltaX = e.clientX - mousePos.x;
+    const deltaY = e.clientY - mousePos.y;
+    thisPopup.style.left = `${popupPos.x + deltaX}px`;
+    thisPopup.style.top = `${popupPos.y + deltaY}px`;
+  }
+});
+document.addEventListener('mouseup', () => {
+  isDragging = false;
+});}
+
+$(dragpopup (popup));
+$(dragpopup (wePopup));
+
+// Some issues with the wiki popup jumping so this is turned off for now. 
+//$(dragpopup (wPopup));
+
+// This is function to tidy up numbers used within some of the pop ups:
+function giveCommas (stringNumber) {
+  number = Number(stringNumber);
+  number = number.toLocaleString();
+  return number;}
+
+// This is an is an Ajax request to a local GeoJSON file via a PHP file. It returns country names and codes in alphabetical pairs to populate the drop down as the JSON object 'countryCodes'. This should run on page load.  
+
+$(function getCountryCodes(){
+  
+  $.ajax({
+    url: 'php/getCountryCodesFromLocalFile.php',
+    type: 'GET',
+    dataType: "json",
+    
+    success: function(countryCodes) {
+    
+    countryNamesAndCodes = countryCodes.countryCodes;
+    countryNamesAndCodes = JSON.parse(countryNamesAndCodes);
+        $(function populateDropdown() {
+        for (let i = 0; i < countryNamesAndCodes.length; i++) {
+        var optn = countryNamesAndCodes[i];
+        var opt = document.createElement("option");
+        opt.textContent = optn[0];
+        opt.value = optn[1];
+        select.appendChild(opt);
+        }})
+    },
+ 
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  }); 
+});                    
 
 //4. This runs Geolocation and returns a country code value for id='txtCountryCode':
 
@@ -116,7 +187,7 @@ weatherAPI (latitude, longitude)
           data: {country: localCountryCode},
           success: function(result) {
     
-            //this line for the wikiCountry function:
+            //this shouldn't be here:
             wikiCountryData(result['data'][0]['countryName']);
 
           //  $(weather(result['data'][0]['capital'])); 
@@ -198,11 +269,54 @@ weatherAPI (latitude, longitude)
   
 })
 
-//5. This is an Ajax request to a local GeoJSON file via a PHP file. It returns country coordinates to leaflet and views the country. 
+// Making a local wiki function:
+
+function wikiData(lat, lng){
+
+  $($.ajax({
+    url: "php/getWikiInfo.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      lat: latitude,
+      lng: longitude
+    },
+    success: function(result) {
+  
+      console.log(JSON.stringify(result));
+  
+      let cluster = L.markerClusterGroup();
+  
+      if (result.status.name == "ok") {
+        
+      for (let i = 0; i < result.data.length; i ++){
+      let summary = result.data[i]['summary'];
+      summary = summary.substring(0, summary.length-5);
+      
+  
+      let marker = L.marker([result.data[i]['lat'], result.data[i]['lng']], { icon: infoMarker });
+      marker.bindPopup( '<a href=https://' + result['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
+      marker.openTooltip();
+  
+      cluster.addLayer(marker);
+  
+    }
+    map.addLayer(cluster);
+    }
+  
+  },
+  
+  error: function(jqXHR, textStatus, errorThrown) {
+  
+  console.log(jqXHR);
+    }
+  }))}
+
+//This is the dropdown event handler. All ajax requests should be within this with the exception of the function to populate the dropdown which must precede this.  
 
 document.getElementById('selCountry').onchange = function getCountryCoordinates(){
   
-// this is populating the data overlay with the dropdown value. 
+// this is populating the data overlay with the dropdown value and should be within the dropdown event handler. 
 
         $($.ajax({
           url: "php/getCountryInfo.php",
@@ -216,7 +330,7 @@ document.getElementById('selCountry').onchange = function getCountryCoordinates(
             //this line for the wikiCountry function:
             wikiCountryData(result['data'][0]['countryName']);
             
-            // weather
+            // weather and capital city
             ddWeatherAPI (result['data'][0]['capital'])
 
           if (result.status.name == "ok") {
@@ -237,7 +351,7 @@ document.getElementById('selCountry').onchange = function getCountryCoordinates(
           }
         })) 
         
-//these lines are to populate the data overlay for the local country but with some differences:
+//these lines are to populate the data overlay for the local country, this should be within the dropdown event handler. 
 
 $('#popupCountryCode').html('<li>Country Code: ' + $('#selCountry').val() + '</li>');
 $($.ajax({
@@ -276,78 +390,8 @@ $($.ajax({
         }); 
     }
 
-//6 This is an is an Ajax request to a local GeoJSON file via a PHP file. It returns country names and codes in alphabetical pairs to populate the drop down as the JSON object 'countryCodes'.  
+// exchange rate function, within the dropdown event handler: 
 
-$(function getCountryCodes(){
-  
-        $.ajax({
-          url: 'php/getCountryCodesFromLocalFile.php',
-          type: 'GET',
-          dataType: "json",
-          
-          success: function(countryCodes) {
-          
-          countryNamesAndCodes = countryCodes.countryCodes;
-          countryNamesAndCodes = JSON.parse(countryNamesAndCodes);
-              $(function populateDropdown() {
-              for (let i = 0; i < countryNamesAndCodes.length; i++) {
-              var optn = countryNamesAndCodes[i];
-              var opt = document.createElement("option");
-              opt.textContent = optn[0];
-              opt.value = optn[1];
-              select.appendChild(opt);
-              }})
-          },
-       
-          error: function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-          }
-        }); 
-    });
-
-// This part generates the popup when the page loads.
-
-const popup = document.getElementById('dataPopup');
-const wPopup = document.getElementById('wikiPopup');
-const wePopup = document.getElementById('weatherPopup');
-
-window.onload = () => {
-popup.style.display = 'block';
-wPopup.style.display = 'block';
-};
-
-// This section is to make the popups dragable. 
-
-function dragpopup (thisPopup){
-let mousePos = { x: 0, y: 0 };
-let popupPos = { x: 0, y: 0 };
-let isDragging = false;
-thisPopup.addEventListener('mousedown', (e) => {
-  isDragging = true;
-  mousePos.x = e.clientX;
-  mousePos.y = e.clientY;
-  popupPos.x = popup.offsetLeft;
-  popupPos.y = popup.offsetTop;
-});
-document.addEventListener('mousemove', (e) => {
-  if (isDragging) {
-    const deltaX = e.clientX - mousePos.x;
-    const deltaY = e.clientY - mousePos.y;
-    thisPopup.style.left = `${popupPos.x + deltaX}px`;
-    thisPopup.style.top = `${popupPos.y + deltaY}px`;
-  }
-});
-document.addEventListener('mouseup', () => {
-  isDragging = false;
-});}
-
-$(dragpopup (popup));
-$(dragpopup (wePopup));
-
-// Some issues with the wiki popup jumping so this is turned off for now. 
-//$(dragpopup (wPopup));
-
-// exchange rate function:
 function exchangeRate (currencyCode){
     if (currencyCode == 'USD'){
     $.get('https://openexchangerates.org/api/latest.json', {app_id: 'f9d4247ca1f5440bb89696cedb79436d'}, function(data) {
@@ -365,51 +409,6 @@ $.get('https://openexchangerates.org/api/latest.json', {app_id: 'f9d4247ca1f5440
   else{
   $('#popupCurrency').html('<li>Currency: ' + currencyCode + ' at ' + rates +' to USD</li>');} 
     });}}
-
-// Making a local wiki function:
-
-function wikiData(lat, lng){
-
-$($.ajax({
-  url: "php/getWikiInfo.php",
-  type: 'POST',
-  dataType: 'json',
-  data: {
-    lat: latitude,
-    lng: longitude
-  },
-  success: function(result) {
-
-    console.log(JSON.stringify(result));
-
-    let cluster = L.markerClusterGroup();
-
-    if (result.status.name == "ok") {
-      
-    for (let i = 0; i < result.data.length; i ++){
-    let summary = result.data[i]['summary'];
-    summary = summary.substring(0, summary.length-5);
-    
-
-    let marker = L.marker([result.data[i]['lat'], result.data[i]['lng']], { icon: infoMarker });
-    marker.bindPopup( '<a href=https://' + result['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
-    marker.openTooltip();
-
-    cluster.addLayer(marker);
-
-  }
-
-  map.addLayer(cluster);
-
-}
-
-},
-
-error: function(jqXHR, textStatus, errorThrown) {
-
-console.log(jqXHR);
-  }
-}))}
 
 //making a wikiCountry function: 
 
@@ -432,10 +431,26 @@ $($.ajax({
     if (result.status.name == "ok") {
 
     for (let i = 0; i < result.data.length; i ++){
-      countryOrPlace (result.data[i], country);
-      let summary = result.data[i]['summary'];
-      summary = summary.substring(0, summary.length-5);
 
+      //populating the wiki popup 
+
+      let newData = result.data[i]
+      let summary = newData['summary'];
+
+        country = country.replace(/-/g, ' ');
+        if (country == 'Palestine')
+        {
+          country = 'State of Palestine';
+        };
+        if (newData['title'] == country )
+        //if ( newData['title'].includes(country))
+        {
+          
+          summary = summary.substring(0, summary.length-6);
+          //console.log(summary);
+          $('#popupSummary').html('<p>' + summary + '... ' + '<a id=\'wiki\' href=\'https://' + newData['wikipediaUrl'] + '\'>' + '(Wikipedia entry)' + '</a></p>'); 
+        }
+        
       let hereMarker = L.marker([result.data[i]['lat'], result.data[i]['lng']], { icon: infoMarker });
       hereMarker.bindPopup( '<a href=https://' + result['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
       hereMarker.openTooltip();
@@ -444,7 +459,8 @@ $($.ajax({
     
       }
 
-      map.addLayer(cluster);
+     map.addLayer(cluster);
+   
     }
 
     },
@@ -454,40 +470,6 @@ $($.ajax({
   }))
 }
   
-//  these are for avoiding repetition above:
-  
-  function wikiCountryMarker (dataPlace){
-    let summary = dataPlace['summary'];
-      summary = summary.substring(0, summary.length-5);
-    let hereMarker = L.marker([dataPlace['lat'], dataPlace['lng']], { icon: infoMarker });
-    hereMarker.bindPopup( '<a href=https://' + dataPlace['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
-    hereMarker.openTooltip();
-    hereMarker.addTo(map);
-  }
-
-  function countryOrPlace (newData, country) {
-      country = country.replace(/-/g, ' ');
-      if (country == 'Palestine')
-      {
-        country = 'State of Palestine';
-      };
-      if (newData['title'] == country )
-      {
-        let summary = newData['summary'];
-        summary = summary.substring(0, summary.length-6);
-        //console.log(summary);
-        $('#popupSummary').html('<p>' + summary + '... ' + '<a id=\'wiki\' href=\'https://' + newData['wikipediaUrl'] + '\'>' + '(Wikipedia entry)' + '</a></p>'); 
-      }
-      else
-      $(wikiCountryMarker (newData));
-      }
-
-// making numbers have commas:
-function giveCommas (stringNumber) {
-number = Number(stringNumber);
-number = number.toLocaleString();
-return number;}
-
 // local weather info:
 function weatherAPI (lat, lng) {
   $.get('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lng + '&current_weather=true', function(data) {
@@ -507,7 +489,7 @@ function weatherAPI (lat, lng) {
 
 }
 
-//foreign weather info:
+//foreign weather info & adding capitals, called once within the dropdown change event, so perhaps move within there rather than complicating things:
 
 function ddWeatherAPI (capital) {
   $('#placeName').html('<h3>' + capital + '</h3>');
