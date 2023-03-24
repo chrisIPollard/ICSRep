@@ -375,46 +375,41 @@ $($.ajax({
   type: 'POST',
   dataType: 'json',
   data: {
-    lat: lat,
-    lng: lng
+    lat: latitude,
+    lng: longitude
   },
   success: function(result) {
 
-    //console.log(JSON.stringify(result));
+    console.log(JSON.stringify(result));
+
+    let cluster = L.markerClusterGroup();
 
     if (result.status.name == "ok") {
-      for (let i = 0; i < 5; i ++){
-    wikiMarker (result.data[i]);
-      }
-    }
-  },
-  error: function(jqXHR, textStatus, errorThrown) {
-    console.log(jqXHR);
+      
+    for (let i = 0; i < result.data.length; i ++){
+    let summary = result.data[i]['summary'];
+    summary = summary.substring(0, summary.length-5);
+    
+
+    let marker = L.marker([result.data[i]['lat'], result.data[i]['lng']], { icon: infoMarker });
+    marker.bindPopup( '<a href=https://' + result['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
+    marker.openTooltip();
+
+    cluster.addLayer(marker);
+
   }
-}))}
 
-//this is for avoiding repetition above:
+  map.addLayer(cluster);
 
-function wikiMarker (dataPlace){
-  let summary = dataPlace['summary'];
-  summary = summary.substring(0, summary.length-5);
-
-  let hereMarker = L.markerClusterGroup();
-  hereMarker.addLayer(L.marker([dataPlace['lat'], dataPlace['lng']], { icon: infoMarker }));
-  hereMarker.bindPopup( '<a href=https://' + dataPlace['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
-  hereMarker.openTooltip();
-  map.addLayer(hereMarker);
 }
 
-// the old code:
-// function wikiMarker (dataPlace){
-//   let summary = dataPlace['summary'];
-//     summary = summary.substring(0, summary.length-5);
-//   let hereMarker = L.marker([dataPlace['lat'], dataPlace['lng']]);
-//   hereMarker.bindPopup( '<a href=https://' + dataPlace['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
-//   hereMarker.openTooltip();
-//   hereMarker.addTo(map);
-// }
+},
+
+error: function(jqXHR, textStatus, errorThrown) {
+
+console.log(jqXHR);
+  }
+}))}
 
 //making a wikiCountry function: 
 
@@ -430,16 +425,34 @@ $($.ajax({
     },
     success: function(result) {
   
-      //console.log(JSON.stringify(result));
-    for (let i = 0; i < 10; i ++){
-    $(countryOrPlace (result.data[i], country));
+    console.log(JSON.stringify(result));
+
+    let cluster = L.markerClusterGroup();
+
+    if (result.status.name == "ok") {
+
+    for (let i = 0; i < result.data.length; i ++){
+      countryOrPlace (result.data[i], country);
+      let summary = result.data[i]['summary'];
+      summary = summary.substring(0, summary.length-5);
+
+      let hereMarker = L.marker([result.data[i]['lat'], result.data[i]['lng']], { icon: infoMarker });
+      hereMarker.bindPopup( '<a href=https://' + result['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
+      hereMarker.openTooltip();
+  
+      cluster.addLayer(hereMarker);
+    
+      }
+
+      map.addLayer(cluster);
     }
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log(jqXHR);
     }
-  }))}
+  }))
+}
   
 //  these are for avoiding repetition above:
   
@@ -454,6 +467,10 @@ $($.ajax({
 
   function countryOrPlace (newData, country) {
       country = country.replace(/-/g, ' ');
+      if (country == 'Palestine')
+      {
+        country = 'State of Palestine';
+      };
       if (newData['title'] == country )
       {
         let summary = newData['summary'];
