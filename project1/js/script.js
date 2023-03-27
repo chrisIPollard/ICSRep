@@ -168,6 +168,9 @@ weatherAPI (latitude, longitude)
 			
       localCountryCode = result['countryCode'];
 
+      //this selects the dropdown for the geolocated country code: 
+      document.getElementById('txtCountryCode').value = localCountryCode;
+
       //these lines are to populate the data overlay for the local country
       $('#popupCountryCode').html('<li>Country Code: ' + localCountryCode + '</li>');
       $($.ajax({
@@ -283,7 +286,7 @@ function wikiData(lat, lng){
     },
     success: function(result) {
   
-      console.log(JSON.stringify(result));
+      //console.log(JSON.stringify(result));
   
       let cluster = L.markerClusterGroup();
   
@@ -312,7 +315,7 @@ function wikiData(lat, lng){
     }
   }))}
 
-//This is the dropdown event handler. All ajax requests should be within this with the exception of the function to populate the dropdown which must precede this.  
+//This is the dropdown event handler. All ajax requests should be within this with the exception of the function to populate the dropdown which must precede this, and anything connected to the local coordinates.  
 
 document.getElementById('selCountry').onchange = function getCountryCoordinates(){
   
@@ -330,9 +333,43 @@ document.getElementById('selCountry').onchange = function getCountryCoordinates(
             //this line for the wikiCountry function:
             wikiCountryData(result['data'][0]['countryName']);
             
-            // weather and capital city
-            ddWeatherAPI (result['data'][0]['capital'])
+            // nested weather and capital city call over x lines:
+            let capital = result['data'][0]['capital']
+            $('#placeName').html('<h3>' + capital + '</h3>');
 
+            $($.ajax({
+            url: "php/getCapitalInfo.php",
+            type: 'POST',
+            dataType: 'json',
+            data: {capital: capital},
+            success: function(result) {
+
+            // console.log(JSON.stringify(result));
+            let lat = result.data[0]['lat'];
+            let lng = result.data[0]['lng'];
+            
+            // this marks a capital with a city marker but I've retired it because it overlaps with the wiki data. 
+            // var capMarker = L.marker([lat, lng], { icon: cityMarker });
+            // capMarker.bindTooltip(capital);
+            // capMarker.openTooltip();
+            // capMarker.addTo(map);
+
+            if (result.status.name == "ok") {    
+            $.get('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lng + '&current_weather=true', function(data) {
+            $('#temperature').html('<li>Temperature: ' + data['current_weather']['temperature'] + '°C </li>'); 
+            $('#windspeed').html('<li>Wind Speed: ' + data['current_weather']['windspeed'] + '</li>'); 
+            $('#windDirection').html('<li>Wind Direction: ' + data['current_weather']['winddirection'] + '</li>'); 
+            $('#elevation').html('<li>Elevation: ' + data['elevation'] + '</li>'); 
+            $('#timeZone').html('<li>Time Zone: ' + data['timezone'] + '</li>'); 
+            });  }
+    
+              },
+              error: function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+              }
+            }))
+
+          //back to the previous, non nested call here: 
           if (result.status.name == "ok") {
               $('#popupContinent').html('<li>Continent: ' + result['data'][0]['continent'] + '</li>');
               $('#popupCapital').html('<li>Capital: ' + result['data'][0]['capital'] + '</li>');
@@ -380,7 +417,7 @@ $($.ajax({
           success: function(result) {
               
           coordinates = result.result;
-          //if (map.borders){map.removeLayer(borders);};
+          if (map.borders.value){map.removeLayer(borders);};
           var borders = L.geoJSON(coordinates).addTo(map);
           map.fitBounds(borders.getBounds());},
 
@@ -424,7 +461,7 @@ $($.ajax({
     },
     success: function(result) {
   
-    console.log(JSON.stringify(result));
+    //console.log(JSON.stringify(result));
 
     let cluster = L.markerClusterGroup();
 
@@ -436,11 +473,12 @@ $($.ajax({
 
       let newData = result.data[i]
       let summary = newData['summary'];
-
+      
+        //not all the titles from the geo.JSON match to the wiki find, so I've made an exception for Palestine but would like a general solution. The includes method below is not sufficient. I could use country code but this does appear on some other entries.  
         country = country.replace(/-/g, ' ');
         if (country == 'Palestine')
         {
-          country = 'State of Palestine';
+          country = 'State-of-Palestine';
         };
         if (newData['title'] == country )
         //if ( newData['title'].includes(country))
@@ -488,39 +526,3 @@ function weatherAPI (lat, lng) {
     })
 
 }
-
-//foreign weather info & adding capitals, called once within the dropdown change event, so perhaps move within there rather than complicating things:
-
-function ddWeatherAPI (capital) {
-  $('#placeName').html('<h3>' + capital + '</h3>');
-
-  $($.ajax({
-    url: "php/getCapitalInfo.php",
-    type: 'POST',
-    dataType: 'json',
-    data: {capital: capital},
-    success: function(result) {
-
-     // console.log(JSON.stringify(result));
-          let lat = result.data[0]['lat'];
-          let lng = result.data[0]['lng'];
-          
-          var capMarker = L.marker([lat, lng], { icon: cityMarker });
-          capMarker.bindTooltip(capital);
-          capMarker.openTooltip();
-          capMarker.addTo(map);
-
-          if (result.status.name == "ok") {    
-            $.get('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lng + '&current_weather=true', function(data) {
-            $('#temperature').html('<li>Temperature: ' + data['current_weather']['temperature'] + '°C </li>'); 
-            $('#windspeed').html('<li>Wind Speed: ' + data['current_weather']['windspeed'] + '</li>'); 
-            $('#windDirection').html('<li>Wind Direction: ' + data['current_weather']['winddirection'] + '</li>'); 
-            $('#elevation').html('<li>Elevation: ' + data['elevation'] + '</li>'); 
-            $('#timeZone').html('<li>Time Zone: ' + data['timezone'] + '</li>'); 
-         });  }
-    
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log(jqXHR);
-    }
-  }))} 
