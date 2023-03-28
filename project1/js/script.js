@@ -6,6 +6,7 @@ let coordinates;
 let countryNamesAndCodes;
 let select = document.getElementById("selCountry");
 let localCountryCode;
+let borders;
 
 //making extramarkers:
 
@@ -23,12 +24,12 @@ let infoMarker = L.ExtraMarkers.icon({
   prefix: 'fa',
   });
 
-let cityMarker = L.ExtraMarkers.icon({
-  icon: 'fa-city',
-  markerColor: 'yellow',
-  shape: 'penta',
-  prefix: 'fa',
-  });
+// let cityMarker = L.ExtraMarkers.icon({
+//   icon: 'fa-city',
+//   markerColor: 'yellow',
+//   shape: 'penta',
+//   prefix: 'fa',
+//   });
 
 //2. these are placeholder coordinates so I can tell at a glance if the functions are working:
 
@@ -42,29 +43,41 @@ var map = L.map('map').setView([startLat, startLng], 6);
                         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                       }).addTo(map);
 
+
+$(document.getElementById('currencyPopup')).hide();
 $(document.getElementById('weatherPopup')).hide();
 
                     L.easyButton('<img src="img/data.jpg">', function(btn, map){
                       $(document.getElementById('dataPopup')).toggle();
                       $(document.getElementById('weatherPopup')).hide();
+                      $(document.getElementById('currencyPopup')).hide();
                     }).addTo(map);     
                     L.easyButton('<img src="img/weather.jpg">', function(btn, map){
                       $(document.getElementById('weatherPopup')).toggle();
                       $(document.getElementById('dataPopup')).hide();
+                      $(document.getElementById('currencyPopup')).hide();
                     }).addTo(map);    
                     L.easyButton('<img src="img/wiki.jpg">', function(btn, map){
                       $(document.getElementById('wikiPopup')).toggle();
-                    }).addTo(map);                  
+                    }).addTo(map);     
+                    L.easyButton('<img src="img/cash.jpg">', function(btn, map){
+                      $(document.getElementById('currencyPopup')).toggle();
+                      $(document.getElementById('dataPopup')).hide();
+                      $(document.getElementById('weatherPopup')).hide();
+                    }).addTo(map);                
 
 // This part generates the popup when the page loads.
 
 const popup = document.getElementById('dataPopup');
-const wPopup = document.getElementById('wikiPopup');
+const cPopup = document.getElementById('currencyPopup');
 const wePopup = document.getElementById('weatherPopup');
+const wPopup = document.getElementById('wikiPopup');
 
 window.onload = () => {
 popup.style.display = 'block';
 wPopup.style.display = 'block';
+//wePopup.style.display = 'block';
+//cPopup.style.display = 'block';
 };
 
 // This section is to make the popups dragable. 
@@ -77,8 +90,8 @@ thisPopup.addEventListener('mousedown', (e) => {
   isDragging = true;
   mousePos.x = e.clientX;
   mousePos.y = e.clientY;
-  popupPos.x = popup.offsetLeft;
-  popupPos.y = popup.offsetTop;
+  popupPos.x = thisPopup.offsetLeft;
+  popupPos.y = thisPopup.offsetTop;
 });
 document.addEventListener('mousemove', (e) => {
   if (isDragging) {
@@ -94,9 +107,9 @@ document.addEventListener('mouseup', () => {
 
 $(dragpopup (popup));
 $(dragpopup (wePopup));
-
-// Some issues with the wiki popup jumping so this is turned off for now. 
+$(dragpopup (cPopup));
 //$(dragpopup (wPopup));
+
 
 // This is function to tidy up numbers used within some of the pop ups:
 function giveCommas (stringNumber) {
@@ -152,8 +165,8 @@ hereMarker.openTooltip();
 hereMarker.addTo(map);
 
 //using the wiki function:
-wikiData(latitude, longitude)
-weatherAPI (latitude, longitude)
+//wikiData(latitude, longitude)
+//weatherAPI (latitude, longitude)
 
 	$.ajax({
 		url: "php/getCountryCodeFromLatLng.php",
@@ -168,121 +181,17 @@ weatherAPI (latitude, longitude)
 			
       localCountryCode = result['countryCode'];
 
-      //this selects the dropdown for the geolocated country code: 
-      document.getElementById('txtCountryCode').value = localCountryCode;
+      //this line selects the country from the geolocation from the dropdown:
+      $(selCountry).val(localCountryCode).change()
 
-      //these lines are to populate the data overlay for the local country
-      $('#popupCountryCode').html('<li>Country Code: ' + localCountryCode + '</li>');
-      $($.ajax({
-        url: 'php/getCountryFromLocalFile.php',
-        type: 'GET',
-        dataType: "json",
-        data: {countryCode: localCountryCode},
-
-        success: function(result) {
-          
-        country = result.result;
-                
-        $($.ajax({
-          url: "php/getCountryInfo.php",
-          type: 'POST',
-          dataType: 'json',
-          data: {country: localCountryCode},
-          success: function(result) {
-    
-            //this shouldn't be here:
-            wikiCountryData(result['data'][0]['countryName']);
-
-          //  $(weather(result['data'][0]['capital'])); 
-       
-            if (result.status.name == "ok") {
-              $('#popupContinent').html('<li>Continent: ' + result['data'][0]['continent'] + '</li>');
-              $('#popupCapital').html('<li>Capital: ' + result['data'][0]['capital'] + '</li>');
-              $('#popupLanguages').html('<li>Languages: ' + result['data'][0]['languages'] + '</li>');
-              $('#popupPopulation').html('<li>Population: ' + giveCommas(result['data'][0]['population']) + '</li>');
-              $('#popupArea').html('<li>Area (km2): ' + giveCommas(result['data'][0]['areaInSqKm']) + '</li>');  
-
-              //this line is for the exchange rate function:
-            exchangeRate (result['data'][0]['currencyCode']);
-            }
-          
-          },
-          error: function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-          }
-        })) 
-
-        $('#popupCountry').html('<h3>' + country + '</h3>');
-        },
-
-        error: function(jqXHR, textStatus, errorThrown) {
-          console.log(jqXHR);
-        }   
-
-      }))
-
-      
-      if (result.status.name == "ok") {
-        
-        				$('#txtCountryCode').val(localCountryCode);
-
-        //sending the code to the local file to get country coordinates:
-				$(function getCountryCoordinates(){
-
-        $.ajax({
-          url: 'php/getCoordinatesFromLocalFile.php',
-          type: 'GET',
-          dataType: "json",
-          data: {countryCode: localCountryCode},
-
-          success: function(result) {
-            
-          coordinates = result.result;
-          //if (map.borders){map.removeLayer(borders);};
-          var borders = L.geoJSON(coordinates).addTo(map);
-          map.fitBounds(borders.getBounds());},
-
-          error: function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-          }
-        }); 
-        })				
-			}
-		
-		},
-		error: function(jqXHR, textStatus, errorThrown) {
-			console.log(jqXHR);
-		}
-	}); 
-
-};
-  
-	function error() {
-	  console.log('Unable to retrieve your location');
-	}
-
-// this is the bit that runs the geolocation method using the API function from above:
-
-	if (!navigator.geolocation) {
-		console.log('Geolocation is not supported by your browser');
-	} else {
-		console.log('Locating');
-	  navigator.geolocation.getCurrentPosition(APILatLngCall, error);
-	}
-  
-})
-
-// Making a local wiki function:
-
-function wikiData(lat, lng){
-
+  // this call is to make a local wiki cluster:
   $($.ajax({
     url: "php/getWikiInfo.php",
     type: 'POST',
     dataType: 'json',
     data: {
-      lat: latitude,
-      lng: longitude
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
     },
     success: function(result) {
   
@@ -313,7 +222,30 @@ function wikiData(lat, lng){
   
   console.log(jqXHR);
     }
-  }))}
+  }))
+      
+},
+		error: function(jqXHR, textStatus, errorThrown) {
+			console.log(jqXHR);
+		}
+	}); 
+
+};
+  
+	function error() {
+	  console.log('Unable to retrieve your location');
+	}
+
+// this is the bit that runs the geolocation method using the API function from above:
+
+	if (!navigator.geolocation) {
+		console.log('Geolocation is not supported by your browser');
+	} else {
+		console.log('Locating');
+	  navigator.geolocation.getCurrentPosition(APILatLngCall, error);
+	}
+  
+})
 
 //This is the dropdown event handler. All ajax requests should be within this with the exception of the function to populate the dropdown which must precede this, and anything connected to the local coordinates.  
 
@@ -417,8 +349,8 @@ $($.ajax({
           success: function(result) {
               
           coordinates = result.result;
-          if (map.borders.value){map.removeLayer(borders);};
-          var borders = L.geoJSON(coordinates).addTo(map);
+          if (borders){borders.clearLayers();};
+          borders = L.geoJSON(coordinates).addTo(map);
           map.fitBounds(borders.getBounds());},
 
           error: function(jqXHR, textStatus, errorThrown) {
@@ -447,7 +379,8 @@ $.get('https://openexchangerates.org/api/latest.json', {app_id: 'f9d4247ca1f5440
   $('#popupCurrency').html('<li>Currency: ' + currencyCode + ' at ' + rates +' to USD</li>');} 
     });}}
 
-//making a wikiCountry function: 
+
+//A function to place markers from the geonames wiki search: 
 
 function wikiCountryData(country){
 country = country.replace(/\s/g, '-');
@@ -494,11 +427,9 @@ $($.ajax({
       hereMarker.openTooltip();
   
       cluster.addLayer(hereMarker);
-    
-      }
+    }
 
      map.addLayer(cluster);
-   
     }
 
     },
@@ -526,3 +457,9 @@ function weatherAPI (lat, lng) {
     })
 
 }
+
+
+
+$(document.getElementById('localWeather')).click(function(){
+  weatherAPI (latitude, longitude);
+}); 
