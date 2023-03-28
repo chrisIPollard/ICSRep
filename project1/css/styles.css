@@ -33,7 +33,7 @@
 
 /*this is styling for the #dataPopup*/
 
-#dataPopup, #weatherPopup {
+#dataPopup, #weatherPopup, #currencyPopup{
     position: fixed;
     left: 10%;
     top: 15%;
@@ -60,7 +60,6 @@
     border-radius: 10px;
     padding: 20px;
     font-size: 1.4rem;
-    max-height: fit-content;
     max-width: 90%;
     animation: fadeIn 0.5s ease-in-out;
     z-index: 9998;
@@ -74,8 +73,8 @@
   color: #FDFD96;
 }
 
-/* popup close button */
-#closePopup, closeWePopup {
+/* popup button */
+#localWeather {
   background-color: #FDFD96;
   padding: 3px;
   margin: 1px;
@@ -87,8 +86,12 @@
   opacity: 0.9;
 }  
 
+#localWeather:active {
+  opacity: 0.6;
+}
+
 @media (max-width: 500px) {
-  #dataPopup, #weatherPopup {
+  #dataPopup, #weatherPopup, #currencyPopup {
     font-size: 1.3rem;
     max-width: 90%;
     left: 10%;
@@ -97,7 +100,7 @@
 }
 
   @media (min-width: 501px){
-    #dataPopup, #weatherPopup {
+    #dataPopup, #weatherPopup, #currencyPopup {
       font-size: 1.4rem;
       max-width: 90%;
     }
@@ -105,7 +108,7 @@
     }
 
   @media (min-width: 601px){
-    #dataPopup, #weatherPopup {
+    #dataPopup, #weatherPopup, #currencyPopup {
       font-size: 1.5rem;
       max-width: 90%;
     }
