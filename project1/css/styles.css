@@ -33,7 +33,7 @@
 
 /*this is styling for the #dataPopup*/
 
-#dataPopup, #weatherPopup, #currencyPopup{
+#dataPopup, #weatherPopup, #currencyPopup, #flagPopup, #genderPopup{
     position: fixed;
     left: 10%;
     top: 15%;
@@ -50,6 +50,14 @@
     font-family: "Open Sans", sans-serif;
     cursor: move;
   }
+
+#flag {
+  display: block;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 32px;
+  
+}  
 
 #wikiPopup {
     position: fixed;
@@ -91,7 +99,7 @@
 }
 
 @media (max-width: 500px) {
-  #dataPopup, #weatherPopup, #currencyPopup {
+  #dataPopup, #weatherPopup, #currencyPopup, #flagPopup, #genderPopup {
     font-size: 1.3rem;
     max-width: 90%;
     left: 10%;
@@ -100,7 +108,7 @@
 }
 
   @media (min-width: 501px){
-    #dataPopup, #weatherPopup, #currencyPopup {
+    #dataPopup, #weatherPopup, #currencyPopup, #flagPopup, #genderPopup {
       font-size: 1.4rem;
       max-width: 90%;
     }
@@ -108,7 +116,7 @@
     }
 
   @media (min-width: 601px){
-    #dataPopup, #weatherPopup, #currencyPopup {
+    #dataPopup, #weatherPopup, #currencyPopup, #flagPopup, #genderPopup {
       font-size: 1.5rem;
       max-width: 90%;
     }
