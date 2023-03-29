@@ -1,0 +1,117 @@
+<!doctype html>
+
+ 
+<html lang="en">
+
+	<head>
+
+		<meta charset="utf-8">
+
+		<title>My Country</title>
+		<meta name="description" content="My Country">
+		<meta name="author" content="chrisIPollard">
+
+                <!-- leaflet external stylesheet & script-->
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+                   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+                   crossorigin=""/>
+
+                <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+                integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+                crossorigin=""></script>
+                
+                <!-- easy-button -->
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+                <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+
+                <!-- extra markers -->
+                <link rel="stylesheet" href="css/leaflet.extra-markers.min.css">
+                <script src="js/leaflet.extra-markers.min.js"></script>
+
+                <!-- marker cluster:         -->
+                <link rel="stylesheet" href="css/MarkerCluster.css" />
+                <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+                <script src="js/leaflet.markercluster.js"></script>
+
+                <!-- icons -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+                <!-- jQuery link -->
+                <script type="application/javascript" src="js/jquery-2.2.3.min.js"></script>    
+
+                <!-- link to local external stylesheet-->
+                <link rel="stylesheet" href="css/styles.css">
+
+        </head>
+        <body>
+        <div id="navBar">
+                <select id="selCountry">    
+                </select>
+
+        </div>
+                        
+        <div id="dataPopup">
+                <ul>
+                <div id='popupCountry'> <h3>Loading...</h3></div>
+                <div id='popupCountryCode'></div>
+                <div id='popupContinent'></div>
+                <div id='popupCapital'></div>
+                <div id='popupLanguages'></div>
+                <div id='popupPopulation'></div>
+                <div id='popupArea'></div>
+                <div id='timeZone'></div>
+                </ul>
+                </div>
+        
+        <div id="weatherPopup">
+                <ul>
+                <div id='placeName'></div>
+                <div id='description'></div>
+                <div id='temperature'> <h3>Loading...</h3></div>
+                <div id='windspeed'></div>
+                <div id='windDirection'></div>
+                <div id='elevation'></div>
+                </ul>
+                <button id="localWeather">Local Weather</button>
+                </div>
+
+        <div id="currencyPopup">
+                <ul>
+                <div id='currencyName'></div>
+                <div id='popupCurrency'><h3>Loading...</h3></div>
+                <div id='gdp'></div>
+                <div id='gdp_growth'></div>
+                <div id='exports'></div>
+                <div id='imports'></div>
+                </ul>
+                </div>
+        
+        <div id="flagPopup">
+                <ul>
+                <div id='flag'><h3>Loading...</h3></div>
+                </ul>
+                </div>
+        
+        <div id="genderPopup">
+                <ul>
+                <div id='lifeFemale'><h3>Loading...</h3></div>
+                <div id='lifeMale'></div>
+                <div id='sex_ratio'></div>
+                <div id='fertility'></div>
+                <div id='infant_mortality'></div>
+                </ul>
+                </div>
+
+        <div id="wikiPopup">
+                <div id='popupSummary'> <h3>Loading...</h3></div>
+        </div>
+
+        <div id="map">
+        </div>
+        
+        <!-- link to local external javascript-->
+        <script src="js/script.js"></script>
+
+        </body>
+</html>
+                
