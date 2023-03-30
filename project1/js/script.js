@@ -1,4 +1,4 @@
-//1. creating variables:
+//creating variables:
 
 let latitude;
 let longitude;
@@ -7,6 +7,7 @@ let countryNamesAndCodes;
 let select = document.getElementById("selCountry");
 let localCountryCode;
 let borders;
+let cluster;
 
 //making extramarkers:
 
@@ -24,19 +25,12 @@ let infoMarker = L.ExtraMarkers.icon({
   prefix: 'fa',
   });
 
-// let cityMarker = L.ExtraMarkers.icon({
-//   icon: 'fa-city',
-//   markerColor: 'yellow',
-//   shape: 'penta',
-//   prefix: 'fa',
-//   });
-
-//2. these are placeholder coordinates for the load:
+//Placeholder coordinates for the load:
 
 let startLat = 19.8968;
 let startLng = -155.5828;
 
-//3. Basics for leaflet:
+//Basics for leaflet:
 
 var map = L.map('map').setView([startLat, startLng], 6);
                       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -110,13 +104,6 @@ $(gPopup).hide();
                       $(document.getElementById('weatherPopup')).hide();
                     }).addTo(map);  
 
-// window.onload = () => {
-// popup.style.display = 'block';
-// wPopup.style.display = 'block';
-// wePopup.style.display = 'block';
-// cPopup.style.display = 'block';
-// };
-
 // This section is to make the popups dragable. 
 
 function dragpopup (thisPopup){
@@ -150,7 +137,7 @@ $(dragpopup (gPopup));
 //$(dragpopup (wPopup));
 
 
-// This is function to tidy up numbers used within some of the pop ups:
+// This is a function to tidy up numbers used within some of the pop ups:
 function giveCommas (stringNumber) {
   number = Number(stringNumber);
   number = number.toLocaleString();
@@ -205,7 +192,6 @@ hereMarker.addTo(map);
 
 let startLat = 19.8968;
 let startLng = -155.5828;
-https://api.nasa.gov/planetary/earth/imagery?lon=-155.5828&lat=19.8968&api_key=qByKz5C8xPcIuStdhuDL7eHFokmCRqtYMPt3bRfT
 
 	$.ajax({
 		url: "php/getCountryCodeFromLatLng.php",
@@ -293,6 +279,9 @@ document.getElementById('selCountry').onchange = function getCountryCoordinates(
 // this is fetching a flag for the flagPopup:
 $('#flag').html('<img src="https://flagsapi.com/' + $('#selCountry').val() + '/flat/64.png"></img>');
 
+// clearing the currency name as this is not always available:
+$('#currencyName').html('<h3></h3>');
+
 //this is calling more country information:
 $.ajax({
     method: 'GET',
@@ -346,12 +335,6 @@ $.ajax({
             let lat = result.data[0]['lat'];
             let lng = result.data[0]['lng'];
             
-            // this marks a capital with a city marker but I've retired it because it overlaps with the wiki data. 
-            // var capMarker = L.marker([lat, lng], { icon: cityMarker });
-            // capMarker.bindTooltip(capital);
-            // capMarker.openTooltip();
-            // capMarker.addTo(map);
-
             if (result.status.name == "ok") {    
             $.get('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lng + '&current_weather=true', function(data) {
             $('#temperature').html('<li>Temperature: ' + data['current_weather']['temperature'] + '°C </li>'); 
@@ -363,8 +346,7 @@ $.ajax({
             
             $.get('https://api.openweathermap.org/data/2.5/weather?q=' + capital + '&appid=a0e29cd38e23aec7ad4c1504ac3c63b8', function(datac) {
             $('#description').html('<li>Description: ' + datac['weather'][0]['description'] + '</li>'); 
-            });
-            
+            });            
 
               },
               error: function(jqXHR, textStatus, errorThrown) {
@@ -455,6 +437,10 @@ $.get('https://openexchangerates.org/api/latest.json', {app_id: 'f9d4247ca1f5440
 
 function wikiCountryData(country){
 country = country.replace(/\s/g, '-');
+if (country == 'United-Kingdom')
+        {
+          country = 'England';
+        }
 
 $($.ajax({
     url: "php/getWikiCountryInfo.php",
@@ -467,12 +453,17 @@ $($.ajax({
   
     //console.log(JSON.stringify(result));
 
-    let cluster = L.markerClusterGroup();
+    if (cluster){cluster.clearLayers();};
+    cluster = L.markerClusterGroup();
 
     if (result.status.name == "ok") {
-
+      if (country == 'Palestine')
+      {
+        country = 'State-of-Palestine';
+      }  
     for (let i = 0; i < result.data.length; i ++){
-
+      
+      if (result.data[i]['countryCode'] == $('#selCountry').val()){
       //populating the wiki popup 
 
       let newData = result.data[i]
@@ -480,10 +471,7 @@ $($.ajax({
       
         //not all the titles from the geo.JSON match to the wiki find, so I've made an exception for Palestine but would like a general solution. The includes method below is not sufficient. I could use country code but this does appear on some other entries.  
         country = country.replace(/-/g, ' ');
-        if (country == 'Palestine')
-        {
-          country = 'State-of-Palestine';
-        };
+        
         if (newData['title'] == country )
         //if ( newData['title'].includes(country))
         {
@@ -501,7 +489,7 @@ $($.ajax({
     }
 
      map.addLayer(cluster);
-    }
+    }}
 
     },
     error: function(jqXHR, textStatus, errorThrown) {
@@ -528,8 +516,6 @@ function weatherAPI (lat, lng) {
     })
 
 }
-
-
 
 $(document.getElementById('localWeather')).click(function(){
   weatherAPI (latitude, longitude);
