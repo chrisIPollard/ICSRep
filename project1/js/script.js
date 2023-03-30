@@ -437,10 +437,6 @@ $.get('https://openexchangerates.org/api/latest.json', {app_id: 'f9d4247ca1f5440
 
 function wikiCountryData(country){
 country = country.replace(/\s/g, '-');
-if (country == 'United-Kingdom')
-        {
-          country = 'England';
-        }
 
 $($.ajax({
     url: "php/getWikiCountryInfo.php",
@@ -451,7 +447,7 @@ $($.ajax({
     },
     success: function(result) {
   
-    //console.log(JSON.stringify(result));
+    console.log(JSON.stringify(result));
 
     if (cluster){cluster.clearLayers();};
     cluster = L.markerClusterGroup();
@@ -464,8 +460,8 @@ $($.ajax({
     for (let i = 0; i < result.data.length; i ++){
       
       if (result.data[i]['countryCode'] == $('#selCountry').val()){
+      
       //populating the wiki popup 
-
       let newData = result.data[i]
       let summary = newData['summary'];
       
