@@ -7,7 +7,10 @@ let countryNamesAndCodes;
 let select = document.getElementById("selCountry");
 let localCountryCode;
 let borders;
+let hereCluster;
+let hereMarker;
 let cluster;
+let startCheck = 0;
 
 //making extramarkers:
 
@@ -185,10 +188,13 @@ function APILatLngCall(position){
 latitude = position.coords.latitude;
 longitude = position.coords.longitude;
 
-var hereMarker = L.marker([latitude, longitude], { icon: youMarker });
+hereCluster = L.markerClusterGroup();
+
+hereMarker = L.marker([latitude, longitude], { icon: youMarker });
 hereMarker.bindTooltip('You are here.');
 hereMarker.openTooltip();
-hereMarker.addTo(map);
+
+hereCluster.addLayer(hereMarker);
 
 let startLat = 19.8968;
 let startLng = -155.5828;
@@ -222,8 +228,6 @@ let startLng = -155.5828;
   
       //console.log(JSON.stringify(result));
   
-      let cluster = L.markerClusterGroup();
-  
       if (result.status.name == "ok") {
         
       for (let i = 0; i < result.data.length; i ++){
@@ -235,10 +239,10 @@ let startLng = -155.5828;
       marker.bindPopup( '<a href=https://' + result['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
       marker.openTooltip();
   
-      cluster.addLayer(marker);
+      hereCluster.addLayer(marker);
   
     }
-    map.addLayer(cluster);
+    
     }
   
   },
@@ -254,6 +258,8 @@ let startLng = -155.5828;
 			console.log(jqXHR);
 		}
 	}); 
+
+map.addLayer(hereCluster);
 
 };
   
@@ -403,6 +409,7 @@ $($.ajax({
               
           coordinates = result.result;
           if (borders){borders.clearLayers();};
+          
           borders = L.geoJSON(coordinates, {style: mapStyle}).addTo(map);
           map.fitBounds(borders.getBounds());},
 
@@ -447,9 +454,14 @@ $($.ajax({
     },
     success: function(result) {
   
-    console.log(JSON.stringify(result));
+    //console.log(JSON.stringify(result));
 
     if (cluster){cluster.clearLayers();};
+    if (hereCluster && startCheck == 1)
+    {hereCluster.clearLayers()}
+    else
+    {startCheck ++};
+    
     cluster = L.markerClusterGroup();
 
     if (result.status.name == "ok") {
@@ -477,11 +489,11 @@ $($.ajax({
           $('#popupSummary').html('<p>' + summary + '... ' + '<a id=\'wiki\' href=\'https://' + newData['wikipediaUrl'] + '\'>' + '(Wikipedia entry)' + '</a></p>'); 
         }
         
-      let hereMarker = L.marker([result.data[i]['lat'], result.data[i]['lng']], { icon: infoMarker });
-      hereMarker.bindPopup( '<a href=https://' + result['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
-      hereMarker.openTooltip();
+      let thisMarker = L.marker([result.data[i]['lat'], result.data[i]['lng']], { icon: infoMarker });
+      thisMarker.bindPopup( '<a href=https://' + result['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
+      thisMarker.openTooltip();
   
-      cluster.addLayer(hereMarker);
+      cluster.addLayer(thisMarker);
     }
 
      map.addLayer(cluster);
