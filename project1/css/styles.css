@@ -23,19 +23,6 @@ html, body {
   margin: 0 auto;
 }
 
-/* #selCountry {
-  background-color: #FDFD96;
-  padding: 10px;
-  margin: 1px;
-  border: none;
-  color: #023020;
-  border-radius: 4px;
-  font-size: 1.5rem;
-  font-family: "Open Sans", sans-serif;
-  padding: 15px;
-  min-height: 50px;
-}   */
-
 /* styling for buttons when they are clicked: */
 
 .clicked {
@@ -134,11 +121,6 @@ html, body {
       max-width: 90%;
     }
 
-  #selCountry {
-    font-size: 1.8rem;
-    padding: 15px;
-    min-height: 70px;
-  }
 }
 
   @media (min-width: 601px){
