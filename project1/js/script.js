@@ -44,11 +44,11 @@ var map = L.map('map').setView([startLat, startLng], 6);
 
 function mapStyle(feature) {
                         return {
-                            fillColor: 'darkgreen',
+                            fillColor: 'yellow',
                             weight: 2,
-                            opacity: 1,
+                            opacity: 0.5,
                             color: 'green',  //Outline color
-                            fillOpacity: 0.7
+                            fillOpacity: 0.3
                         };
                     }
 
@@ -75,7 +75,7 @@ $(gPopup).hide();
                       $(document.getElementById('flagPopup')).hide();
                       $(document.getElementById('genderPopup')).hide();
                     }).addTo(map);     
-                    L.easyButton('<img src="img/weather.jpg">', function(btn, map){
+                    L.easyButton('<i class="fa-cloud"></i>', function(btn, map){
                       $(document.getElementById('weatherPopup')).toggle();
                       $(document.getElementById('dataPopup')).hide();
                       $(document.getElementById('currencyPopup')).hide();
