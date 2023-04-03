@@ -75,7 +75,7 @@ $(gPopup).hide();
                       $(document.getElementById('flagPopup')).hide();
                       $(document.getElementById('genderPopup')).hide();
                     }).addTo(map);     
-                    L.easyButton('<i class="fa-cloud"></i>' , function(btn, map){
+                    L.easyButton('fa-cloud fa-lg', function(btn, map){
                       $(document.getElementById('weatherPopup')).toggle();
                       $(document.getElementById('dataPopup')).hide();
                       $(document.getElementById('currencyPopup')).hide();
@@ -195,9 +195,6 @@ hereMarker.bindTooltip('You are here.');
 hereMarker.openTooltip();
 
 hereCluster.addLayer(hereMarker);
-
-let startLat = 19.8968;
-let startLng = -155.5828;
 
 	$.ajax({
 		url: "php/getCountryCodeFromLatLng.php",
