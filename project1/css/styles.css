@@ -1,16 +1,29 @@
-/* Styles for the nav bar */
-#navBar {
-  padding: 10px 20px;
-  background-color: darkgreen;
-  border: none;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-    
-  }
+html, body {
+  margin: 0;
+  padding: 0;
+}
 
-/* nav bar buttons */
+#map {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+#selectContainer {
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  padding: 10px 0;
+}
+
 #selCountry {
+  width: 200px;
+  margin: 0 auto;
+}
+
+/* #selCountry {
   background-color: #FDFD96;
   padding: 10px;
   margin: 1px;
@@ -21,7 +34,7 @@
   font-family: "Open Sans", sans-serif;
   padding: 15px;
   min-height: 50px;
-}  
+}   */
 
 /* styling for buttons when they are clicked: */
 
@@ -151,9 +164,5 @@
     padding: 0;
   }
 
-/*this is styling for the #map*/
-#map {
-  height: calc(100% - 100px);
-    width: 100%;
-  }
+
 
