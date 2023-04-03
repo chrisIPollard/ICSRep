@@ -75,7 +75,7 @@ $(gPopup).hide();
                       $(document.getElementById('flagPopup')).hide();
                       $(document.getElementById('genderPopup')).hide();
                     }).addTo(map);     
-                    L.easyButton('<i class="fa-cloud"></i>', function(btn, map){
+                    L.easyButton('<i class="fa-cloud"></i>' , function(btn, map){
                       $(document.getElementById('weatherPopup')).toggle();
                       $(document.getElementById('dataPopup')).hide();
                       $(document.getElementById('currencyPopup')).hide();
