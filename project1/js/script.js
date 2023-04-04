@@ -1,16 +1,9 @@
 //creating variables:
 
-// let latitude;
-// let longitude;
-// let coordinates;
 let countryNamesAndCodes;
 let select = document.getElementById("selCountry");
 let localCountryCode;
 let borders;
-// let hereCluster;
-// let hereMarker;
-// let cluster;
-// let startCheck = 0;
 
 //establishing the map:
 

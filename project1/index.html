@@ -11,36 +11,23 @@
 		<meta name="description" content="Gazetteer">
 		<meta name="author" content="chrisIPollard">
 
-                <!-- leaflet external stylesheet & script-->
-                <link rel="stylesheet" href="css/leaflet.css"/>
-                <script src="js/leaflet.js"></script>
-                                
+                <!-- css -->
+                <!-- leaflet -->
+                <link rel="stylesheet" href="css/leaflet.css"/>         
                 <!-- easy-button -->
                 <link rel="stylesheet" href="css/easy-button.css">
-                <script src="js/easy-button.js"></script>
-
                 <!-- extra markers -->
                 <link rel="stylesheet" href="css/leaflet.extra-markers.min.css">
-                <script src="js/leaflet.extra-markers.min.js"></script>
-
                 <!-- marker cluster:         -->
                 <link rel="stylesheet" href="css/MarkerCluster.css" />
                 <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
-                <script src="js/leaflet.markercluster.js"></script>
-
                 <!-- fontawesome icons -->
-                <link rel="stylesheet" href="css/all.css" />
-
-                <!-- jQuery link -->
-                <script type="application/javascript" src="js/jquery-2.2.3.min.js"></script>    
-
+                <link rel="stylesheet" href="css/all.css" />    
                 <!-- link to local external stylesheet-->
                 <link rel="stylesheet" href="css/styles.css">
-
                 <!-- bootstrap -->
                 <link rel="stylesheet" href="css/bootstrap-theme.min.css">
                 <link rel="stylesheet" href="css/bootstrap.min.css">
-                <script type="application/javascript" src="js/bootstrap.js"></script> 
 
         </head>
         <body>
@@ -49,66 +36,23 @@
                 <select id="selCountry" class="form-select shadow-sm">    
                 </select>       
         </span>      
-                        
-        <div id="dataPopup">
-                <ul>
-                <div id='popupCountry'> <h3>Loading...</h3></div>
-                <div id='popupCountryCode'></div>
-                <div id='popupContinent'></div>
-                <div id='popupCapital'></div>
-                <div id='popupLanguages'></div>
-                <div id='popupPopulation'></div>
-                <div id='popupArea'></div>
-                <div id='timeZone'></div>
-                </ul>
-                </div>
-        
-        <div id="weatherPopup">
-                <ul>
-                <div id='placeName'></div>
-                <div id='description'></div>
-                <div id='temperature'> <h3>Loading...</h3></div>
-                <div id='windspeed'></div>
-                <div id='windDirection'></div>
-                <div id='elevation'></div>
-                </ul>
-                <button id="localWeather">Local Weather</button>
-                </div>
-
-        <div id="currencyPopup">
-                <ul>
-                <div id='currencyName'></div>
-                <div id='popupCurrency'><h3>Loading...</h3></div>
-                <div id='gdp'></div>
-                <div id='gdp_growth'></div>
-                <div id='exports'></div>
-                <div id='imports'></div>
-                </ul>
-                </div>
-        
-        <div id="flagPopup">
-                <ul>
-                <div id='flag'><h3>Loading...</h3></div>
-                </ul>
-                </div>
-        
-        <div id="genderPopup">
-                <ul>
-                <div id='lifeFemale'><h3>Loading...</h3></div>
-                <div id='lifeMale'></div>
-                <div id='sex_ratio'></div>
-                <div id='fertility'></div>
-                <div id='infant_mortality'></div>
-                </ul>
-                </div>
-
-        <div id="wikiPopup">
-                <div id='popupSummary'> <h3>Loading...</h3></div>
-        </div>
 
         <div id="map">
         </div>
-        
+
+        <!-- scripts -->
+        <!-- jQuery -->
+        <script type="application/javascript" src="js/jquery-2.2.3.min.js"></script>
+        <!-- leaflet -->
+        <script src="js/leaflet.js"></script>
+        <!-- marker cluster -->
+        <script src="js/leaflet.markercluster.js"></script>
+        <!-- extra markers -->
+        <script src="js/leaflet.extra-markers.min.js"></script>
+        <!-- easy buttons -->
+        <script src="js/easy-button.js"></script>
+        <!-- bootstrap -->
+        <script type="application/javascript" src="js/bootstrap.js"></script> 
         <!-- link to local external javascript-->
         <script src="js/script.js"></script>
 
