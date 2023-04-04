@@ -1,6 +1,7 @@
 html, body {
   margin: 0;
   padding: 0;
+  height: 100%;
 }
 
 #map {
@@ -29,128 +30,19 @@ html, body {
   margin: 0 auto;
 }
 
-/* styling for buttons when they are clicked: */
-
-.clicked {
-  filter: brightness(0.8);
-  box-shadow: 0 5px #666; 
-  transform: translateY(4px); 
-}
-
-/*this is styling for the #dataPopup*/
-
-#dataPopup, #weatherPopup, #currencyPopup, #flagPopup, #genderPopup{
-    position: fixed;
-    left: 10%;
-    top: 15%;
-    background-color: darkgreen;
-    color: yellow;
-    border-radius: 10px;
-    padding: 20px;
-    font-size: 1.5rem;
-    max-width: 90%;
-    animation: fadeIn 0.5s ease-in-out;
-    z-index: 9999;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    text-shadow: 0 0 10px rgba(0,0,0,0.5);
-    font-family: "Open Sans", sans-serif;
-    cursor: move;
-  }
-
-#flag {
-  display: block;
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-right: 32px;
-  
-}  
-
-#wikiPopup {
-    position: fixed;
-    left: 10%;
-    bottom: 5%;
-    background-color: darkgreen;
-    color: yellow;
-    border-radius: 10px;
-    padding: 20px;
-    font-size: 1.4rem;
-    max-width: 90%;
-    animation: fadeIn 0.5s ease-in-out;
-    z-index: 9998;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    text-shadow: 0 0 10px rgba(0,0,0,0.5);
-    font-family: "Open Sans", sans-serif;
-    cursor: move;
-  }
-
-#wiki {
-  color: #FDFD96;
-}
-
-/* popup button */
-#localWeather {
-  background-color: #FDFD96;
-  padding: 3px;
-  margin: 1px;
-  border: none;
-  color: #023020;
-  border-radius: 3px;
-  font-size: 1 rem;
-  font-family: "Open Sans", sans-serif;
-  opacity: 0.9;
-}  
-
-#localWeather:active {
-  opacity: 0.6;
-}
-
-@media (max-width: 500px) {
-  #dataPopup, #weatherPopup, #currencyPopup, #flagPopup, #genderPopup {
-    font-size: 1.3rem;
-    max-width: 90%;
-    left: 10%;
-    top: 12%;
-  }
-}
-
-  @media (min-width: 501px){
-    #dataPopup, #weatherPopup, #currencyPopup, #flagPopup, #genderPopup {
-      font-size: 1.4rem;
-      max-width: 90%;
-    }
-
-    }
-
-  @media (min-width: 601px){
-    #dataPopup, #weatherPopup, #currencyPopup, #flagPopup, #genderPopup {
-      font-size: 1.5rem;
-      max-width: 90%;
-    }
-
-}
-
-  @media (min-width: 601px){
-    #wikiPopup {
-      max-width: 75%;
-    }
-  }
-
-  @media (min-width: 751px){
-    #wikiPopup {
-      max-width: 50%;
-    }
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-  }
+/* modal styles: */
 
 
+
+/* #dataModal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  overflow: hidden;
+  background: #fff;
+  animation: fadeIn 0.5s ease-in-out;
+} */
 

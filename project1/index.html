@@ -32,13 +32,56 @@
         </head>
         <body>
 
+        <div id="map">
+        </div>   
+
         <span id="selectContainer">      
                 <select id="selCountry" class="form-select shadow-sm">    
                 </select>       
         </span>      
 
-        <div id="map">
-        </div>
+        <!-- data modal -->
+        <div id="dataModal" class="modal" tabindex="-1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">
+                        <!-- <img src="https://flagsapi.com/GB/flat/32.png"> -->
+                        <div id="countryName"></div>
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Continent</th>
+                                    <th scope="col">Capital</th>
+                                    <th scope="col">Languages</th>
+                                    <th scope="col">Population</th>
+                                    <th scope="col">Area</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                        <td><div id="continent"></div></td>
+                                        <td><div id="capital"></div></td>
+                                        <td><div id="languages"></div></td>
+                                        <td><div id="population"></div></td>
+                                        <td><div id="area"></div></td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+        <!-- weather modal -->
+        
 
         <!-- scripts -->
         <!-- jQuery -->

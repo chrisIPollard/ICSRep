@@ -234,4 +234,34 @@ $.ajax({
     //this bracket closes the dropdown led functions:
     }   
   
+// data modal: 
+
+L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
+  $(document.getElementById('dataModal')).toggle();
+  $($.ajax({
+    url: "php/getCountryInfo.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {country: $('#selCountry').val()},
+    success: function(result) {
+
+      console.log(JSON.stringify(result));
+
+    if (result.status.name == "ok") {
+        $('#countryName').html(result['data'][0]['countryName']);
+        $('#continent').html(result['data'][0]['continent']);
+        $('#capital').html(result['data'][0]['capital']);
+        $('#languages').html(result['data'][0]['languages']);
+        $('#population').html(giveCommas(result['data'][0]['population']));
+        $('#area').html(giveCommas(Math.round(result['data'][0]['areaInSqKm'])));       
+        
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  })) 
+}).addTo(map); 
+
+
 
