@@ -1,46 +1,66 @@
 //creating variables:
 
-let latitude;
-let longitude;
-let coordinates;
+// let latitude;
+// let longitude;
+// let coordinates;
 let countryNamesAndCodes;
 let select = document.getElementById("selCountry");
 let localCountryCode;
 let borders;
-let hereCluster;
-let hereMarker;
-let cluster;
-let startCheck = 0;
+// let hereCluster;
+// let hereMarker;
+// let cluster;
+// let startCheck = 0;
 
-//making extramarkers:
+//establishing the map:
 
-var youMarker = L.ExtraMarkers.icon({
-  icon: 'fa-user',
-  markerColor: 'yellow',
-  shape: 'penta',
-  prefix: 'fa',
-  });
-  
-let infoMarker = L.ExtraMarkers.icon({
-  icon: 'fa-info',
-  markerColor: 'yellow',
-  shape: 'penta',
-  prefix: 'fa',
-  });
-
-//Placeholder coordinates for the load:
-
-let startLat = 19.8968;
-let startLng = -155.5828;
-
-//Basics for leaflet:
-
-var map = L.map('map').setView([startLat, startLng], 6);
+var map = L.map('map').setView([51.5072, 0.1276], 6);
                       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                       }).addTo(map);
 
-//This is styling the country borders: 
+//making extramarkers:
+
+var airportIcon = L.ExtraMarkers.icon({
+  icon: 'fa-plane',
+  markerColor: 'green',
+  shape: 'penta',
+  prefix: 'fa',
+  });
+  
+let cityIcon = L.ExtraMarkers.icon({
+  icon: 'fa-city',
+  markerColor: 'green',
+  shape: 'penta',
+  prefix: 'fa',
+  });
+
+//polygons for the cluster groups:
+
+var airports = L.markerClusterGroup({
+  polygonOptions: {
+    fillColor: 'green',
+    color: 'green',
+    weight: 2,
+    opacity: 0.5,
+    fillOpacity: 0.3
+  }}).addTo(map);
+
+var cities = L.markerClusterGroup({
+  polygonOptions: {
+    fillColor: 'green',
+    color: 'green',
+    weight: 2,
+    opacity: 0.5,
+    fillOpacity: 0.3
+  }}).addTo(map);
+
+var overlays = {
+    "Airports": airports,
+    "Cities": cities
+  };
+
+//This is styling the country borders polygon: 
 
 function mapStyle(feature) {
                         return {
@@ -51,94 +71,6 @@ function mapStyle(feature) {
                             fillOpacity: 0.3
                         };
                     }
-
-// Various bits for the popups:
-
-const popup = document.getElementById('dataPopup');
-const cPopup = document.getElementById('currencyPopup');
-const wePopup = document.getElementById('weatherPopup');
-const wPopup = document.getElementById('wikiPopup');
-const fPopup = document.getElementById('flagPopup');
-const gPopup = document.getElementById('genderPopup');
-
-$(cPopup).hide();
-$(wePopup).hide();
-$(popup).hide();
-$(wPopup).hide();
-$(fPopup).hide();
-$(gPopup).hide();
-
-                    L.easyButton('<img src="img/data.jpg">', function(btn, map){
-                      $(document.getElementById('dataPopup')).toggle();
-                      $(document.getElementById('weatherPopup')).hide();
-                      $(document.getElementById('currencyPopup')).hide();
-                      $(document.getElementById('flagPopup')).hide();
-                      $(document.getElementById('genderPopup')).hide();
-                    }).addTo(map);     
-                    L.easyButton('fa-cloud fa-lg', function(btn, map){
-                      $(document.getElementById('weatherPopup')).toggle();
-                      $(document.getElementById('dataPopup')).hide();
-                      $(document.getElementById('currencyPopup')).hide();
-                      $(document.getElementById('flagPopup')).hide();
-                      $(document.getElementById('genderPopup')).hide();
-                    }).addTo(map);    
-                    L.easyButton('<img src="img/wiki.jpg">', function(btn, map){
-                      $(document.getElementById('wikiPopup')).toggle();
-                    }).addTo(map);     
-                    L.easyButton('<img src="img/cash.jpg">', function(btn, map){
-                      $(document.getElementById('currencyPopup')).toggle();
-                      $(document.getElementById('dataPopup')).hide();
-                      $(document.getElementById('weatherPopup')).hide();
-                      $(document.getElementById('flagPopup')).hide();
-                      $(document.getElementById('genderPopup')).hide();
-                    }).addTo(map);       
-                    L.easyButton('<img src="img/flag.jpg">', function(btn, map){
-                      $(document.getElementById('flagPopup')).toggle();
-                      $(document.getElementById('currencyPopup')).hide();
-                      $(document.getElementById('dataPopup')).hide();
-                      $(document.getElementById('weatherPopup')).hide();
-                      $(document.getElementById('genderPopup')).hide();
-                    }).addTo(map);          
-                    L.easyButton('<img src="img/sex.jpg">', function(btn, map){
-                      $(document.getElementById('genderPopup')).toggle();
-                      $(document.getElementById('flagPopup')).hide();
-                      $(document.getElementById('currencyPopup')).hide();
-                      $(document.getElementById('dataPopup')).hide();
-                      $(document.getElementById('weatherPopup')).hide();
-                    }).addTo(map);  
-
-// This section is to make the popups dragable. 
-
-function dragpopup (thisPopup){
-let mousePos = { x: 0, y: 0 };
-let popupPos = { x: 0, y: 0 };
-let isDragging = false;
-thisPopup.addEventListener('mousedown', (e) => {
-  isDragging = true;
-  mousePos.x = e.clientX;
-  mousePos.y = e.clientY;
-  popupPos.x = thisPopup.offsetLeft;
-  popupPos.y = thisPopup.offsetTop;
-});
-document.addEventListener('mousemove', (e) => {
-  if (isDragging) {
-    const deltaX = e.clientX - mousePos.x;
-    const deltaY = e.clientY - mousePos.y;
-    thisPopup.style.left = `${popupPos.x + deltaX}px`;
-    thisPopup.style.top = `${popupPos.y + deltaY}px`;
-  }
-});
-document.addEventListener('mouseup', () => {
-  isDragging = false;
-});}
-
-$(dragpopup (popup));
-$(dragpopup (wePopup));
-$(dragpopup (cPopup));
-$(dragpopup (fPopup));
-$(dragpopup (gPopup));
-//$(dragpopup (wPopup));
-
 
 // This is a function to tidy up numbers used within some of the pop ups:
 function giveCommas (stringNumber) {
@@ -183,19 +115,6 @@ $(function geoFindMe(coordinates) {
 
 function APILatLngCall(position){
 
-// adding a 'you are here' marker with the coordinates:
-
-latitude = position.coords.latitude;
-longitude = position.coords.longitude;
-
-hereCluster = L.markerClusterGroup();
-
-hereMarker = L.marker([latitude, longitude], { icon: youMarker });
-hereMarker.bindTooltip('You are here.');
-hereMarker.openTooltip();
-
-hereCluster.addLayer(hereMarker);
-
 	$.ajax({
 		url: "php/getCountryCodeFromLatLng.php",
 		type: 'POST',
@@ -211,44 +130,6 @@ hereCluster.addLayer(hereMarker);
 
       //this line selects the country from the geolocation from the dropdown:
       $(selCountry).val(localCountryCode).change()
-
-  // this call is to make a local wiki cluster:
-  $($.ajax({
-    url: "php/getWikiInfo.php",
-    type: 'POST',
-    dataType: 'json',
-    data: {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude
-    },
-    success: function(result) {
-  
-      //console.log(JSON.stringify(result));
-  
-      if (result.status.name == "ok") {
-        
-      for (let i = 0; i < result.data.length; i ++){
-      let summary = result.data[i]['summary'];
-      summary = summary.substring(0, summary.length-5);
-      
-  
-      let marker = L.marker([result.data[i]['lat'], result.data[i]['lng']], { icon: infoMarker });
-      marker.bindPopup( '<a href=https://' + result['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
-      marker.openTooltip();
-  
-      hereCluster.addLayer(marker);
-  
-    }
-    
-    }
-  
-  },
-  
-  error: function(jqXHR, textStatus, errorThrown) {
-  
-  console.log(jqXHR);
-    }
-  }))
       
 },
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -256,15 +137,13 @@ hereCluster.addLayer(hereMarker);
 		}
 	}); 
 
-map.addLayer(hereCluster);
-
 };
   
 	function error() {
 	  console.log('Unable to retrieve your location');
 	}
 
-// this is the bit that runs the geolocation method using the API function from above:
+// this runs the geolocation method using the API function from above:
 
 	if (!navigator.geolocation) {
 		console.log('Geolocation is not supported by your browser');
@@ -275,253 +154,91 @@ map.addLayer(hereCluster);
   
 })
 
-//This is the dropdown event handler. All ajax requests should be within this with the exception of the function to populate the dropdown which must precede this, and anything connected to the local coordinates.  
+//This is the dropdown event handler, creating country borders polygon: 
 
 document.getElementById('selCountry').onchange = function getCountryCoordinates(){
-  
-// this is fetching a flag for the flagPopup:
-$('#flag').html('<img src="https://flagsapi.com/' + $('#selCountry').val() + '/flat/64.png"></img>');
 
-// clearing the currency name as this is not always available:
-$('#currencyName').html('<h3></h3>');
+  $.ajax({
+    url: 'php/getCoordinatesFromLocalFile.php',
+    type: 'GET',
+    dataType: "json",
+    data: {countryCode: $('#selCountry').val()},
 
-//this is calling more country information:
-$.ajax({
-    method: 'GET',
-    url: 'https://api.api-ninjas.com/v1/country?name=' + $('#selCountry').val(),
-    headers: { 'X-Api-Key': 'GJMS9izXSXqSRQ18zK/F1A==pYppfESzLd14rWvg'},
-    contentType: 'application/json',
     success: function(result) {
         
-        $('#currencyName').html('<h3>' + result[0]['currency']['name'] + '</h3>');
-        $('#gdp').html('<li>GDP per Capita: ' + giveCommas(result[0]['gdp_per_capita']) + '</li>');
-        $('#gdp_growth').html('<li>GDP Growth: ' + result[0]['gdp_growth'] + '%</li>');
-        $('#exports').html('<li>Exports: ' + giveCommas(result[0]['exports']) + '</li>');
-        $('#imports').html('<li>Imports: ' + giveCommas(result[0]['imports']) + '</li>');
-        $('#lifeFemale').html('<li> Female Life Expectancy: ' + result[0]['life_expectancy_female'] + ' years</li>');
-        $('#lifeMale').html('<li> Male Life Expectancy: ' + result[0]['life_expectancy_male'] + ' years</li>');
-        $('#sex_ratio').html('<li> Male to Female Ratio: ' + (result[0]['sex_ratio']*.01).toFixed(2) + 'M to 1F</li>');
-        $('#fertility').html('<li> Fertility Rate: ' + result[0]['fertility'] + ' per F</li>');
-        $('#infant_mortality').html('<li> Infant Mortality: ' + result[0]['infant_mortality'] + '% </li>');
+    coordinates = result.result;
+    if (borders){borders.clearLayers();};
+     
+    borders = L.geoJSON(coordinates, {style: mapStyle}).addTo(map);
+    map.fitBounds(borders.getBounds());},
 
-    },
-    error: function ajaxError(jqXHR) {
-        console.error('Error: ', jqXHR.responseText);
-    }
-});
-
-// this is populating the data overlay with the dropdown value and should be within the dropdown event handler. 
-        $($.ajax({
-          url: "php/getCountryInfo.php",
-          type: 'POST',
-          dataType: 'json',
-          data: {country: $('#selCountry').val()},
-          success: function(result) {
-    
-            //console.log(JSON.stringify(result));
-
-            //this line for the wikiCountry function:
-            wikiCountryData(result['data'][0]['countryName']);
-            
-            // nested weather and capital city call over x lines:
-            let capital = result['data'][0]['capital']
-            $('#placeName').html('<h3>' + capital + '</h3>');
-
-            $.ajax({
-            url: "php/getCapitalInfo.php",
-            type: 'POST',
-            dataType: 'json',
-            data: {capital: capital},
-            success: function(result) {
-
-            // console.log(JSON.stringify(result));
-            let lat = result.data[0]['lat'];
-            let lng = result.data[0]['lng'];
-            
-            if (result.status.name == "ok") {    
-            $.get('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lng + '&current_weather=true', function(data) {
-            $('#temperature').html('<li>Temperature: ' + data['current_weather']['temperature'] + '°C </li>'); 
-            $('#windspeed').html('<li>Wind Speed: ' + data['current_weather']['windspeed'] + '</li>'); 
-            $('#windDirection').html('<li>Wind Direction: ' + data['current_weather']['winddirection'] + '</li>'); 
-            $('#elevation').html('<li>Elevation: ' + data['elevation'] + '</li>'); 
-            $('#timeZone').html('<li>Time Zone: ' + data['timezone'] + '</li>'); 
-            });  }
-            
-            $.get('https://api.openweathermap.org/data/2.5/weather?q=' + capital + '&appid=a0e29cd38e23aec7ad4c1504ac3c63b8', function(datac) {
-            $('#description').html('<li>Description: ' + datac['weather'][0]['description'] + '</li>'); 
-            });            
-
-              },
-              error: function(jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-              }
-            })
-
-          //back to the previous, non nested call here: 
-          if (result.status.name == "ok") {
-              $('#popupContinent').html('<li>Continent: ' + result['data'][0]['continent'] + '</li>');
-              $('#popupCapital').html('<li>Capital: ' + result['data'][0]['capital'] + '</li>');
-              $('#popupLanguages').html('<li>Languages: ' + result['data'][0]['languages'] + '</li>');
-              $('#popupPopulation').html('<li>Population: ' + giveCommas(result['data'][0]['population']) + '</li>');
-              $('#popupArea').html('<li>Area (km2): ' + giveCommas(result['data'][0]['areaInSqKm']) + '</li>');       
-
-               //this line is for the exchange rate function:
-            $(exchangeRate (result['data'][0]['currencyCode']));
-
-            }
-          
-          },
-          error: function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-          }
-        })) 
-        
-//these lines are to populate the data overlay for the local country, this should be within the dropdown event handler. 
-
-$('#popupCountryCode').html('<li>Country Code: ' + $('#selCountry').val() + '</li>');
-$($.ajax({
-  url: 'php/getCountryFromLocalFile.php',
-  type: 'GET',
-  dataType: "json",
-  data: {countryCode: $('#selCountry').val()},
-
-  success: function(result) {
-    
-  country = result.result;
-  $('#popupCountry').html('<h3>' + country + '</h3>');
-  },
-
-  error: function(jqXHR, textStatus, errorThrown) {
-    console.log(jqXHR);
-  }
-}))
-
-        $.ajax({
-          url: 'php/getCoordinatesFromLocalFile.php',
-          type: 'GET',
-          dataType: "json",
-          data: {countryCode: $('#selCountry').val()},
-
-          success: function(result) {
-              
-          coordinates = result.result;
-          if (borders){borders.clearLayers();};
-          
-          borders = L.geoJSON(coordinates, {style: mapStyle}).addTo(map);
-          map.fitBounds(borders.getBounds());},
-
-          error: function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-          }
-        }); 
-    }
-
-// exchange rate function, within the dropdown event handler: 
-
-function exchangeRate (currencyCode){
-    if (currencyCode == 'USD'){
-    $.get('https://openexchangerates.org/api/latest.json', {app_id: 'f9d4247ca1f5440bb89696cedb79436d'}, function(data) {
-        let rates = data.rates.GBP;
-        rates = rates.toFixed(2);
-      
-        $('#popupCurrency').html('<li>Trades at ' + rates +' USD to GBP</li>'); 
-          })
-}           
-else{ 
-$.get('https://openexchangerates.org/api/latest.json', {app_id: 'f9d4247ca1f5440bb89696cedb79436d'}, function(data) {
-  let rates = '1' / data.rates[currencyCode];
-  rates = rates.toFixed(2);
-  if (rates == 0){ $('#popupCurrency').html(''); }
-  else{
-  $('#popupCurrency').html('<li>Trades at ' + rates + ' ' +currencyCode + ' to USD</li>');} 
-    });}}
-
-
-//A function to place markers from the geonames wiki search: 
-
-function wikiCountryData(country){
-country = country.replace(/\s/g, '-');
-
-$($.ajax({
-    url: "php/getWikiCountryInfo.php",
-    type: 'POST',
-    dataType: 'json',
-    data: {
-      country: country
-    },
-    success: function(result) {
-  
-    //console.log(JSON.stringify(result));
-
-    if (cluster){cluster.clearLayers();};
-    if (hereCluster && startCheck == 1)
-    {hereCluster.clearLayers()}
-    else
-    {startCheck ++};
-    
-    cluster = L.markerClusterGroup();
-
-    if (result.status.name == "ok") {
-      if (country == 'Palestine')
-      {
-        country = 'State-of-Palestine';
-      }  
-    for (let i = 0; i < result.data.length; i ++){
-      
-      if (result.data[i]['countryCode'] == $('#selCountry').val()){
-      
-      //populating the wiki popup 
-      let newData = result.data[i]
-      let summary = newData['summary'];
-      
-        //not all the titles from the geo.JSON match to the wiki find, so I've made an exception for Palestine but would like a general solution. The includes method below is not sufficient. I could use country code but this does appear on some other entries.  
-        country = country.replace(/-/g, ' ');
-        
-        if (newData['title'] == country )
-        //if ( newData['title'].includes(country))
-        {
-          
-          summary = summary.substring(0, summary.length-6);
-          //console.log(summary);
-          $('#popupSummary').html('<p>' + summary + '... ' + '<a id=\'wiki\' href=\'https://' + newData['wikipediaUrl'] + '\'>' + '(Wikipedia entry)' + '</a></p>'); 
-        }
-        
-      let thisMarker = L.marker([result.data[i]['lat'], result.data[i]['lng']], { icon: infoMarker });
-      thisMarker.bindPopup( '<a href=https://' + result['wikipediaUrl'] + '>' + summary, {permanent: true} + '</a>').openPopup()
-      thisMarker.openTooltip();
-  
-      cluster.addLayer(thisMarker);
-    }
-
-     map.addLayer(cluster);
-    }}
-
-    },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log(jqXHR);
-    }
-  }))
-}
-  
-// local weather info:
-function weatherAPI (lat, lng) {
-  $.get('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lng + '&current_weather=true', function(data) {
-       $('#temperature').html('<li>Temperature: ' + data['current_weather']['temperature'] + '°C </li>'); 
-       $('#windspeed').html('<li>Wind Speed: ' + data['current_weather']['windspeed'] + '</li>'); 
-       $('#windDirection').html('<li>Wind Direction: ' + data['current_weather']['winddirection'] + '</li>'); 
-       $('#elevation').html('<li>Elevation: ' + data['elevation'] + '</li>'); 
-       $('#timeZone').html('<li>Time Zone: ' + data['timezone'] + '</li>'); 
-		});
+    }}); 
 
-  $.get('http://api.openweathermap.org/geo/1.0/reverse?lat=' + lat + '&lon=' + lng + '&limit=1&appid=a0e29cd38e23aec7ad4c1504ac3c63b8', function(datab) {
-      $('#placeName').html('<h3>' + datab[0]['name'] + '</h3>');
-      $.get('https://api.openweathermap.org/data/2.5/weather?q=' +  + datab[0]['name'] + '&appid=a0e29cd38e23aec7ad4c1504ac3c63b8', function(datac) {
-      $('#description').html('<li>Description: ' + datac['weather'][0]['description'] + '</li>'); 
-    });
-    })
+//this is to get the countries airports:
 
-}
+$.ajax({
+  url: 'php/getAirports.php',
+  type: 'POST',
+  dataType: 'json',
+  data: {
+    iso: $('#selCountry').val()
+  },
+  success: function (result) {
 
-$(document.getElementById('localWeather')).click(function(){
-  weatherAPI (latitude, longitude);
+    //console.log(JSON.stringify(result));
+          
+    if (result.status.code == 200) {
+
+      airports.clearLayers();
+      
+      result.data.forEach(function(item) {
+
+        L.marker([item.lat, item.lng], {icon: airportIcon})
+          .bindTooltip(item.name, {direction: 'top', sticky: true})
+          .addTo(airports);
+        
+      })
+    } 
+  },
+  error: function (jqXHR, textStatus, errorThrown) {
+    //console.log(jqXHR);
+  }
 }); 
+
+//this is to get the countries cities:
+
+$.ajax({
+  url: 'php/getCities.php',
+  type: 'POST',
+  dataType: 'json',
+  data: {
+    iso: $('#selCountry').val()
+  },
+  success: function (result) {
+
+    //console.log(JSON.stringify(result));
+          
+    if (result.status.code == 200) {
+
+      cities.clearLayers();  
+
+      result.data.forEach(function(item) {
+
+        L.marker([item.lat, item.lng], {icon: cityIcon})
+          .bindTooltip(item.name, {direction: 'top', sticky: true})
+          .addTo(cities);
+        
+      })
+    } 
+  },
+  error: function (jqXHR, textStatus, errorThrown) {
+    console.log(jqXHR);
+  }
+});   
+
+    //this bracket closes the dropdown led functions:
+    }   
+  
+
