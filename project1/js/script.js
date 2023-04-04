@@ -237,7 +237,7 @@ $.ajax({
 // data modal: 
 
 L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
-  $(document.getElementById('dataModal')).toggle();
+  $('#dataModal').modal("show"); 
   $($.ajax({
     url: "php/getCountryInfo.php",
     type: 'POST',
@@ -245,7 +245,7 @@ L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
     data: {country: $('#selCountry').val()},
     success: function(result) {
 
-      console.log(JSON.stringify(result));
+      //console.log(JSON.stringify(result));
 
     if (result.status.name == "ok") {
         $('#countryName').html(result['data'][0]['countryName']);
@@ -255,6 +255,23 @@ L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
         $('#population').html(giveCommas(result['data'][0]['population']));
         $('#area').html(giveCommas(Math.round(result['data'][0]['areaInSqKm'])));       
         
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  })) 
+  $($.ajax({
+    url: "php/getFlag.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {country: $('#selCountry').val()},
+    success: function(result) {
+
+      console.log(JSON.stringify(result));
+
+    if (result.status.name == "ok") {      
+        $('#flag').attr("src", result);
       }
     },
     error: function(jqXHR, textStatus, errorThrown) {
