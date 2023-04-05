@@ -5,6 +5,7 @@ let select = document.getElementById("selCountry");
 let localCountryCode;
 let borders;
 let country;
+let capital;
 
 //establishing the map:
 
@@ -267,9 +268,78 @@ L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
 
 // weather modal
 
+L.easyButton('fa-cloud fa-lg', function(btn, map){
+  $('#weatherModal').modal("show"); 
+  $($.ajax({
+    url: "php/getCountryInfo.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {country: $('#selCountry').val()},
+    success: function(result) {
+
+      //console.log(JSON.stringify(result));
+
+    if (result.status.name == "ok") {
+      capital = result['data'][0]['capital'];
+      
+      getCapitalCoordinates(capital);
+
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  })) 
+}).addTo(map); 
+
+// this is a function to get coordinates from the capital, nested above, separated for clarity:
+function getCapitalCoordinates (capital){
+$.ajax({
+  url: "php/getCapitalInfo.php",
+  type: 'POST',
+  dataType: 'json',
+  data: {capital: capital},
+  success: function(result) {
+
+  //console.log(JSON.stringify(result));
+  
+  if (result.status.name == "ok") { 
+
+    getWeather(result.data[0]['lat'], result.data[0]['lng']);
+
+    }},
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  })}
+
+// this is a function to get weather from the capital coordinates, nested above, separated for clarity:
+
+function getWeather (lat, lng){
+  $.ajax({
+    url: "php/getWeather.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {lat: lat,
+          lng: lng
+          },
+    success: function(result) {
+  
+    console.log(JSON.stringify(result));
+    
+    if (result.status.name == "ok") { 
+  
+  
+  
+      }},
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+      }
+    })}
+
 // wiki modal
 
-L.easyButton('fa-wikipedia-w', function(btn, map){
+L.easyButton('fa-w fa-lg', function(btn, map){
   $('#wikiModal').modal("show"); 
   $('#flagb').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
   $($.ajax({
@@ -292,6 +362,8 @@ L.easyButton('fa-wikipedia-w', function(btn, map){
     }
   }))   
 }).addTo(map); 
+
+//this is embedded above but I've separated it as a function so they are clearer:
 
 function wikiCountryData(country){
   country = country.replace(/\s/g, '-');
