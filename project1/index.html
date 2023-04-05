@@ -22,12 +22,14 @@
                 <link rel="stylesheet" href="css/MarkerCluster.css" />
                 <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
                 <!-- fontawesome icons -->
-                <link rel="stylesheet" href="css/all.css" />    
+                <link rel="stylesheet" href="css/all.css" /> 
                 <!-- link to local external stylesheet-->
                 <link rel="stylesheet" href="css/styles.css">
                 <!-- bootstrap -->
                 <link rel="stylesheet" href="css/bootstrap-theme.min.css">
                 <link rel="stylesheet" href="css/bootstrap.min.css">
+                <!-- flags -->
+                <link rel="stylesheet" href="css/flag-icons.min.css">
 
         </head>
         <body>
@@ -72,8 +74,7 @@
                               </table>
                     </div>
                     <div class="modal-footer">
-                      <img src="https://flagsapi.com/GB/flat/32.png">
-                      <img id="flag">
+                        <div id="flag"></div>
                     </div>
                   </div>
                 </div>
@@ -81,7 +82,28 @@
 
 
         <!-- weather modal -->
+
         
+        
+        <!-- wiki modal -->
+
+        <div id="wikiModal" class="modal" tabindex="-1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">
+                        <div id="countryNameb"></div>
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div id="wikiData"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <div id="flagb"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
         <!-- scripts -->
         <!-- jQuery -->

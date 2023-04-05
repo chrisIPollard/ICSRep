@@ -4,6 +4,7 @@ let countryNamesAndCodes;
 let select = document.getElementById("selCountry");
 let localCountryCode;
 let borders;
+let country;
 
 //establishing the map:
 
@@ -238,6 +239,7 @@ $.ajax({
 
 L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
   $('#dataModal').modal("show"); 
+  $('#flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
   $($.ajax({
     url: "php/getCountryInfo.php",
     type: 'POST',
@@ -261,8 +263,17 @@ L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
       console.log(jqXHR);
     }
   })) 
+}).addTo(map); 
+
+// weather modal
+
+// wiki modal
+
+L.easyButton('fa-wikipedia-w', function(btn, map){
+  $('#wikiModal').modal("show"); 
+  $('#flagb').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
   $($.ajax({
-    url: "php/getFlag.php",
+    url: "php/getCountryInfo.php",
     type: 'POST',
     dataType: 'json',
     data: {country: $('#selCountry').val()},
@@ -270,15 +281,55 @@ L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
 
       console.log(JSON.stringify(result));
 
-    if (result.status.name == "ok") {      
-        $('#flag').attr("src", result);
+    country = result['data'][0]['countryName'];
+    if (result.status.name == "ok") {
+        $('#countryNameb').html(country);        
       }
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log(jqXHR);
     }
   })) 
+  $($.ajax({
+    url: "php/getWikiCountryInfo.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      country: country
+    },
+    success: function(result) {
+  
+    //console.log(JSON.stringify(result));
+
+    if (result.status.name == "ok") {
+      if (country == 'Palestine')
+      {
+        country = 'State-of-Palestine';
+      }  
+    for (let i = 0; i < result.data.length; i ++){
+      
+      if (result.data[i]['countryCode'] == $('#selCountry').val()){
+      
+      //populating the wiki popup 
+      let newData = result.data[i]
+      let summary = newData['summary'];
+      
+        //not all the titles from the geo.JSON match to the wiki find, so I've made an exception for Palestine but would like a general solution. The includes method below is not sufficient. I could use country code but this does appear on some other entries.  
+        country = country.replace(/-/g, ' ');
+        
+        if (newData['title'] == country )
+        //if ( newData['title'].includes(country))
+        {
+          summary = summary.substring(0, summary.length-6);
+          //console.log(summary);
+          $('#wikiSummary').html('<p>' + summary + '... ' + '<a id=\'wiki\' href=\'https://' + newData['wikipediaUrl'] + '\'>' + '(Wikipedia entry)' + '</a></p>'); 
+        }
+      }
+    }}
+
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  }))
 }).addTo(map); 
-
-
-
