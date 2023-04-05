@@ -279,27 +279,33 @@ L.easyButton('fa-wikipedia-w', function(btn, map){
     data: {country: $('#selCountry').val()},
     success: function(result) {
 
-      console.log(JSON.stringify(result));
+      // console.log(JSON.stringify(result));
 
     country = result['data'][0]['countryName'];
     if (result.status.name == "ok") {
-        $('#countryNameb').html(country);        
+        $('#countryNameb').html(country);   
+        wikiCountryData (country);     
       }
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log(jqXHR);
     }
-  })) 
-  $($.ajax({
-    url: "php/getWikiCountryInfo.php",
-    type: 'POST',
-    dataType: 'json',
-    data: {
-      country: country
-    },
-    success: function(result) {
+  }))   
+}).addTo(map); 
+
+function wikiCountryData(country){
+  country = country.replace(/\s/g, '-');
   
-    //console.log(JSON.stringify(result));
+  $.ajax({
+      url: "php/getWikiCountryInfo.php",
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        country: country
+      },
+      success: function(result) {
+    
+      // console.log(JSON.stringify(result));
 
     if (result.status.name == "ok") {
       if (country == 'Palestine')
@@ -322,7 +328,7 @@ L.easyButton('fa-wikipedia-w', function(btn, map){
         {
           summary = summary.substring(0, summary.length-6);
           //console.log(summary);
-          $('#wikiSummary').html('<p>' + summary + '... ' + '<a id=\'wiki\' href=\'https://' + newData['wikipediaUrl'] + '\'>' + '(Wikipedia entry)' + '</a></p>'); 
+          $('#wikiData').html('<p>' + summary + '... ' + '<a id=\'wiki\' href=\'https://' + newData['wikipediaUrl'] + '\'>' + '(Wikipedia entry)' + '</a></p>'); 
         }
       }
     }}
@@ -330,6 +336,6 @@ L.easyButton('fa-wikipedia-w', function(btn, map){
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log(jqXHR);
-    }
-  }))
-}).addTo(map); 
+      }
+    })
+  }
