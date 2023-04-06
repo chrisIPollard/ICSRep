@@ -22,7 +22,7 @@
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-	$output['countryCode'] = $decode;
+	$output['data'] = $decode['list'];
 		
 	header('Content-Type: application/json; charset=UTF-8');
 

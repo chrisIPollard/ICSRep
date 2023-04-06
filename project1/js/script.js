@@ -6,6 +6,7 @@ let localCountryCode;
 let borders;
 let country;
 let capital;
+let weatherIcons;
 
 //establishing the map:
 
@@ -329,8 +330,10 @@ function getWeather (lat, lng){
     
     if (result.status.name == "ok") { 
   
-  
-  
+      let iconCode = result.data[0].weather[0].icon;
+      let iconurl = "http://openweathermap.org/img/w/" + iconCode + ".png";
+      $('#todayIcon').attr('src', iconurl);
+
       }},
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
