@@ -291,7 +291,7 @@ L.easyButton('fa-cloud fa-lg', function(btn, map){
     if (result.status.name == "ok") {
       capital = result['data'][0]['capital'];
       
-      getCapitalCoordinates(capital);
+      getWeather (capital);
 
       }
     },
@@ -301,60 +301,44 @@ L.easyButton('fa-cloud fa-lg', function(btn, map){
   })) 
 }).addTo(map); 
 
-// this is a function to get coordinates from the capital, nested above, separated for clarity:
-function getCapitalCoordinates (capital){
-$.ajax({
-  url: "php/getCapitalInfo.php",
-  type: 'POST',
-  dataType: 'json',
-  data: {capital: capital},
-  success: function(result) {
+// this is a function to get weather from the capital, nested above, separated for clarity:
 
-  //console.log(JSON.stringify(result));
-  
-  if (result.status.name == "ok") { 
-
-    getWeather(result.data[0]['lat'], result.data[0]['lng']);
-
-    }},
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log(jqXHR);
-    }
-  })}
-
-// this is a function to get weather from the capital coordinates, nested above, separated for clarity:
-
-function getWeather (lat, lng){
+function getWeather (capital){
   $.ajax({
     url: "php/getWeather.php",
     type: 'POST',
     dataType: 'json',
-    data: {lat: lat,
-          lng: lng
-          },
+    data: {capital: capital},
+
     success: function(result) {
   
     console.log(JSON.stringify(result));
     
     if (result.status.name == "ok") { 
   
-      let iconCodea = result.data[0].weather[0].icon;
-      let iconurla = "http://openweathermap.org/img/w/" + iconCodea + ".png";
-      $('#todayIcon').attr('src', iconurla);
+      $('#weatherModalLabel').html(result.data.location.name + ", " + result.data.location.country);
 
-      let iconCodeb = result.data[8].weather[0].icon;
-      let iconurlb = "http://openweathermap.org/img/w/" + iconCodeb + ".png";
-      $('#day1Icon').attr('src', iconurlb);
+      $('#todayConditions').html(result.data.current.condition['text']);
+      $('#todayIcon').attr("src", result.data.current.condition['icon']);
+      $('#todayMaxTemp').html(result.data.forecast['forecastday'][0].day['maxtemp_c']);
+      $('#todayMinTemp').html(result.data.forecast['forecastday'][0].day['mintemp_c']);
+      // let iconCodea = result.data[0].weather[0].icon;
+      // let iconurla = "http://openweathermap.org/img/w/" + iconCodea + ".png";
+      // $('#todayIcon').attr('src', iconurla);
 
-      //console.log(result.data[16]['dt_txt'].toString("ddd dS"))
-      //console.log(Date.parse(result.data[16]['dt_txt']))
-      $('#day2Date').text((result.data[16]['dt']*1000).toString("ddd dS"));
+      // let iconCodeb = result.data[8].weather[0].icon;
+      // let iconurlb = "http://openweathermap.org/img/w/" + iconCodeb + ".png";
+      // $('#day1Icon').attr('src', iconurlb);
+
+      // //console.log(result.data[16]['dt_txt'].toString("ddd dS"))
+      // //console.log(Date.parse(result.data[16]['dt_txt']))
+      // $('#day2Date').text((result.data[16]['dt']*1000).toString("ddd dS"));
       
-      let iconCodec = result.data[16].weather[0].icon;
-      let iconurlc = "http://openweathermap.org/img/w/" + iconCodec + ".png";
-      $('#day2Icon').attr('src', iconurlc);
-      $('#day2MinTemp').text(result.data[16].main["temp_min"]-273.15);
-      $('#day2MaxTemp').text(result.data[16].main["temp_max"]-273.15);
+      // let iconCodec = result.data[16].weather[0].icon;
+      // let iconurlc = "http://openweathermap.org/img/w/" + iconCodec + ".png";
+      // $('#day2Icon').attr('src', iconurlc);
+      // $('#day2MinTemp').text(result.data[16].main["temp_min"]-273.15);
+      // $('#day2MaxTemp').text(result.data[16].main["temp_max"]-273.15);
 
       }},
       error: function(jqXHR, textStatus, errorThrown) {
