@@ -47,11 +47,12 @@
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title">
+                        <div class='text-center'>
                         <div id="countryName"></div>
+                        </div>
                         </h5>
                     </div>
                     <div class="modal-body">
-                        <div id="pre-load"></div>
                         <table class="table">
                                 <thead>
                                   <tr>
@@ -82,145 +83,64 @@
 
 
         <!-- weather modal -->
-
-        <div id="weatherModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="weatherModalLabel" aria-hidden="true">
-    
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                  
-                  <div class="modal-content shadow">      
-                      
-                    <div class="modal-header bg-success bg-gradient text-white">
-              
-                      <h5 class="modal-title" id="weatherModalLabel"></h5>
-                      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-              
-                    </div>
-              
-                    <div class="modal-body">
-                      
-                      <!-- <div id="pre-load"></div> -->
-              
-                      <div class="row">
-              
-                        <div class="col border m-2">
-              
-                          <p class="fw-bold fs-5 mt-3">TODAY</p>
-                          
-                          <div class="row">
-                            
-                            <div class="col text-center m-2">
-                              
-                              <p id="todayConditions" class="fw-bold fs-6"></p>
-                                
-                            </div>
-                            
-                            <div class="col text-center">
-                              
-                        
-                              <img id="todayIcon" class="img-fluid mt-0" src="" alt="" title="">
-                                
-                            </div>              
-              
-                            <div class="col text-center">
-                              
-                              <p class="fw-bold fs-4 mb-0"><span id="todayMaxTemp">3</span><sup>o</sup><span class="tempMetric">c</span></p>
-                              <p class="fs-5 mt-0 text-secondary"><span id="todayMinTemp">-2</span><sup>o</sup><span class="tempMetric">c</span></p>
-                                
-                            </div>              
-                            
-                          </div>
-              
-                        </div>   
-              
-                      </div>
-              
-                      <div class="row">
-              
-                        <div class="col border m-2">
-                          
-                          <div class="row">
-                            
-                            <div class="col text-center">
-              
-                              <p id="day1Date" class="fw-bold fs-6 mt-3"></p>
-                              
-                            </div>
-                            
-                          </div>
-                          
-                          <div class="row">
-                            
-                            <div class="col text-center">
-                              
-                              <p class="fw-bold fs-4 mb-0"><span id="day1MaxTemp"></span><sup>o</sup>c</p>
-                              <p class="fs-5 mt-0 text-secondary"><span id="day1MinTemp"></span><sup>o</sup>c</p>
-                              
-                            </div>
-                            
-                            <div class="col text-center">
-                              
-                              <img id="day1Icon" src="" alt="" title="">
-                              
-                            </div>    
-                            
-                          </div>
-                          
-                        </div>   
-              
-                        <div class="col border m-2">
-              
-                          <div class="row">
-                            
-                            <div class="col text-center">
-              
-                              <p id="day2Date" class="fw-bold fs-6 mt-3">Fri 16th</p>
-                              
-                            </div>
-                            
-                          </div>
-                          
-                          <div class="row">
-                            
-                            <div class="col text-center">
-                              
-                              <p class="fw-bold fs-4 mb-0"><span id="day2MaxTemp"></span><sup>o</sup>c</p>
-                              <p class="fs-5 mt-0 text-secondary"><span id="day2MinTemp"></span><sup>o</sup>c</p>
-                              
-                            </div>
-                            
-                            <div class="col text-center">
-                              
-                              <img id="day2Icon" src="" alt="" title="">
-                              
-                            </div>    
-                            
-                          </div>
-                          
-                        </div>         
-              
-                     </div>   
-                  
-                    </div>
-                    
-                    <div class="modal-footer">
-                      <p class="fs-6 fw-light">Powered by <a href="https://www.weatherapi.com/" target="_blank" title="Weather API">WeatherAPI.com</a></p>
-                    </div>
-              
-                  </div>
-                    
-                </div>
-                
-              </div>
+           
         
+              <div id="weatherModal" class="modal" tabindex="-1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="text-center">
+                      <h5 class="modal-title">
+                        <div id="weatherModalLabel"></div>
+                        </h5>
+                </div>
+                    </div>
+                    <div class="modal-body">
+
+                        <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Today</th>
+                                    <th scope="col"><div id="day1Date" ></div></th>
+                                    <th scope="col"><div id="day2Date" ></div></th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                        <td><img id="todayIcon">
+                                                <span id="todayMinTemp"></span></td>
+                                        <td><img id="day1Icon" src="" alt="" title="">
+                                                <span id="day1MinTemp"></span></td>
+                                        <td><img id="day2Icon" src="" alt="" title="">
+                                                <span id="day2MinTemp"></span></td>
+                                      
+                                  </tr>
+                                </tbody>
+                              </table>
+
+                              <div class="text-center">
+                                <p>Powered by <a href="https://www.weatherapi.com/" target="_blank" title="Weather API">WeatherAPI.com</a></p>
+                                </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <div id="flagc"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>      
+
         <!-- wiki modal -->
 
         <div id="wikiModal" class="modal" tabindex="-1">
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
+                        <div class='text-center'>
                       <h5 class="modal-title">
                         <div id="countryNameb"></div>
                         </h5>
+                </div>
                     </div>
                     <div class="modal-body">
                         <div id="wikiData"></div>
@@ -232,6 +152,58 @@
                 </div>
               </div>
 
+        <!-- exchange modal -->
+
+        <div id="exchangeModal" class="modal" tabindex="-1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                        <div class='text-center'>
+                      <h5 class="modal-title">
+                        <div clas="'text-center"><div id="currencyName"></div></div>
+                        </h5>
+                </div>
+                    </div>
+                    <div class="modal-body">
+                        
+                        <div id="currency"></div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <div id="flagd"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+        <!-- news modal -->
+        <div id="newsModal" class="modal" tabindex="-1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                        <div class='text-center'>
+                      <h5 class="modal-title">
+                        <div class="text-center">
+                        <div id="newsTitle">News</div>
+                </div>
+                        </h5>
+                </div>
+                    </div>
+                    <div class="modal-body">
+                        <div id="news0"></div>
+                        <div id="news1"></div>
+                        <div id="news2"></div>
+                        <div id="news3"></div>
+                        <div id="news4"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <div id="flage"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              
         <!-- scripts -->
         <!-- jQuery -->
         <script type="application/javascript" src="js/jquery-2.2.3.min.js"></script>

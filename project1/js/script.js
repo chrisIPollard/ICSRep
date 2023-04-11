@@ -1,4 +1,4 @@
-//creating variables:
+//creating global variables:
 
 let countryNamesAndCodes;
 let select = document.getElementById("selCountry");
@@ -7,6 +7,14 @@ let borders;
 let country;
 let capital;
 let weatherIcons;
+
+//time variables:
+let today = new Date();
+let todayPlusOne = new Date(today);
+todayPlusOne.setDate(todayPlusOne.getDate() + 1);
+let todayPlusTwo = new Date(today);
+todayPlusTwo.setDate(todayPlusTwo.getDate() + 1);
+let dateDisplay = { month: 'long', day: 'numeric'};
 
 //establishing the map:
 
@@ -182,7 +190,9 @@ $.ajax({
     iso: $('#selCountry').val()
   },
   success: function (result) {
-
+    if (!result.data){console.log('no information available')}
+    else
+    {
     //console.log(JSON.stringify(result));
           
     if (result.status.code == 200) {
@@ -195,7 +205,7 @@ $.ajax({
           .bindTooltip(item.name, {direction: 'top', sticky: true})
           .addTo(airports);
         
-      })
+      })}
     } 
   },
   error: function (jqXHR, textStatus, errorThrown) {
@@ -213,7 +223,9 @@ $.ajax({
     iso: $('#selCountry').val()
   },
   success: function (result) {
-
+    if (!result.data){console.log('no information available')}
+    else
+    {
     //console.log(JSON.stringify(result));
           
     if (result.status.code == 200) {
@@ -226,7 +238,7 @@ $.ajax({
           .bindTooltip(item.name, {direction: 'top', sticky: true})
           .addTo(cities);
         
-      })
+      })}
     } 
   },
   error: function (jqXHR, textStatus, errorThrown) {
@@ -242,7 +254,7 @@ $.ajax({
 L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
   $('#dataModal').modal("show"); 
   $('#flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
-  $($.ajax({
+  $.ajax({
     url: "php/getCountryInfo.php",
     type: 'POST',
     dataType: 'json',
@@ -258,28 +270,20 @@ L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
         $('#languages').html(result['data'][0]['languages']);
         $('#population').html(giveCommas(result['data'][0]['population']));
         $('#area').html(giveCommas(Math.round(result['data'][0]['areaInSqKm'])));       
-        
       }
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log(jqXHR);
     }
-  })) 
+  })
 }).addTo(map); 
-
-$(function() {
-  $('#dataModal').on("load", function() {
-    $('#preloader').fadeOut('slow', function() {
-      $(this).remove();
-    });
-  });
-});
 
 // weather modal
 
 L.easyButton('fa-cloud fa-lg', function(btn, map){
   $('#weatherModal').modal("show"); 
-  $($.ajax({
+  $('#flagc').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
+  $.ajax({
     url: "php/getCountryInfo.php",
     type: 'POST',
     dataType: 'json',
@@ -298,7 +302,7 @@ L.easyButton('fa-cloud fa-lg', function(btn, map){
     error: function(jqXHR, textStatus, errorThrown) {
       console.log(jqXHR);
     }
-  })) 
+  })
 }).addTo(map); 
 
 // this is a function to get weather from the capital, nested above, separated for clarity:
@@ -312,33 +316,30 @@ function getWeather (capital){
 
     success: function(result) {
   
-    console.log(JSON.stringify(result));
+    //console.log(JSON.stringify(result));
     
     if (result.status.name == "ok") { 
   
       $('#weatherModalLabel').html(result.data.location.name + ", " + result.data.location.country);
 
-      $('#todayConditions').html(result.data.current.condition['text']);
+      //$('#todayConditions').html(result.data.current.condition['text']);
       $('#todayIcon').attr("src", result.data.current.condition['icon']);
-      $('#todayMaxTemp').html(result.data.forecast['forecastday'][0].day['maxtemp_c']);
-      $('#todayMinTemp').html(result.data.forecast['forecastday'][0].day['mintemp_c']);
-      // let iconCodea = result.data[0].weather[0].icon;
-      // let iconurla = "http://openweathermap.org/img/w/" + iconCodea + ".png";
-      // $('#todayIcon').attr('src', iconurla);
-
-      // let iconCodeb = result.data[8].weather[0].icon;
-      // let iconurlb = "http://openweathermap.org/img/w/" + iconCodeb + ".png";
-      // $('#day1Icon').attr('src', iconurlb);
-
-      // //console.log(result.data[16]['dt_txt'].toString("ddd dS"))
-      // //console.log(Date.parse(result.data[16]['dt_txt']))
-      // $('#day2Date').text((result.data[16]['dt']*1000).toString("ddd dS"));
+      $('#todayMinTemp').html(result.data.forecast['forecastday'][0].day['mintemp_c'] + ' - ' + result.data.forecast['forecastday'][0].day['maxtemp_c']+ '°C')
+      //$('#todayMaxTemp').html(result.data.forecast['forecastday'][0].day['maxtemp_c']);
       
-      // let iconCodec = result.data[16].weather[0].icon;
-      // let iconurlc = "http://openweathermap.org/img/w/" + iconCodec + ".png";
-      // $('#day2Icon').attr('src', iconurlc);
-      // $('#day2MinTemp').text(result.data[16].main["temp_min"]-273.15);
-      // $('#day2MaxTemp').text(result.data[16].main["temp_max"]-273.15);
+        $('#day1Date').text(todayPlusOne.toLocaleDateString("en-GB", dateDisplay));
+        $('#day1Icon').attr("src", result.data.forecast.forecastday[1].day.condition.icon);
+        $('#day1MinTemp').text(result.data.forecast.forecastday[1].day['mintemp_c'] + ' - ' + result.data.forecast.forecastday[1].day['maxtemp_c'] + '°C');
+        //$('#day1MaxTemp').text(result.data.forecast.forecastday[1].day['maxtemp_c']);
+        
+        $('#day2Date').text(todayPlusTwo.toLocaleDateString("en-GB", dateDisplay));
+        $('#day2Icon').attr("src", result.data.forecast.forecastday[2].day.condition.icon);
+        $('#day2MinTemp').text(result.data.forecast.forecastday[2].day['mintemp_c'] + ' - ' + result.data.forecast.forecastday[2].day['maxtemp_c'] + '°C');
+        //$('#day2MaxTemp').text(result.data.forecast.forecastday[2].day['maxtemp_c']);
+        
+      } else {
+
+        $('#weatherModal .modal-title').replaceWith("Error retrieving data");
 
       }},
       error: function(jqXHR, textStatus, errorThrown) {
@@ -351,7 +352,7 @@ function getWeather (capital){
 L.easyButton('fa-w fa-lg', function(btn, map){
   $('#wikiModal').modal("show"); 
   $('#flagb').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
-  $($.ajax({
+  $.ajax({
     url: "php/getCountryInfo.php",
     type: 'POST',
     dataType: 'json',
@@ -369,10 +370,10 @@ L.easyButton('fa-w fa-lg', function(btn, map){
     error: function(jqXHR, textStatus, errorThrown) {
       console.log(jqXHR);
     }
-  }))   
+  })   
 }).addTo(map); 
 
-//this is embedded above but I've separated it as a function so they are clearer:
+//this is embedded above but I've separated it as a function so it is clearer:
 
 function wikiCountryData(country){
   country = country.replace(/\s/g, '-');
@@ -420,3 +421,125 @@ function wikiCountryData(country){
       }
     })
   }
+
+  //exchange rate modal: 
+
+  L.easyButton('fa-money-bill fa-lg', function(btn, map){
+    $('#exchangeModal').modal("show"); 
+    $('#flagd').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
+    $.ajax({
+      url: "php/getCountryInfo.php",
+      type: 'POST',
+      dataType: 'json',
+      data: {country: $('#selCountry').val()},
+      success: function(result) {
+  
+        //console.log(JSON.stringify(result));
+  
+      if (result.status.name == "ok") {
+        if (!result.data[0])
+        {$('#currency').html('<span>no information available</span>');
+        $('#currencyName').html('');}
+        else{
+          currencyName (result['data'][0]['currencyCode'])
+          exchangeRate (result['data'][0]['currencyCode'])  
+        }}
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+      }
+    })
+  }).addTo(map); 
+
+//this is embedded above but I've separated it as a function so it is clearer:
+function currencyName (currencyCode){
+  $.ajax({
+    url: "php/getCurrencyName.php",
+    type: 'GET',
+    dataType: 'json',
+    
+    success: function(result) {
+
+      //console.log(JSON.stringify(result));
+
+      if (result.status.name == "ok") {
+        let currencyNames = Object.values(result.data);
+        let currencies = Object.keys(result.data);
+        for (let c = 0; c < currencies.length; c ++){
+        if (currencies[c] == currencyCode)
+        {$('#currencyName').html('<span>' + currencyNames[c] + '<span>');}
+      }}
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  })}
+//this is embedded above but I've separated it as a function so it is clearer:
+function exchangeRate (currencyCode){
+  $.ajax({
+    url: "php/getCurrency.php",
+    type: 'GET',
+    dataType: 'json',
+    
+    success: function(result) {
+
+      //console.log(JSON.stringify(result));
+
+    if (result.status.name == "ok") {
+      if (currencyCode == 'USD'){
+        let rates = result.data.rates.GBP;
+        rates = rates.toFixed(2);
+      $('#currency').html('<span>trading at ' + rates +' USD to GBP</span>'); 
+      }
+      else{ 
+        let rates = '1' / result.data.rates[currencyCode];
+        rates = rates.toFixed(2);
+        if (rates == 0){ $('#currency').html(''); }
+        else{
+        $('#currency').html('<span>trading at ' + rates + ' ' +currencyCode + ' to USD</span>');} 
+        }
+
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  })
+}           
+
+//news modal:
+
+L.easyButton('fa-newspaper fa-lg', function(btn, map){
+  $('#newsModal').modal("show"); 
+  $('#flage').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
+
+  $.ajax({
+    url: "php/getNews.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {country: $('#selCountry').val()},
+    success: function(result) {
+
+      //console.log(JSON.stringify(result));
+      
+    if (result.status.name == "ok") {
+
+      if (result.data.pagination.count == 0){
+        $('#news0').html('<span>no information available</span>');
+        $('#news1').html('');
+        $('#news2').html('');
+        $('#news3').html('');
+        $('#news4').html('');
+        }else{
+          for (let n = 0; n < 5; n ++){
+            if (n<4){
+        $(`#news${n}`).html(`<a href='${result.data.data[n]['url']}'> ${result.data.data[n]['title']} </a><hr />`);}
+        else
+        {$(`#news${n}`).html(`<a href='${result.data.data[n]['url']}'> ${result.data.data[n]['title']} </a>`);}
+        }}
+  }},
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  })
+}).addTo(map);
