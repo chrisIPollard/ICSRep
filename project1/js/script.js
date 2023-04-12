@@ -4,6 +4,8 @@ let countryNamesAndCodes;
 let select = document.getElementById("selCountry");
 let localCountryCode;
 let borders;
+let cap;
+let code;
 let country;
 let capital;
 let weatherIcons;
@@ -549,6 +551,7 @@ L.easyButton('fa-newspaper fa-lg', function(btn, map){
 L.easyButton('fa-solid fa-camera fa-lg', function(btn, map){
   $('#imageModal').modal("show"); 
   $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
+
   $.ajax({
     url: "php/getCountryInfo.php",
     type: 'POST',
@@ -559,9 +562,8 @@ L.easyButton('fa-solid fa-camera fa-lg', function(btn, map){
       //console.log(JSON.stringify(result));
 
     if (result.status.name == "ok") {
-        let cap = result['data'][0]['capital'];
+        cap = result['data'][0]['capital'];
         $('#capitalTitle').html(cap);   
-        console.log(cap.toLowerCase());  
         getImage(cap.toLowerCase());
       }
     },
@@ -578,9 +580,62 @@ function getImage (capital) {
     url: "php/getPhoto.php",
     type: 'POST',
     dataType: 'json',
-    data: capital,
+    data: {capital: capital},
     success: function(result) {
 
+      //console.log(JSON.stringify(result));
+
+    if (result.status.name == "ok") {
+      if (result.data.message){$('#cityPic').html('image unavailable')}
+      else{
+      $('#cityPic').html(`<img style='height: 100%; width: 100%; object-fit: contain' src="${result.data.photos[0].image.mobile}">`);}
+      
+    
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  })
+}
+
+// days modal: 
+
+L.easyButton('fa-regular fa-calendar fa-lg', function(btn, map){
+  $('#daysModal').modal("show"); 
+  $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
+  $.ajax({
+    url: "php/getCountryInfo.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {country: $('#selCountry').val()},
+    success: function(result) {
+
+      //console.log(JSON.stringify(result));
+
+    if (result.status.name == "ok") {
+        code = result['data'][0]['countryCode'];
+        if (code == 'UK'){code = 'GB'};
+        console.log(code);
+        getDays(code);
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  })
+}).addTo(map); 
+
+//below function is embedded above to get dates:
+
+function getDays (code) {
+  $.ajax({
+    url: "php/getDays.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {code: code},
+    success: function(result) {
+      console.log(code);
       console.log(JSON.stringify(result));
 
     if (result.status.name == "ok") {
@@ -593,4 +648,7 @@ function getImage (capital) {
     }
   })
 }
+
+
+
 
