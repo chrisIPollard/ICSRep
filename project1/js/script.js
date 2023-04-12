@@ -13,7 +13,7 @@ let today = new Date();
 let todayPlusOne = new Date(today);
 todayPlusOne.setDate(todayPlusOne.getDate() + 1);
 let todayPlusTwo = new Date(today);
-todayPlusTwo.setDate(todayPlusTwo.getDate() + 1);
+todayPlusTwo.setDate(todayPlusTwo.getDate() + 2);
 let dateDisplay = { month: 'long', day: 'numeric'};
 
 //establishing the map:
@@ -253,7 +253,7 @@ $.ajax({
 
 L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
   $('#dataModal').modal("show"); 
-  $('#flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
+  $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
   $.ajax({
     url: "php/getCountryInfo.php",
     type: 'POST',
@@ -261,7 +261,7 @@ L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
     data: {country: $('#selCountry').val()},
     success: function(result) {
 
-      //console.log(JSON.stringify(result));
+      console.log(JSON.stringify(result));
 
     if (result.status.name == "ok") {
         $('#countryName').html(result['data'][0]['countryName']);
@@ -282,7 +282,7 @@ L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
 
 L.easyButton('fa-cloud fa-lg', function(btn, map){
   $('#weatherModal').modal("show"); 
-  $('#flagc').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
+  $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
   $.ajax({
     url: "php/getCountryInfo.php",
     type: 'POST',
@@ -351,7 +351,7 @@ function getWeather (capital){
 
 L.easyButton('fa-w fa-lg', function(btn, map){
   $('#wikiModal').modal("show"); 
-  $('#flagb').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
+  $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
   $.ajax({
     url: "php/getCountryInfo.php",
     type: 'POST',
@@ -426,7 +426,7 @@ function wikiCountryData(country){
 
   L.easyButton('fa-money-bill fa-lg', function(btn, map){
     $('#exchangeModal').modal("show"); 
-    $('#flagd').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
+    $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
     $.ajax({
       url: "php/getCountryInfo.php",
       type: 'POST',
@@ -489,14 +489,14 @@ function exchangeRate (currencyCode){
       if (currencyCode == 'USD'){
         let rates = result.data.rates.GBP;
         rates = rates.toFixed(2);
-      $('#currency').html('<span>trading at ' + rates +' USD to GBP</span>'); 
+      $('#currency').html('<span>Trading at ' + rates +' USD to GBP on </span>' + today.toLocaleDateString("en-GB", dateDisplay) + '.'); 
       }
       else{ 
         let rates = '1' / result.data.rates[currencyCode];
         rates = rates.toFixed(2);
         if (rates == 0){ $('#currency').html(''); }
         else{
-        $('#currency').html('<span>trading at ' + rates + ' ' +currencyCode + ' to USD</span>');} 
+        $('#currency').html('<span>Trading at ' + rates + ' ' +currencyCode + ' to USD on </span>'+ today.toLocaleDateString("en-GB", dateDisplay) + '.');} 
         }
 
       }
@@ -511,7 +511,7 @@ function exchangeRate (currencyCode){
 
 L.easyButton('fa-newspaper fa-lg', function(btn, map){
   $('#newsModal').modal("show"); 
-  $('#flage').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
+  $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
 
   $.ajax({
     url: "php/getNews.php",
@@ -543,3 +543,54 @@ L.easyButton('fa-newspaper fa-lg', function(btn, map){
     }
   })
 }).addTo(map);
+
+// image modal: 
+
+L.easyButton('fa-solid fa-camera fa-lg', function(btn, map){
+  $('#imageModal').modal("show"); 
+  $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
+  $.ajax({
+    url: "php/getCountryInfo.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {country: $('#selCountry').val()},
+    success: function(result) {
+
+      //console.log(JSON.stringify(result));
+
+    if (result.status.name == "ok") {
+        let cap = result['data'][0]['capital'];
+        $('#capitalTitle').html(cap);   
+        console.log(cap.toLowerCase());  
+        getImage(cap.toLowerCase());
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  })
+}).addTo(map); 
+
+//below function is embedded above to get image:
+
+function getImage (capital) {
+  $.ajax({
+    url: "php/getPhoto.php",
+    type: 'POST',
+    dataType: 'json',
+    data: capital,
+    success: function(result) {
+
+      console.log(JSON.stringify(result));
+
+    if (result.status.name == "ok") {
+        
+    
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  })
+}
+
