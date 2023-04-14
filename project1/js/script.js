@@ -8,6 +8,7 @@ let cap;
 let code;
 let country;
 let capital;
+let days;
 let weatherIcons;
 
 //time variables:
@@ -614,6 +615,8 @@ L.easyButton('fa-regular fa-calendar fa-lg', function(btn, map){
       //console.log(JSON.stringify(result));
 
     if (result.status.name == "ok") {
+        country = result['data'][0]['countryName'];
+        $('#daysTitle').html(`${country} National Holidays`);   
         code = result['data'][0]['countryCode'];
         if (code == 'UK'){code = 'GB'};
         console.log(code);
@@ -635,13 +638,29 @@ function getDays (code) {
     dataType: 'json',
     data: {code: code},
     success: function(result) {
-      console.log(code);
-      console.log(JSON.stringify(result));
+      
+      //console.log(JSON.stringify(result));
 
     if (result.status.name == "ok") {
         
-    
-      }
+    days = result.data;
+    days = days.reduce((c, n) =>
+    c.find(i => i.name == n.name) ? c : [...c, n], []);
+      console.log(days[0]['date']);
+
+    for (let d = 0; d < days.length; d ++){
+      // if (!`days${d}`) {
+      //   $(`#date${d}`).html(``);
+      //   $(`#hol${d}`).html(``);
+      // } else {
+      //   $(`#date${d}`).html(days[d]['date']);
+      //   $(`#hol${d}`).html(days[d]['name']);
+
+        $(`#daysData`).append(`<tr>
+        <td>${days[d]['date']}</td>
+        <td>${days[d]['name']}</td>
+</tr>`);
+      }}
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log(jqXHR);
