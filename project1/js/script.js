@@ -264,16 +264,25 @@ L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
     data: {country: $('#selCountry').val()},
     success: function(result) {
 
-      console.log(JSON.stringify(result));
+      //console.log(JSON.stringify(result));
 
     if (result.status.name == "ok") {
+        if (result.data[0] === undefined){
+            $('#countryName').html('information unavailable');
+            $('#continent').html('');
+            $('#capital').html('');
+            $('#languages').html('');
+            $('#population').html('');
+            $('#area').html(''); 
+        }
+        else{
         $('#countryName').html(result['data'][0]['countryName']);
         $('#continent').html(result['data'][0]['continent']);
         $('#capital').html(result['data'][0]['capital']);
         $('#languages').html(result['data'][0]['languages']);
         $('#population').html(giveCommas(result['data'][0]['population']));
         $('#area').html(giveCommas(Math.round(result['data'][0]['areaInSqKm'])));       
-      }
+      }}
     },
     error: function(jqXHR, textStatus, errorThrown) {
       console.log(jqXHR);
@@ -297,6 +306,7 @@ L.easyButton('fa-cloud fa-lg', function(btn, map){
 
     if (result.status.name == "ok") {
       capital = result['data'][0]['capital'];
+      country = result['data'][0]['countryName']
       
       getWeather (capital);
 
@@ -322,28 +332,35 @@ function getWeather (capital){
     //console.log(JSON.stringify(result));
     
     if (result.status.name == "ok") { 
-  
+      if (result.data === null){
+        $('#weatherModalLabel').html('information unavailable for ' + country);
+
+      $('#todayIcon').attr("src",'');
+      $('#todayMinTemp').html('')
+      
+        $('#day1Date').text('');
+        $('#day1Icon').attr("src",'');
+        $('#day1MinTemp').text('');
+        
+        $('#day2Date').text('');
+        $('#day2Icon').attr("src",'');
+        $('#day2MinTemp').text('');
+      }
+      else
+      {
       $('#weatherModalLabel').html(result.data.location.name + ", " + result.data.location.country);
 
-      //$('#todayConditions').html(result.data.current.condition['text']);
       $('#todayIcon').attr("src", result.data.current.condition['icon']);
       $('#todayMinTemp').html(result.data.forecast['forecastday'][0].day['mintemp_c'] + ' - ' + result.data.forecast['forecastday'][0].day['maxtemp_c']+ '°C')
-      //$('#todayMaxTemp').html(result.data.forecast['forecastday'][0].day['maxtemp_c']);
       
         $('#day1Date').text(todayPlusOne.toLocaleDateString("en-GB", dateDisplay));
         $('#day1Icon').attr("src", result.data.forecast.forecastday[1].day.condition.icon);
         $('#day1MinTemp').text(result.data.forecast.forecastday[1].day['mintemp_c'] + ' - ' + result.data.forecast.forecastday[1].day['maxtemp_c'] + '°C');
-        //$('#day1MaxTemp').text(result.data.forecast.forecastday[1].day['maxtemp_c']);
         
         $('#day2Date').text(todayPlusTwo.toLocaleDateString("en-GB", dateDisplay));
         $('#day2Icon').attr("src", result.data.forecast.forecastday[2].day.condition.icon);
         $('#day2MinTemp').text(result.data.forecast.forecastday[2].day['mintemp_c'] + ' - ' + result.data.forecast.forecastday[2].day['maxtemp_c'] + '°C');
-        //$('#day2MaxTemp').text(result.data.forecast.forecastday[2].day['maxtemp_c']);
-        
-      } else {
-
-        $('#weatherModal .modal-title').replaceWith("Error retrieving data");
-
+      }
       }},
       error: function(jqXHR, textStatus, errorThrown) {
         console.log(jqXHR);
@@ -619,7 +636,6 @@ L.easyButton('fa-regular fa-calendar fa-lg', function(btn, map){
         $('#daysTitle').html(`${country} National Holidays`);   
         code = result['data'][0]['countryCode'];
         if (code == 'UK'){code = 'GB'};
-        console.log(code);
         getDays(code);
       }
     },
@@ -646,15 +662,8 @@ function getDays (code) {
     days = result.data;
     days = days.reduce((c, n) =>
     c.find(i => i.name == n.name) ? c : [...c, n], []);
-      console.log(days[0]['date']);
 
     for (let d = 0; d < days.length; d ++){
-      // if (!`days${d}`) {
-      //   $(`#date${d}`).html(``);
-      //   $(`#hol${d}`).html(``);
-      // } else {
-      //   $(`#date${d}`).html(days[d]['date']);
-      //   $(`#hol${d}`).html(days[d]['name']);
 
         $(`#daysData`).append(`<tr>
         <td>${days[d]['date']}</td>
