@@ -381,7 +381,6 @@ L.easyButton('fa-cloud fa-lg', function(btn, map){
 L.easyButton('fa-w fa-lg', function(btn, map){
   $('#wikiModal').modal("show"); 
   $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
-  console.log(country);
   if (country === ''){
     $('#countryNameb').html('no information available');
     $('#wikiData').html('');
@@ -502,12 +501,12 @@ L.easyButton('fa-w fa-lg', function(btn, map){
 L.easyButton('fa-newspaper fa-lg', function(btn, map){
   $('#newsModal').modal("show"); 
   $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
-
+  countryCode = $('#selCountry').val();
   $.ajax({
     url: "php/getNews.php",
     type: 'POST',
     dataType: 'json',
-    data: {country: $('#selCountry').val()},
+    data: {country: countryCode},
     success: function(result) {
 
       //console.log(JSON.stringify(result));
