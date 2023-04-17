@@ -6,11 +6,11 @@ let localCountryCode;
 let area;
 let borders;
 let cap;
-let code;
 let continent;
 let country;
 let capital;
 let currencyCode;
+let countryCode;
 let days;
 let languages;
 let population;
@@ -399,7 +399,7 @@ L.easyButton('fa-w fa-lg', function(btn, map){
           },
           success: function(result) {
         
-          console.log(JSON.stringify(result));
+          //console.log(JSON.stringify(result));
     
         if (result.status.name == "ok") {
           if (country == 'Palestine')
@@ -440,85 +440,62 @@ L.easyButton('fa-w fa-lg', function(btn, map){
   L.easyButton('fa-money-bill fa-lg', function(btn, map){
     $('#exchangeModal').modal("show"); 
     $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
-    $.ajax({
-      url: "php/getCountryInfo.php",
-      type: 'POST',
-      dataType: 'json',
-      data: {country: $('#selCountry').val()},
-      success: function(result) {
-  
-        //console.log(JSON.stringify(result));
-  
-      if (result.status.name == "ok") {
-        if (!result.data[0])
-        {$('#currency').html('<span>no information available</span>');
+      if (currencyCode == '') {
+        $('#currency').html('<span>no information available</span>');
         $('#currencyName').html('');}
         else{
-          currencyName (result['data'][0]['currencyCode'])
-          exchangeRate (result['data'][0]['currencyCode'])  
-        }}
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-      }
-    })
-  }).addTo(map); 
-
-//this is embedded above but I've separated it as a function so it is clearer:
-function currencyName (currencyCode){
-  $.ajax({
-    url: "php/getCurrencyName.php",
-    type: 'GET',
-    dataType: 'json',
-    
-    success: function(result) {
-
-      //console.log(JSON.stringify(result));
-
-      if (result.status.name == "ok") {
-        let currencyNames = Object.values(result.data);
-        let currencies = Object.keys(result.data);
-        for (let c = 0; c < currencies.length; c ++){
-        if (currencies[c] == currencyCode)
-        {$('#currencyName').html('<span>' + currencyNames[c] + '<span>');}
-      }}
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log(jqXHR);
-    }
-  })}
-//this is embedded above but I've separated it as a function so it is clearer:
-function exchangeRate (currencyCode){
-  $.ajax({
-    url: "php/getCurrency.php",
-    type: 'GET',
-    dataType: 'json',
-    
-    success: function(result) {
-
-      //console.log(JSON.stringify(result));
-
-    if (result.status.name == "ok") {
-      if (currencyCode == 'USD'){
-        let rates = result.data.rates.GBP;
-        rates = rates.toFixed(2);
-      $('#currency').html('<span>Trading at ' + rates +' USD to GBP on </span>' + today.toLocaleDateString("en-GB", dateDisplay) + '.'); 
-      }
-      else{ 
-        let rates = '1' / result.data.rates[currencyCode];
-        rates = rates.toFixed(2);
-        if (rates == 0){ $('#currency').html(''); }
-        else{
-        $('#currency').html('<span>Trading at ' + rates + ' ' +currencyCode + ' to USD on </span>'+ today.toLocaleDateString("en-GB", dateDisplay) + '.');} 
+          $.ajax({
+            url: "php/getCurrencyName.php",
+            type: 'GET',
+            dataType: 'json',
+            
+            success: function(result) {
+        
+              //console.log(JSON.stringify(result));
+        
+              if (result.status.name == "ok") {
+                let currencyNames = Object.values(result.data);
+                let currencies = Object.keys(result.data);
+                for (let c = 0; c < currencies.length; c ++){
+                if (currencies[c] == currencyCode)
+                {$('#currencyName').html('<span>' + currencyNames[c] + '<span>');}
+              }}
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.log(jqXHR);
+            }
+          })
+          $.ajax({
+            url: "php/getCurrency.php",
+            type: 'GET',
+            dataType: 'json',
+            
+            success: function(result) {
+        
+              //console.log(JSON.stringify(result));
+        
+            if (result.status.name == "ok") {
+              if (currencyCode == 'USD'){
+                let rates = result.data.rates.GBP;
+                rates = rates.toFixed(2);
+              $('#currency').html('<span>Trading at ' + rates +' USD to GBP on </span>' + today.toLocaleDateString("en-GB", dateDisplay) + '.'); 
+              }
+              else{ 
+                let rates = '1' / result.data.rates[currencyCode];
+                rates = rates.toFixed(2);
+                if (rates == 0){ $('#currency').html(''); }
+                else{
+                $('#currency').html('<span>Trading at ' + rates + ' ' +currencyCode + ' to USD on </span>'+ today.toLocaleDateString("en-GB", dateDisplay) + '.');} 
+                }
+        
+              }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.log(jqXHR);
+            }
+          }) 
         }
-
-      }
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log(jqXHR);
-    }
-  })
-}           
+  }).addTo(map); 
 
 //news modal:
 
@@ -555,110 +532,71 @@ L.easyButton('fa-newspaper fa-lg', function(btn, map){
 L.easyButton('fa-solid fa-camera fa-lg', function(btn, map){
   $('#imageModal').modal("show"); 
   $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
-
-  $.ajax({
-    url: "php/getCountryInfo.php",
-    type: 'POST',
-    dataType: 'json',
-    data: {country: $('#selCountry').val()},
-    success: function(result) {
-
-      //console.log(JSON.stringify(result));
-
-    if (result.status.name == "ok") {
-        cap = result['data'][0]['capital'];
-        $('#capitalTitle').html(cap);   
-        getImage(cap.toLowerCase());
-      }
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log(jqXHR);
-    }
-  })
-}).addTo(map); 
-
-//below function is embedded above to get image:
-
-function getImage (capital) {
-  $.ajax({
-    url: "php/getPhoto.php",
-    type: 'POST',
-    dataType: 'json',
-    data: {capital: capital},
-    success: function(result) {
-
-      //console.log(JSON.stringify(result));
-
-    if (result.status.name == "ok") {
-      if (result.data.message){$('#cityPic').html('image unavailable')}
-      else{
-      $('#cityPic').html(`<img style='height: 100%; width: 100%; object-fit: contain' src="${result.data.photos[0].image.mobile}">`);}
+  if (capital == '') {
+    $('#cityPic').html('image unavailable'); }
+        else{
+        $('#capitalTitle').html(capital);   
+        capitalLower = capital.toLowerCase();
+        $.ajax({
+          url: "php/getPhoto.php",
+          type: 'POST',
+          dataType: 'json',
+          data: {capital: capitalLower},
+          success: function(result) {
       
-    
-      }
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log(jqXHR);
-    }
-  })
-}
+            //console.log(JSON.stringify(result));
+      
+          if (result.status.name == "ok") {
+            if (result.data.message){$('#cityPic').html('image unavailable')}
+            else{
+            $('#cityPic').html(`<img style='height: 100%; width: 100%; object-fit: contain' src="${result.data.photos[0].image.mobile}">`);}
+            }
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+          }})}      
+}).addTo(map); 
 
 // days modal: 
 
 L.easyButton('fa-regular fa-calendar fa-lg', function(btn, map){
   $('#daysModal').modal("show"); 
   $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
-  $.ajax({
-    url: "php/getCountryInfo.php",
-    type: 'POST',
-    dataType: 'json',
-    data: {country: $('#selCountry').val()},
-    success: function(result) {
+  $('#daysTitle').html(`${country} National Holidays`);   
+        countryCode = $('#selCountry').val();
+        if (countryCode == 'UK'){code = 'GB'};
+        $.ajax({
+          url: "php/getDays.php",
+          type: 'POST',
+          dataType: 'json',
+          data: {code: countryCode},
+          success: function(result) {
+            
+            console.log(JSON.stringify(result));
+      
+          if (result.status.name == "ok") {
+            $(`#daysData`).html(``);
+          days = result.data;
+          days = days.reduce((c, n) =>
+          c.find(i => i.name == n.name) ? c : [...c, n], []);
+      
+          for (let d = 0; d < days.length; d ++){
+      
+              $(`#daysData`).append(`<tr>
+              <td>${days[d]['date']}</td>
+              <td>${days[d]['name']}</td>
+      </tr>`);
+            }}
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR);
+          }
+        });
 
-      //console.log(JSON.stringify(result));
-
-    if (result.status.name == "ok") {
-        country = result['data'][0]['countryName'];
-        $('#daysTitle').html(`${country} National Holidays`);   
-        code = result['data'][0]['countryCode'];
-        if (code == 'UK'){code = 'GB'};
-        getDays(code);
-      }
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log(jqXHR);
-    }
-  })
 }).addTo(map); 
 
 //below function is embedded above to get dates:
 
 function getDays (code) {
-  $.ajax({
-    url: "php/getDays.php",
-    type: 'POST',
-    dataType: 'json',
-    data: {code: code},
-    success: function(result) {
-      
-      //console.log(JSON.stringify(result));
-
-    if (result.status.name == "ok") {
-        
-    days = result.data;
-    days = days.reduce((c, n) =>
-    c.find(i => i.name == n.name) ? c : [...c, n], []);
-
-    for (let d = 0; d < days.length; d ++){
-
-        $(`#daysData`).append(`<tr>
-        <td>${days[d]['date']}</td>
-        <td>${days[d]['name']}</td>
-</tr>`);
-      }}
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-      console.log(jqXHR);
-    }
-  })
+  
 }
