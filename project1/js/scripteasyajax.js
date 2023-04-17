@@ -3,17 +3,12 @@
 let countryNamesAndCodes;
 let select = document.getElementById("selCountry");
 let localCountryCode;
-let area;
 let borders;
 let cap;
 let code;
-let continent;
 let country;
 let capital;
-let currencyCode;
 let days;
-let languages;
-let population;
 let weatherIcons;
 
 //time variables:
@@ -254,42 +249,6 @@ $.ajax({
   }
 });   
 
-//shared ajax calls within the dropdown: 
-
-$.ajax({
-  url: "php/getCountryInfo.php",
-  type: 'POST',
-  dataType: 'json',
-  data: {country: $('#selCountry').val()},
-  success: function(result) {
-
-    //console.log(JSON.stringify(result));
-
-    area = '';
-    capital = '';
-    continent = '';
-    country = '';
-    population = '';
-    languages = '';
-    currencyCode = '';
-
-  if (result.status.name == "ok") {
-
-    area = result['data'][0]['areaInSqKm'];
-    capital = result['data'][0]['capital'];
-    continent = result['data'][0]['continent'];
-    country = result['data'][0]['countryName'];
-    currencyCode = result['data'][0]['currencyCode'];
-    population = result['data'][0]['population'];
-    languages = result['data'][0]['languages'];
-
-    }
-  },
-  error: function(jqXHR, textStatus, errorThrown) {
-    console.log(jqXHR);
-  }
-})
-
     //this bracket closes the dropdown led functions:
     }   
   
@@ -298,8 +257,17 @@ $.ajax({
 L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
   $('#dataModal').modal("show"); 
   $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
-  
-        if (capital === ''){
+  $.ajax({
+    url: "php/getCountryInfo.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {country: $('#selCountry').val()},
+    success: function(result) {
+
+      //console.log(JSON.stringify(result));
+
+    if (result.status.name == "ok") {
+        if (result.data[0] === undefined){
             $('#countryName').html('information unavailable');
             $('#continent').html('');
             $('#capital').html('');
@@ -308,14 +276,18 @@ L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
             $('#area').html(''); 
         }
         else{
-        $('#countryName').html(country);
-        $('#continent').html(continent);
-        $('#capital').html(capital);
-        $('#languages').html(languages);
-        $('#population').html(giveCommas(population));
-        $('#area').html(giveCommas(Math.round(area)));       
-      }
-    
+        $('#countryName').html(result['data'][0]['countryName']);
+        $('#continent').html(result['data'][0]['continent']);
+        $('#capital').html(result['data'][0]['capital']);
+        $('#languages').html(result['data'][0]['languages']);
+        $('#population').html(giveCommas(result['data'][0]['population']));
+        $('#area').html(giveCommas(Math.round(result['data'][0]['areaInSqKm'])));       
+      }}
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  })
 }).addTo(map); 
 
 // weather modal
@@ -323,117 +295,152 @@ L.easyButton('fa-solid fa-flag fa-lg', function(btn, map){
 L.easyButton('fa-cloud fa-lg', function(btn, map){
   $('#weatherModal').modal("show"); 
   $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
-  if (capital == ''){         
-    $('#weatherModalLabel').html('information unavailable');
-    $('#todayIcon').attr("src",'');
-    $('#todayMinTemp').html('')
-    $('#day1Date').text('');
-    $('#day1Icon').attr("src",'');
-    $('#day1MinTemp').text('');
-    $('#day2Date').text('');
-    $('#day2Icon').attr("src",'');
-    $('#day2MinTemp').text('');
-  } else {    
   $.ajax({
-        url: "php/getWeather.php",
-        type: 'POST',
-        dataType: 'json',
-        data: {capital: capital},
-    
-        success: function(result) {
-      
-        //console.log(JSON.stringify(result));
-        
-        if (result.status.name == "ok") { 
-          
-          if (result.data === null){
-            $('#weatherModalLabel').html('information unavailable for ' + country);
-            $('#todayIcon').attr("src",'');
-            $('#todayMinTemp').html('')
-            $('#day1Date').text('');
-            $('#day1Icon').attr("src",'');
-            $('#day1MinTemp').text('');
-            $('#day2Date').text('');
-            $('#day2Icon').attr("src",'');
-            $('#day2MinTemp').text('');
-          }
-          else
-          {
-            $('#weatherModalLabel').html(result.data.location.name + ", " + result.data.location.country);
-            $('#todayIcon').attr("src", result.data.current.condition['icon']);
-            $('#todayMinTemp').html(result.data.forecast['forecastday'][0].day['mintemp_c'] + ' - ' + result.data.forecast['forecastday'][0].day['maxtemp_c']+ '°C')
-            $('#day1Date').text(todayPlusOne.toLocaleDateString("en-GB", dateDisplay));
-            $('#day1Icon').attr("src", result.data.forecast.forecastday[1].day.condition.icon);
-            $('#day1MinTemp').text(result.data.forecast.forecastday[1].day['mintemp_c'] + ' - ' + result.data.forecast.forecastday[1].day['maxtemp_c'] + '°C'); 
-            $('#day2Date').text(todayPlusTwo.toLocaleDateString("en-GB", dateDisplay));
-            $('#day2Icon').attr("src", result.data.forecast.forecastday[2].day.condition.icon);
-            $('#day2MinTemp').text(result.data.forecast.forecastday[2].day['mintemp_c'] + ' - ' + result.data.forecast.forecastday[2].day['maxtemp_c'] + '°C');
-          }}},
-          error: function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR);
-          }
-        })}
+    url: "php/getCountryInfo.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {country: $('#selCountry').val()},
+    success: function(result) {
 
+      //console.log(JSON.stringify(result));
+
+    if (result.status.name == "ok") {
+      capital = result['data'][0]['capital'];
+      country = result['data'][0]['countryName']
+      
+      getWeather (capital);
+
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  })
 }).addTo(map); 
+
+// this is a function to get weather from the capital, nested above, separated for clarity:
+
+function getWeather (capital){
+  $.ajax({
+    url: "php/getWeather.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {capital: capital},
+
+    success: function(result) {
+  
+    //console.log(JSON.stringify(result));
+    
+    if (result.status.name == "ok") { 
+      if (result.data === null){
+        $('#weatherModalLabel').html('information unavailable for ' + country);
+
+      $('#todayIcon').attr("src",'');
+      $('#todayMinTemp').html('')
+      
+        $('#day1Date').text('');
+        $('#day1Icon').attr("src",'');
+        $('#day1MinTemp').text('');
+        
+        $('#day2Date').text('');
+        $('#day2Icon').attr("src",'');
+        $('#day2MinTemp').text('');
+      }
+      else
+      {
+      $('#weatherModalLabel').html(result.data.location.name + ", " + result.data.location.country);
+
+      $('#todayIcon').attr("src", result.data.current.condition['icon']);
+      $('#todayMinTemp').html(result.data.forecast['forecastday'][0].day['mintemp_c'] + ' - ' + result.data.forecast['forecastday'][0].day['maxtemp_c']+ '°C')
+      
+        $('#day1Date').text(todayPlusOne.toLocaleDateString("en-GB", dateDisplay));
+        $('#day1Icon').attr("src", result.data.forecast.forecastday[1].day.condition.icon);
+        $('#day1MinTemp').text(result.data.forecast.forecastday[1].day['mintemp_c'] + ' - ' + result.data.forecast.forecastday[1].day['maxtemp_c'] + '°C');
+        
+        $('#day2Date').text(todayPlusTwo.toLocaleDateString("en-GB", dateDisplay));
+        $('#day2Icon').attr("src", result.data.forecast.forecastday[2].day.condition.icon);
+        $('#day2MinTemp').text(result.data.forecast.forecastday[2].day['mintemp_c'] + ' - ' + result.data.forecast.forecastday[2].day['maxtemp_c'] + '°C');
+      }
+      }},
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR);
+      }
+    })}
 
 // wiki modal
 
 L.easyButton('fa-w fa-lg', function(btn, map){
   $('#wikiModal').modal("show"); 
   $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
-  console.log(country);
-  if (country === ''){
-    $('#countryNameb').html('no information available');
-    $('#wikiData').html('');
-  }
-  else{
-        $('#countryNameb').html(country);
-        $('#wikiData').html('no information available');   
-        country = country.replace(/\s/g, '-');
-        $.ajax({
-          url: "php/getWikiCountryInfo.php",
-          type: 'POST',
-          dataType: 'json',
-          data: {
-            country: country
-          },
-          success: function(result) {
-        
-          console.log(JSON.stringify(result));
+  $.ajax({
+    url: "php/getCountryInfo.php",
+    type: 'POST',
+    dataType: 'json',
+    data: {country: $('#selCountry').val()},
+    success: function(result) {
+
+      // console.log(JSON.stringify(result));
+
+    country = result['data'][0]['countryName'];
+    if (result.status.name == "ok") {
+        $('#countryNameb').html(country);   
+        wikiCountryData (country);     
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }
+  })   
+}).addTo(map); 
+
+//this is embedded above but I've separated it as a function so it is clearer:
+
+function wikiCountryData(country){
+  country = country.replace(/\s/g, '-');
+  
+  $.ajax({
+      url: "php/getWikiCountryInfo.php",
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        country: country
+      },
+      success: function(result) {
     
-        if (result.status.name == "ok") {
-          if (country == 'Palestine')
-          {
-            country = 'State-of-Palestine';
-          }  
-        for (let i = 0; i < result.data.length; i ++){
-          
-          //populating the wiki popup 
-          let newData = result.data[i]
-          let summary = newData['summary'];
-          
-            //not all the titles from the geo.JSON match to the wiki find, so I've made an exception for Palestine but would like a general solution. The includes method below is not sufficient. I could use country code but this does appear on some other entries.  
-            country = country.replace(/-/g, ' ');
-            
-            if (newData['title'] == country )
-            //if ( newData['title'].includes(country))
-            {
-              summary = summary.substring(0, summary.length-6);
-              //console.log(summary);
-              $('#wikiData').html('<p>' + summary + '... ' + '<a id=\'wiki\' href=\'https://' + newData['wikipediaUrl'] + '\'>' + '(Wikipedia entry)' + '</a></p>'); 
-            }
+      // console.log(JSON.stringify(result));
+
+    if (result.status.name == "ok") {
+      if (country == 'Palestine')
+      {
+        country = 'State-of-Palestine';
+      }  
+    for (let i = 0; i < result.data.length; i ++){
+      
+      if (result.data[i]['countryCode'] == $('#selCountry').val()){
+      
+      //populating the wiki popup 
+      let newData = result.data[i]
+      let summary = newData['summary'];
+      
+        //not all the titles from the geo.JSON match to the wiki find, so I've made an exception for Palestine but would like a general solution. The includes method below is not sufficient. I could use country code but this does appear on some other entries.  
+        country = country.replace(/-/g, ' ');
+        
+        if (newData['title'] == country )
+        //if ( newData['title'].includes(country))
+        {
+          summary = summary.substring(0, summary.length-6);
+          //console.log(summary);
+          $('#wikiData').html('<p>' + summary + '... ' + '<a id=\'wiki\' href=\'https://' + newData['wikipediaUrl'] + '\'>' + '(Wikipedia entry)' + '</a></p>'); 
         }
       }
-    
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-          console.log(jqXHR);
-          }
-        })
-        country = country.replace(/-/g, ' ');
+    }}
 
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+      }
+    })
   }
-}).addTo(map); 
 
   //exchange rate modal: 
 
