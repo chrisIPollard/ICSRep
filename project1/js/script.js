@@ -544,19 +544,12 @@ L.easyButton('fa-newspaper fa-lg', function(btn, map){
       
     if (result.status.name == "ok") {
 
-      if (result.data.pagination.count == 0){
-        $('#news0').html('<span>no information available</span>');
-        $('#news1').html('');
-        $('#news2').html('');
-        $('#news3').html('');
-        $('#news4').html('');
-        }else{
           for (let n = 0; n < 5; n ++){
             if (n<4){
         $(`#news${n}`).html(`<a href='${result.data.data[n]['url']}'> ${result.data.data[n]['title']} </a><hr />`);}
         else
         {$(`#news${n}`).html(`<a href='${result.data.data[n]['url']}'> ${result.data.data[n]['title']} </a>`);}
-        }}
+        }
   }},
     error: function(jqXHR, textStatus, errorThrown) {
       console.log(jqXHR);
@@ -676,7 +669,3 @@ function getDays (code) {
     }
   })
 }
-
-
-
-
