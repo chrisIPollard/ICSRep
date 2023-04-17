@@ -572,7 +572,7 @@ L.easyButton('fa-regular fa-calendar fa-lg', function(btn, map){
           data: {code: countryCode},
           success: function(result) {
             
-            console.log(JSON.stringify(result));
+            //console.log(JSON.stringify(result));
       
           if (result.status.name == "ok") {
             $(`#daysData`).html(``);
