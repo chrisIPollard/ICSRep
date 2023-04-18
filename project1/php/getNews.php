@@ -1,17 +1,13 @@
 <?php
 
-    $queryString = http_build_query([
-        'access_key' => 'fd27801071497026a5481faae57b362a',
-        'countries' => $_REQUEST['country'],
-		'date' => date("Y-m-d",strtotime("-2 days"))
-      ]);
+	$executionStartTime = microtime(true);
 
-      $ch = curl_init(sprintf('%s?%s', 'http://api.mediastack.com/v1/news', $queryString));
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-      
-      $json = curl_exec($ch);
-      
-      curl_close($ch);
+	$url='https://api.worldnewsapi.com/search-news?api-key=81b819daeb034c46a0af3ab7232e1103&source-countries=' . $_REQUEST['country'];
+
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_URL,$url);
 
 	$result=curl_exec($ch);
 

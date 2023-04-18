@@ -502,6 +502,8 @@ L.easyButton('fa-newspaper fa-lg', function(btn, map){
   $('#newsModal').modal("show"); 
   $('.flag').html(`<span class='fi fi-${$('#selCountry').val().toLowerCase()}'></span>`);
   countryCode = $('#selCountry').val();
+  countrCode = countryCode.toLowerCase();
+  if (countryCode == 'uk'){countryCode = 'gb'}; 
   $.ajax({
     url: "php/getNews.php",
     type: 'POST',
@@ -512,12 +514,12 @@ L.easyButton('fa-newspaper fa-lg', function(btn, map){
       //console.log(JSON.stringify(result));
       
     if (result.status.name == "ok") {
-
+      
           for (let n = 0; n < 5; n ++){
             if (n<4){
-        $(`#news${n}`).html(`<a href='${result.data.data[n]['url']}'> ${result.data.data[n]['title']} </a><hr />`);}
+        $(`#news${n}`).html(`<a href='${result.data.news[n]['url']}'> ${result.data.news[n]['title']} </a><hr />`);}
         else
-        {$(`#news${n}`).html(`<a href='${result.data.data[n]['url']}'> ${result.data.data[n]['title']} </a>`);}
+        {$(`#news${n}`).html(`<a href='${result.data.news[n]['url']}'> ${result.data.news[n]['title']} </a>`);}
         }
   }},
     error: function(jqXHR, textStatus, errorThrown) {

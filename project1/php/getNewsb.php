@@ -2,7 +2,7 @@
 
 	$executionStartTime = microtime(true);
 
-	$url='http://api.mediastack.com/v1/news&access_key=fd27801071497026a5481faae57b362a&countries=' . $_REQUEST['country'] . '&date=' . date("Y-m-d",strtotime("-2 days"));
+	$url='https://api.worldnewsapi.com/search-news?api-key=81b819daeb034c46a0af3ab7232e1103&source-countries=' . $_REQUEST['country'];
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
