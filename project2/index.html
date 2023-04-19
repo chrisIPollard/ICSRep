@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Employee Information</title>
+
+</head>
+<body>
+
+<h1>Employee Information</h1>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Department</th>
+        <th>Location</th>
+    </tr>
+            <?php include 'connect.php'; ?>
+            <?php $results = mysql_query($conn, "SELECT * FROM employee_info"); ?>
+            <?php while ($row = mysql_fetch_array($results)) { ?>
+    <tr>
+        <td><?php echo $row['name']; ?></td>
+        <td><?php echo $row['department']; ?></td>
+        <td><?php echo $row['location']; ?></td>
+    </tr>
+
+    <?php } ?>
+</table>
+
+</body>
+</html>
