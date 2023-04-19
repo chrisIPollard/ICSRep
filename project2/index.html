@@ -15,7 +15,7 @@
         <th>Department</th>
         <th>Location</th>
     </tr>
-            <?php include 'connect.php'; ?>
+            <?php include 'PHP/config.php'; ?>
             <?php $results = mysql_query($conn, "SELECT * FROM employee_info"); ?>
             <?php while ($row = mysql_fetch_array($results)) { ?>
     <tr>
