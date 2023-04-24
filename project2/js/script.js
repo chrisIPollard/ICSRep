@@ -42,17 +42,11 @@ $(function getTableData(){
 	  for (let n = 0; n < data.length; n ++){
 		$('#tableData').append(`
 		<tr>
-		<td>
-			<span class="custom-checkbox">
-				<input type="checkbox" id="checkbox${n}" name="options[]" value="1">
-					<label for="checkbox${n}"></label>
-			</span>
-		</td>
-		<td>${data[n].firstName + ' ' + data[n].lastName}</td>
-		<td>${data[n].email}</td>
-		<td>${data[n].department}</td>
-		<td>${data[n].location}</td>
-		<td>
+		<td class="name">${data[n].firstName + ' ' + data[n].lastName}</td>
+		<td class="email">${data[n].email}</td>
+		<td class="department">${data[n].department}</td>
+		<td class="location">${data[n].location}</td>
+		<td class="actions">
 			<a href="#editEmployeeModal" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
 			<a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
 		</td>
