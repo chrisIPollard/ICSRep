@@ -60,3 +60,80 @@ $(function getTableData(){
 	  }
 	}); 
   });  
+
+//dropdown options in the add new employee modal:
+
+$(document).ready(()=>{
+	$('#addFormDepartment').change( () => {
+		var val = $('#addFormDepartment').val();
+		if (val == 'Accounting') {
+			$('#addFormLocation').val('Rome');
+		}
+		else if (val == 'Business Development') {
+			$('#addFormLocation').val('Paris');
+		}
+		else if (val == 'Engineering') {
+			$('#addFormLocation').val('Rome');
+		}
+		else if (val == 'Human Resources') {
+			$('#addFormLocation').val('London');
+		}
+		else if (val == 'Legal') {
+			$('#addFormLocation').val('London');
+		}
+		else if (val == 'Marketing') {
+			$('#addFormLocation').val('New york');
+		}
+		else if (val == 'Product Management') {
+			$('#addFormLocation').val('Paris');
+		}
+		else if (val == 'Research and Development') {
+			$('#addFormLocation').val('Paris');
+		}
+		else if (val == 'Sales') {
+			$('#addFormLocation').val('New York');
+		}
+		else if (val == 'Services') {
+			$('#addFormLocation').val('London');
+		}
+		else if (val == 'Support') {
+			$('#addFormLocation').val('Munich');
+		}
+		else if (val == 'Training') {
+			$('#addFormLocation').val('Munich');
+		}
+	}
+	)
+})
+
+//on submitting a completed form in the add employee modal: 
+
+$(document).ready(()=>{
+	$('#addFormSubmit').submit(
+		()=>{
+
+			$.ajax({
+				url: "php/insertEmployee.php",
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					firstName: $('#addFormFirstName').val,
+					surname: $('#addFormSurname').val,
+					email: $('#addFormEmail').val,
+					department: $('#addFormDepartment').val,
+					location: $('#addFormLocation').val
+				},
+				success: function(result) {
+			
+				  console.log(JSON.stringify(result));
+				  
+				if (result.status.name == "ok") {
+				  
+					
+			  }},
+				error: function(jqXHR, textStatus, errorThrown) {
+				  console.log(jqXHR);
+				}
+			  })
+		})
+})
