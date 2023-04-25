@@ -82,7 +82,7 @@ $(document).ready(()=>{
 			$('#addFormLocation').val('London');
 		}
 		else if (val == 'Marketing') {
-			$('#addFormLocation').val('New york');
+			$('#addFormLocation').val('New York');
 		}
 		else if (val == 'Product Management') {
 			$('#addFormLocation').val('Paris');
@@ -108,32 +108,30 @@ $(document).ready(()=>{
 
 //on submitting a completed form in the add employee modal: 
 
-$(document).ready(()=>{
 	$('#addFormSubmit').submit(
 		()=>{
-
-			$.ajax({
-				url: "php/insertEmployee.php",
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					firstName: $('#addFormFirstName').val,
-					surname: $('#addFormSurname').val,
-					email: $('#addFormEmail').val,
-					department: $('#addFormDepartment').val,
-					location: $('#addFormLocation').val
-				},
-				success: function(result) {
+				console.log('submit working');
+			// $.ajax({
+			// 	url: "php/insertEmployee.php",
+			// 	type: 'POST',
+			// 	dataType: 'json',
+			// 	data: {
+			// 		firstName: $('#addFormFirstName').val,
+			// 		surname: $('#addFormSurname').val,
+			// 		email: $('#addFormEmail').val,
+			// 		department: $('#addFormDepartment').val,
+			// 		location: $('#addFormLocation').val
+			// 	},
+			// 	success: function(result) {
 			
-				  console.log(JSON.stringify(result));
+			// 	  console.log(JSON.stringify(result));
 				  
-				if (result.status.name == "ok") {
+			// 	if (result.status.name == "ok") {
 				  
 					
-			  }},
-				error: function(jqXHR, textStatus, errorThrown) {
-				  console.log(jqXHR);
-				}
-			  })
+			//   }},
+			// 	error: function(jqXHR, textStatus, errorThrown) {
+			// 	  console.log(jqXHR);
+			// 	}
+			//   })
 		})
-})
