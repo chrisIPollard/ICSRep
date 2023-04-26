@@ -143,12 +143,12 @@ $(document).ready(()=>{
 })
 
 
-//on submitting a completed form in the add employee modal to update the database: 
+//on submitting a completed form in the add employee modal to updatew the database: 
+
 
 	$('#addFormSubmit').submit(
-		function(event) {
-			event.preventDefault();
-			console.log('submit working');
+		()=>{
+				console.log('submit working');
 			// $.ajax({
 			// 	url: "php/insertEmployee.php",
 			// 	type: 'POST',
