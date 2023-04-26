@@ -37,9 +37,9 @@
 	// SQL statement accepts parameters and so is prepared to avoid SQL injection.
 	// $_REQUEST used for development / debugging. Remember to change to $_POST for production
 
-	$query = $conn->prepare('INSERT INTO department (firstName, lastName, jobTitle, email, departmentID) VALUES(?,?,?,?,?)');
+	$query = $conn->prepare('INSERT INTO personnel (firstName, lastName, email, departmentID) VALUES(?,?,?,?)');
 
-	$query->bind_param("si", $_REQUEST['firstName'], $_REQUEST['surname'], '', $_REQUEST['email'], $_REQUEST['departmentID']);
+	$query->bind_param("sssi", $_REQUEST['firstName'], $_REQUEST['surname'], $_REQUEST['email'], $_REQUEST['departmentID']);
 
 	$query->execute();
 	

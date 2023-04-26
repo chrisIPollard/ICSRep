@@ -1,10 +1,16 @@
 
 //global variables:
+let databaseInfo;
+
 let editButtons;
 let editEmail;
-let databaseInfo;
 let editDepartment;
 let editLocation;
+
+let addFirstName;
+let addSurname;
+let addEmail;
+let addDepartmentID;
 
 
 $(document).ready(function(){
@@ -46,7 +52,6 @@ $(function getTableData(){
 		console.log(result.data);
 		databaseInfo = result.data;
 	  
-	  console.log ('array length '+ databaseInfo.length);
 	  for (let n = 0; n < databaseInfo.length; n ++){
 		$('#tableData').append(`
 		<tr>
@@ -145,33 +150,35 @@ $(document).ready(()=>{
 
 //on submitting a completed form in the add employee modal to update the database: 
 
+$(function (){
 	$('#addFormSubmit').submit(
+
 		function(event) {
 			event.preventDefault();
-			console.log('submit working');
-			// $.ajax({
-			// 	url: "php/insertEmployee.php",
-			// 	type: 'POST',
-			// 	dataType: 'json',
-			// 	data: {
-			// 		firstName: $('#addFormFirstName').val,
-			// 		surname: $('#addFormSurname').val,
-			// 		email: $('#addFormEmail').val,
-			// 		departmentID: $('#addFormDepartmentID').val
-			// 	},
-			// 	success: function(result) {
+
+			$.ajax({
+				url: "php/insertEmployee.php",
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					firstName: $('#addFormFirstName').val(),
+					surname: $('#addFormSurname').val(),
+					email: $('#addFormEmail').val(),
+					departmentID: $('#addFormDepartmentID').val()
+				},
+				success: function(result) {
 			
-			// 	  console.log(JSON.stringify(result));
+				  console.log(JSON.stringify(result));
 				  
-			// 	if (result.status.name == "ok") {
+				if (result.status.name == "ok") {
 				  
 					
-			//   }},
-			// 	error: function(jqXHR, textStatus, errorThrown) {
-			// 	  console.log(jqXHR);
-			// 	}
-			//   })
-		})
+			  }},
+				error: function(jqXHR, textStatus, errorThrown) {
+				  console.log(jqXHR);
+				}
+			  })
+		})})
 
 
   
