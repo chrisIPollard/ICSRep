@@ -117,7 +117,13 @@ $(getTableData());
 
 function deleteEntry(id){
 	place = id.replace(/[^0-9]/g, '');
-
+	$("#lastReview").html(
+		`<ul>${databaseInfo[place].firstName} ${databaseInfo[place].lastName}</ul>
+		<ul>${databaseInfo[place].email}</ul>
+		<ul>${databaseInfo[place].department}</ul>
+		<ul>${databaseInfo[place].location}</ul>
+		`
+	)
 	$("#finalDelete").click(function() {
 			
 	$.ajax({
@@ -125,7 +131,7 @@ function deleteEntry(id){
 		type: 'POST',
 		dataType: 'json',
 		data: {
-			email: databaseInfo[place].email
+			id: databaseInfo[place].id
 		},
 		success: function(result) {
 	

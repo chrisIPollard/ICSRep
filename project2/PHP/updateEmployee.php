@@ -24,12 +24,9 @@
 
 	}	
 
-	// SQL statement accepts parameters and so is prepared to avoid SQL injection.
-	// $_REQUEST used for development / debugging. Remember to change to $_POST for production
-
-	$query = $conn->prepare('DELETE FROM personnel WHERE id = ?');
+	$query = $conn->prepare('UPDATE personnel SET firstName = ?, lastName = ?, email = ?, departmentID = ? WHERE id = ?');
 	
-	$query->bind_param("i", $_REQUEST['id']);
+	$query->bind_param("sssii", $_REQUEST['firstName'], $_REQUEST['lastName'], $_REQUEST['id']);
 
 	$query->execute();
 	
@@ -52,7 +49,10 @@
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
-	$output['data'] = [];
+	$output['data'] = [
+		'firstName' => $_REQUEST['firstName'],
+		'lastName' => $_REQUEST['lastName']
+	];
 	
 	mysqli_close($conn);
 
