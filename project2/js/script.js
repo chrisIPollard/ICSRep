@@ -7,6 +7,9 @@ let editEmail;
 let editDepartment;
 let editLocation;
 
+let deleteButtons;
+let place;
+
 let addFirstName;
 let addSurname;
 let addEmail;
@@ -39,8 +42,11 @@ $(document).ready(function(){
 
 //populating table:
 
-$(function getTableData(){
-  
+//1) Defining a function: 
+function getTableData(){
+	
+	$('#tableData').empty();
+
 	$.ajax({
 	  url: 'php/getAll.php',
 	  type: 'GET',
@@ -61,26 +67,40 @@ $(function getTableData(){
 		<td class="location">${databaseInfo[n].location}</td>
 		<td class="actions">
 			<a href="#editEmployeeModal" class="editButton" data-toggle="modal"><i class="material-icons" id='editButton${n}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-			<a href="#deleteEmployeeModal" class="deleteButton" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+			<a href="#deleteEmployeeModal" class="deleteButton" data-toggle="modal"><i class="material-icons" id='deleteButton${n}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
 		</td>
 		</tr>
 		`);
 		}
 
-		// populating the edit modal with the editButton class: 
+		// running a function for the delete button & modal with deleteButton class: 
+
+		deleteButtons = document.querySelectorAll('.deleteButton');
+
+		deleteButtons.forEach(deleteButton => {
+		deleteButton.addEventListener('click', event => {
+		deleteEntry(event.target.id);
+
+		})})
+
+		// function for the edit button & modal with the editButton class: 
 
 		editButtons = document.querySelectorAll('.editButton');
 
 		editButtons.forEach(editButton => {
 		editButton.addEventListener('click', event => {
 		console.log(event.target.id);
-		// 	const row = event.target.parentNode.parentNode.nextElementSibling;
+
+			// 	const row = event.target.parentNode.parentNode.nextElementSibling;
 		// editEmail = row.querySelector('.email').textContent;
 		// editDepartment = row.querySelector('.department').textContent;
 		// editLocation = row.querySelector('.location').textContent;
 		// console.log(editEmail, editDepartment, editLocation); 
-	});
-  });
+
+	});}
+	
+	
+	);
 
 	  },
    
@@ -88,7 +108,43 @@ $(function getTableData(){
 		console.log(jqXHR);
 	  }
 	}); 
-  });  
+  }
+
+// 2) running the function on startup:
+$(getTableData()); 
+
+// making a function for the delete button & modal with deleteButton class: 
+
+function deleteEntry(id){
+	place = id.replace(/[^0-9]/g, '');
+
+	$("#finalDelete").click(function() {
+			
+	$.ajax({
+		url: "php/deleteEmployee.php",
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			email: databaseInfo[place].email
+		},
+		success: function(result) {
+	
+		//console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+		  
+			getTableData();
+			
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+
+	  $("#deleteEmployeeModal").modal('hide');
+	})
+}
+;
 
 //closed dropdown options in the add new employee modal:
 
@@ -147,7 +203,6 @@ $(document).ready(()=>{
 	)
 })
 
-
 //on submitting a completed form in the add employee modal to update the database: 
 
 $(function (){
@@ -168,17 +223,24 @@ $(function (){
 				},
 				success: function(result) {
 			
-				  console.log(JSON.stringify(result));
+				//console.log(JSON.stringify(result));
 				  
 				if (result.status.name == "ok") {
 				  
+					getTableData();
 					
+
 			  }},
 				error: function(jqXHR, textStatus, errorThrown) {
 				  console.log(jqXHR);
 				}
 			  })
+			  this.reset();
+			  $("#addEmployeeModal").modal('hide');
+
 		})})
+
+
 
 
   
