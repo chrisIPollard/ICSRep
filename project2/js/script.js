@@ -1,6 +1,7 @@
 
 //global variables:
 let databaseInfo;
+let departmentdatabaseInfo;
 
 let editButtons;
 let editEmail;
@@ -124,6 +125,7 @@ function getTableData(){
 		  
 		if (result.status.name == "ok") {
 
+			departmentDatabaseInfo = result.data;
 			result.data.forEach(item => {
 			  departments[item.id] = item.name;
 			});
@@ -185,6 +187,7 @@ function getTableData(){
 		  console.log(jqXHR);
 		}
 	  })
+
   }
 
 // 2) running the function on startup:
@@ -233,58 +236,33 @@ function deleteEntry(id){
 
 $(document).ready(()=>{
 	
+//managing the form auto selections: 
+
 	$('#addFormDepartment').change( () => {
-		var val = $('#addFormDepartment').val();
-		if (val == 'Accounting') {
-			$('#addFormLocation').val('Rome');
-			$('#addFormDepartmentID').val('5');
-		}
-		else if (val == 'Business Development') {
-			$('#addFormLocation').val('Paris');
-			$('#addFormDepartmentID').val('3');
-		}
-		else if (val == 'Engineering') {
-			$('#addFormLocation').val('Rome');
-			$('#addFormDepartmentID').val('5');
-		}
-		else if (val == 'Human Resources') {
-			$('#addFormLocation').val('London');
-			$('#addFormDepartmentID').val('1');
-		}
-		else if (val == 'Legal') {
-			$('#addFormLocation').val('London');
-			$('#addFormDepartmentID').val('1');
-		}
-		else if (val == 'Marketing') {
-			$('#addFormLocation').val('New York');
-			$('#addFormDepartmentID').val('2');
-		}
-		else if (val == 'Product Management') {
-			$('#addFormLocation').val('Paris');
-			$('#addFormDepartmentID').val('3');
-		}
-		else if (val == 'Research and Development') {
-			$('#addFormLocation').val('Paris');
-			$('#addFormDepartmentID').val('3');
-		}
-		else if (val == 'Sales') {
-			$('#addFormLocation').val('New York');
-			$('#addFormDepartmentID').val('2');
-		}
-		else if (val == 'Services') {
-			$('#addFormLocation').val('London');
-			$('#addFormDepartmentID').val('1');
-		}
-		else if (val == 'Support') {
-			$('#addFormLocation').val('Munich');
-			$('#addFormDepartmentID').val('4');
-		}
-		else if (val == 'Training') {
-			$('#addFormLocation').val('Munich');
-			$('#addFormDepartmentID').val('4');
-		}
-	}
-	)
+		
+		for (let key in departments) {
+		  if (departments[key] == $('#addFormDepartment').val()) {
+			$('#addFormDepartmentID').val(key);
+		  }}
+
+		  console.log($('#addFormDepartmentID').val())
+
+		  console.log(departmentDatabaseInfo.length);
+
+		  for (x=0; x<departmentDatabaseInfo.length; x++){
+			console.log(departmentDatabaseInfo[x].id);
+			console.log(departmentDatabaseInfo[x].locationID);
+			if (departmentDatabaseInfo[x].id == $('#addFormDepartmentID').val()){
+				$('#addFormLocation').val(locations[departmentDatabaseInfo[x].locationID]);}
+			
+				
+			
+		  }
+		
+	 
+			
+})
+
 })
 
 //on submitting a completed form in the add employee modal to update the database: 
