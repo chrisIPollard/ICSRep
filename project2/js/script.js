@@ -15,6 +15,9 @@ let addSurname;
 let addEmail;
 let addDepartmentID;
 
+let departments = {};
+let locations = {};
+
 
 $(document).ready(function(){
 	// Activate tooltip
@@ -54,7 +57,6 @@ function getTableData(){
 	  
 	  success: function(result) {
 	  
-	  console.log(result);
 		console.log(result.data);
 		databaseInfo = result.data;
 	  
@@ -108,6 +110,81 @@ function getTableData(){
 		console.log(jqXHR);
 	  }
 	}); 
+
+	//getting department info to populate the automatic drop down options:
+
+	$.ajax({
+		url: "php/getAllDepartments.php",
+		type: 'GET',
+		dataType: 'json',
+	
+		success: function(result) {
+	
+		console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+
+			result.data.forEach(item => {
+			  departments[item.id] = item.name;
+			});
+
+			$('#addFormDepartmentID').empty();
+			$('#addFormDepartmentID').html(`<option value="" disabled selected>Choose Department</option>`);
+
+			console.log(departments);
+			for (const key in departments) {
+				$('#addFormDepartmentID').append(`<option value="${key}">${key}</option>`);
+			  }		
+
+			  $('#addFormDepartment').empty();
+			  $('#addFormDepartment').html(`<option value="" disabled selected>Select</option>`);
+  
+			  console.log(departments);
+			  for (const key in departments) {
+				  $('#addFormDepartment').append(`<option value="${departments[key]}">${departments[key]}</option>`);
+				}		
+
+			console.log(departments);
+			
+
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+
+	  //getting location info to populate the automatic drop down options:
+
+	$.ajax({
+		url: "php/getAllLocations.php",
+		type: 'GET',
+		dataType: 'json',
+	
+		success: function(result) {
+	
+		//console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+
+			result.data.forEach(item => {
+			  locations[item.id] = item.name;
+			});
+
+			  $('#addFormLocation').empty();
+			  $('#addFormLocation').html(`<option value="" disabled selected>Select</option>`);
+  
+			  for (const key in locations) {
+				  $('#addFormLocation').append(`<option value="${locations[key]}">${locations[key]}</option>`);
+				}		
+
+			console.log(locations);
+			
+
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
   }
 
 // 2) running the function on startup:
@@ -155,6 +232,7 @@ function deleteEntry(id){
 //closed dropdown options in the add new employee modal:
 
 $(document).ready(()=>{
+	
 	$('#addFormDepartment').change( () => {
 		var val = $('#addFormDepartment').val();
 		if (val == 'Accounting') {
@@ -228,8 +306,6 @@ $(function (){
 					departmentID: $('#addFormDepartmentID').val()
 				},
 				success: function(result) {
-			
-				//console.log(JSON.stringify(result));
 				  
 				if (result.status.name == "ok") {
 				  
