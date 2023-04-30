@@ -1,10 +1,23 @@
 
 //global variables:
+let databaseInfo;
+let departmentdatabaseInfo;
+
 let editButtons;
 let editEmail;
-let databaseInfo;
 let editDepartment;
 let editLocation;
+
+let deleteButtons;
+let place;
+
+let addFirstName;
+let addSurname;
+let addEmail;
+let addDepartmentID;
+
+let departments = {};
+let locations = {};
 
 
 $(document).ready(function(){
@@ -33,8 +46,11 @@ $(document).ready(function(){
 
 //populating table:
 
-$(function getTableData(){
-  
+//1) Defining a function: 
+function getTableData(){
+	
+	$('#tableData').empty();
+
 	$.ajax({
 	  url: 'php/getAll.php',
 	  type: 'GET',
@@ -42,11 +58,9 @@ $(function getTableData(){
 	  
 	  success: function(result) {
 	  
-	  console.log(result);
 		console.log(result.data);
 		databaseInfo = result.data;
 	  
-	  console.log ('array length '+ databaseInfo.length);
 	  for (let n = 0; n < databaseInfo.length; n ++){
 		$('#tableData').append(`
 		<tr>
@@ -56,26 +70,29 @@ $(function getTableData(){
 		<td class="location">${databaseInfo[n].location}</td>
 		<td class="actions">
 			<a href="#editEmployeeModal" class="editButton" data-toggle="modal"><i class="material-icons" id='editButton${n}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-			<a href="#deleteEmployeeModal" class="deleteButton" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+			<a href="#deleteEmployeeModal" class="deleteButton" data-toggle="modal"><i class="material-icons" id='deleteButton${n}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
 		</td>
 		</tr>
 		`);
 		}
 
-		// populating the edit modal with the editButton class: 
+		// running a function for the employee delete button & modal with deleteButton class: 
+
+		deleteButtons = document.querySelectorAll('.deleteButton');
+
+		deleteButtons.forEach(deleteButton => {
+		deleteButton.addEventListener('click', event => {
+		deleteEntry(event.target.id);
+		})})
+
+		// function for the edit button & modal with the editButton class: 
 
 		editButtons = document.querySelectorAll('.editButton');
 
 		editButtons.forEach(editButton => {
 		editButton.addEventListener('click', event => {
-		console.log(event.target.id);
-		// 	const row = event.target.parentNode.parentNode.nextElementSibling;
-		// editEmail = row.querySelector('.email').textContent;
-		// editDepartment = row.querySelector('.department').textContent;
-		// editLocation = row.querySelector('.location').textContent;
-		// console.log(editEmail, editDepartment, editLocation); 
-	});
-  });
+		editEntry(event.target.id);
+		})})
 
 	  },
    
@@ -83,95 +100,221 @@ $(function getTableData(){
 		console.log(jqXHR);
 	  }
 	}); 
-  });  
+
+	//getting department info to populate the automatic drop down options:
+
+	$.ajax({
+		url: "php/getAllDepartments.php",
+		type: 'GET',
+		dataType: 'json',
+	
+		success: function(result) {
+	
+		//console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+
+			departmentDatabaseInfo = result.data;
+			result.data.forEach(item => {
+			  departments[item.id] = item.name;
+			});
+
+			$('#addFormDepartmentID', '#editFormDepartmentID').empty();
+			$('#addFormDepartmentID').html(`<option value="" disabled selected>Choose Department</option>`);
+
+			for (const key in departments) {
+				$('#addFormDepartmentID', '#editFormDepartmentID').append(`<option value="${key}">${key}</option>`);
+			  }		
+
+			  $('#addFormDepartment', '#editFormDepartment').empty();
+			  $('#addFormDepartment').html(`<option value="" disabled selected>Select</option>`);
+
+			  for (const key in departments) {
+				  $('#addFormDepartment', '#editFormDepartment').append(`<option value="${departments[key]}">${departments[key]}</option>`);
+				}		
+
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+
+	  //getting location info to populate the automatic drop down options:
+
+	$.ajax({
+		url: "php/getAllLocations.php",
+		type: 'GET',
+		dataType: 'json',
+	
+		success: function(result) {
+	
+		//console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+
+			result.data.forEach(item => {
+			  locations[item.id] = item.name;
+			});
+
+			  $('#addFormLocation', '#editFormLocation').empty();
+			  $('#addFormLocation').html(`<option value="" disabled selected>Select</option>`);
+  
+			  for (const key in locations) {
+				  $('#addFormLocation', '#editFormLocation').append(`<option value="${locations[key]}">${locations[key]}</option>`);
+				}		
+
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+
+  }
+
+// 2) running the function on startup:
+$(getTableData()); 
+
+// this function is for the employee delete buttons & modal with deleteButton class: 
+
+function deleteEntry(id){
+	place = id.replace(/[^0-9]/g, '');
+	$("#lastReview").html(
+		`<ul>${databaseInfo[place].firstName} ${databaseInfo[place].lastName}</ul>
+		<ul>${databaseInfo[place].email}</ul>
+		<ul>${databaseInfo[place].department}</ul>
+		<ul>${databaseInfo[place].location}</ul>
+		`
+	)
+	$("#finalDelete").click(function() {
+			
+	$.ajax({
+		url: "php/deleteEmployee.php",
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			id: databaseInfo[place].id
+		},
+		success: function(result) {
+	
+		//console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+		  
+			getTableData();
+			
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+
+	  $("#deleteEmployeeModal").modal('hide');
+	})
+};
+
+// this function is for the employee edit buttons & modal with editButton class: 
+
+function editEntry(id){
+	place = id.replace(/[^0-9]/g, '');
+
+	$('#editFormFirstName').val(databaseInfo[place].firstName);
+	$('#editFormSurname').val(databaseInfo[place].lastName);
+	$('#editFormEmail').val(databaseInfo[place].email);
+	$('#editFormDepartment').val(databaseInfo[place].department);
+
+
+	$("#editSave").click(function() {
+			
+	$.ajax({
+		url: "php/deleteEmployee.php",
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			id: databaseInfo[place].id
+		},
+		success: function(result) {
+	
+		//console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+		  
+			getTableData();
+			
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+
+	  $("#deleteEmployeeModal").modal('hide');
+	})
+}
+;
 
 //closed dropdown options in the add new employee modal:
 
 $(document).ready(()=>{
+	
+//managing the form auto selections: 
+
 	$('#addFormDepartment').change( () => {
-		var val = $('#addFormDepartment').val();
-		if (val == 'Accounting') {
-			$('#addFormLocation').val('Rome');
-			$('#addFormDepartmentID').val('5');
-		}
-		else if (val == 'Business Development') {
-			$('#addFormLocation').val('Paris');
-			$('#addFormDepartmentID').val('3');
-		}
-		else if (val == 'Engineering') {
-			$('#addFormLocation').val('Rome');
-			$('#addFormDepartmentID').val('5');
-		}
-		else if (val == 'Human Resources') {
-			$('#addFormLocation').val('London');
-			$('#addFormDepartmentID').val('1');
-		}
-		else if (val == 'Legal') {
-			$('#addFormLocation').val('London');
-			$('#addFormDepartmentID').val('1');
-		}
-		else if (val == 'Marketing') {
-			$('#addFormLocation').val('New York');
-			$('#addFormDepartmentID').val('2');
-		}
-		else if (val == 'Product Management') {
-			$('#addFormLocation').val('Paris');
-			$('#addFormDepartmentID').val('3');
-		}
-		else if (val == 'Research and Development') {
-			$('#addFormLocation').val('Paris');
-			$('#addFormDepartmentID').val('3');
-		}
-		else if (val == 'Sales') {
-			$('#addFormLocation').val('New York');
-			$('#addFormDepartmentID').val('2');
-		}
-		else if (val == 'Services') {
-			$('#addFormLocation').val('London');
-			$('#addFormDepartmentID').val('1');
-		}
-		else if (val == 'Support') {
-			$('#addFormLocation').val('Munich');
-			$('#addFormDepartmentID').val('4');
-		}
-		else if (val == 'Training') {
-			$('#addFormLocation').val('Munich');
-			$('#addFormDepartmentID').val('4');
-		}
-	}
-	)
+		
+		for (let key in departments) {
+		  if (departments[key] == $('#addFormDepartment').val()) {
+			$('#addFormDepartmentID').val(key);
+		  }}
+
+		  for (x=0; x<departmentDatabaseInfo.length; x++){
+			
+			if (departmentDatabaseInfo[x].id == $('#addFormDepartmentID').val()){
+				$('#addFormLocation').val(locations[departmentDatabaseInfo[x].locationID]);}
+			
+				
+			
+		  }
+		
+	 
+			
 })
 
+})
 
-//on submitting a completed form in the add employee modal to updatew the database: 
+//on submitting a completed form in the add employee modal to update the database: 
 
-
+$(function (){
 	$('#addFormSubmit').submit(
-		()=>{
-				console.log('submit working');
-			// $.ajax({
-			// 	url: "php/insertEmployee.php",
-			// 	type: 'POST',
-			// 	dataType: 'json',
-			// 	data: {
-			// 		firstName: $('#addFormFirstName').val,
-			// 		surname: $('#addFormSurname').val,
-			// 		email: $('#addFormEmail').val,
-			// 		departmentID: $('#addFormDepartmentID').val
-			// 	},
-			// 	success: function(result) {
-			
-			// 	  console.log(JSON.stringify(result));
+
+		function(event) {
+			event.preventDefault();
+
+			$.ajax({
+				url: "php/insertEmployee.php",
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					firstName: $('#addFormFirstName').val(),
+					surname: $('#addFormSurname').val(),
+					email: $('#addFormEmail').val(),
+					departmentID: $('#addFormDepartmentID').val()
+				},
+				success: function(result) {
 				  
-			// 	if (result.status.name == "ok") {
+				if (result.status.name == "ok") {
 				  
+					getTableData();
 					
-			//   }},
-			// 	error: function(jqXHR, textStatus, errorThrown) {
-			// 	  console.log(jqXHR);
-			// 	}
-			//   })
-		})
+
+			  }},
+				error: function(jqXHR, textStatus, errorThrown) {
+				  console.log(jqXHR);
+				}
+			  })
+			  this.reset();
+			  $("#addEmployeeModal").modal('hide');
+
+		})})
+
+
 
 
   

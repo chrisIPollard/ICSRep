@@ -76,14 +76,13 @@ function getTableData(){
 		`);
 		}
 
-		// running a function for the delete button & modal with deleteButton class: 
+		// running a function for the employee delete button & modal with deleteButton class: 
 
 		deleteButtons = document.querySelectorAll('.deleteButton');
 
 		deleteButtons.forEach(deleteButton => {
 		deleteButton.addEventListener('click', event => {
 		deleteEntry(event.target.id);
-
 		})})
 
 		// function for the edit button & modal with the editButton class: 
@@ -92,18 +91,8 @@ function getTableData(){
 
 		editButtons.forEach(editButton => {
 		editButton.addEventListener('click', event => {
-		console.log(event.target.id);
-
-			// 	const row = event.target.parentNode.parentNode.nextElementSibling;
-		// editEmail = row.querySelector('.email').textContent;
-		// editDepartment = row.querySelector('.department').textContent;
-		// editLocation = row.querySelector('.location').textContent;
-		// console.log(editEmail, editDepartment, editLocation); 
-
-	});}
-	
-	
-	);
+		editEntry(event.target.id);
+		})})
 
 	  },
    
@@ -121,7 +110,7 @@ function getTableData(){
 	
 		success: function(result) {
 	
-		console.log(JSON.stringify(result));
+		//console.log(JSON.stringify(result));
 		  
 		if (result.status.name == "ok") {
 
@@ -133,21 +122,16 @@ function getTableData(){
 			$('#addFormDepartmentID').empty();
 			$('#addFormDepartmentID').html(`<option value="" disabled selected>Choose Department</option>`);
 
-			console.log(departments);
 			for (const key in departments) {
 				$('#addFormDepartmentID').append(`<option value="${key}">${key}</option>`);
 			  }		
 
 			  $('#addFormDepartment').empty();
 			  $('#addFormDepartment').html(`<option value="" disabled selected>Select</option>`);
-  
-			  console.log(departments);
+
 			  for (const key in departments) {
 				  $('#addFormDepartment').append(`<option value="${departments[key]}">${departments[key]}</option>`);
 				}		
-
-			console.log(departments);
-			
 
 	  }},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -179,9 +163,6 @@ function getTableData(){
 				  $('#addFormLocation').append(`<option value="${locations[key]}">${locations[key]}</option>`);
 				}		
 
-			console.log(locations);
-			
-
 	  }},
 		error: function(jqXHR, textStatus, errorThrown) {
 		  console.log(jqXHR);
@@ -193,7 +174,7 @@ function getTableData(){
 // 2) running the function on startup:
 $(getTableData()); 
 
-// making a function for the delete button & modal with deleteButton class: 
+// this function is for the employee delete buttons & modal with deleteButton class: 
 
 function deleteEntry(id){
 	place = id.replace(/[^0-9]/g, '');
@@ -205,6 +186,44 @@ function deleteEntry(id){
 		`
 	)
 	$("#finalDelete").click(function() {
+			
+	$.ajax({
+		url: "php/deleteEmployee.php",
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			id: databaseInfo[place].id
+		},
+		success: function(result) {
+	
+		//console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+		  
+			getTableData();
+			
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+
+	  $("#deleteEmployeeModal").modal('hide');
+	})
+};
+
+// this function is for the employee edit buttons & modal with editButton class: 
+
+function editEntry(id){
+	place = id.replace(/[^0-9]/g, '');
+
+	$('#editFormFirstName').val(databaseInfo[place].firstName);
+	$('#editFormSurname').val(databaseInfo[place].lastName);
+	$('#editFormEmail').val(databaseInfo[place].email);
+	$('#editFormDepartment').val(databaseInfo[place].department);
+
+
+	$("#editSave").click(function() {
 			
 	$.ajax({
 		url: "php/deleteEmployee.php",
@@ -245,13 +264,8 @@ $(document).ready(()=>{
 			$('#addFormDepartmentID').val(key);
 		  }}
 
-		  console.log($('#addFormDepartmentID').val())
-
-		  console.log(departmentDatabaseInfo.length);
-
 		  for (x=0; x<departmentDatabaseInfo.length; x++){
-			console.log(departmentDatabaseInfo[x].id);
-			console.log(departmentDatabaseInfo[x].locationID);
+			
 			if (departmentDatabaseInfo[x].id == $('#addFormDepartmentID').val()){
 				$('#addFormLocation').val(locations[departmentDatabaseInfo[x].locationID]);}
 			
