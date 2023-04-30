@@ -119,18 +119,18 @@ function getTableData(){
 			  departments[item.id] = item.name;
 			});
 
-			$('#addFormDepartmentID').empty();
+			$('#addFormDepartmentID, #editFormDepartmentID').empty();
 			$('#addFormDepartmentID').html(`<option value="" disabled selected>Choose Department</option>`);
-
+			
 			for (const key in departments) {
-				$('#addFormDepartmentID').append(`<option value="${key}">${key}</option>`);
+				$('#addFormDepartmentID, #editFormDepartmentID').append(`<option value="${key}">${key}</option>`);
 			  }		
 
-			  $('#addFormDepartment').empty();
+			  $('#addFormDepartment, #editFormDepartment').empty();
 			  $('#addFormDepartment').html(`<option value="" disabled selected>Select</option>`);
 
 			  for (const key in departments) {
-				  $('#addFormDepartment').append(`<option value="${departments[key]}">${departments[key]}</option>`);
+				  $('#addFormDepartment, #editFormDepartment').append(`<option value="${departments[key]}">${departments[key]}</option>`);
 				}		
 
 	  }},
@@ -156,11 +156,11 @@ function getTableData(){
 			  locations[item.id] = item.name;
 			});
 
-			  $('#addFormLocation').empty();
+			  $('#addFormLocation, #editFormLocation').empty();
 			  $('#addFormLocation').html(`<option value="" disabled selected>Select</option>`);
   
 			  for (const key in locations) {
-				  $('#addFormLocation').append(`<option value="${locations[key]}">${locations[key]}</option>`);
+				  $('#addFormLocation, #editFormLocation').append(`<option value="${locations[key]}">${locations[key]}</option>`);
 				}		
 
 	  }},
@@ -255,9 +255,13 @@ function editEntry(id){
 
 $(document).ready(()=>{
 	
-//managing the form auto selections: 
+//managing the modal form auto selections (duplication here can be replaced with a function): 
 
-	$('#addFormDepartment').change( () => {
+	$('#addFormDepartment').change( 
+		
+		
+
+		() => {
 		
 		for (let key in departments) {
 		  if (departments[key] == $('#addFormDepartment').val()) {
@@ -269,13 +273,24 @@ $(document).ready(()=>{
 			if (departmentDatabaseInfo[x].id == $('#addFormDepartmentID').val()){
 				$('#addFormLocation').val(locations[departmentDatabaseInfo[x].locationID]);}
 			
-				
-			
 		  }
-		
-	 
-			
 })
+
+$('#editFormDepartment').change( () => {
+		
+	for (let key in departments) {
+	  if (departments[key] == $('#editFormDepartment').val()) {
+		$('#editFormDepartmentID').val(key);
+	  }}
+
+	  for (x=0; x<departmentDatabaseInfo.length; x++){
+		
+		if (departmentDatabaseInfo[x].id == $('#editFormDepartmentID').val()){
+			$('#editFormLocation').val(locations[departmentDatabaseInfo[x].locationID]);}
+		
+	  }
+
+	})
 
 })
 
