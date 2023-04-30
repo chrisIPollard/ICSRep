@@ -1,12 +1,13 @@
 
 //global variables:
 let databaseInfo;
-let departmentdatabaseInfo;
+let departmentDatabaseInfo;
 
 let editButtons;
 let editEmail;
 let editDepartment;
 let editLocation;
+let editID;
 
 let deleteButtons;
 let place;
@@ -216,21 +217,45 @@ function deleteEntry(id){
 
 function editEntry(id){
 	place = id.replace(/[^0-9]/g, '');
+	editID = databaseInfo[place].id;
 
 	$('#editFormFirstName').val(databaseInfo[place].firstName);
 	$('#editFormSurname').val(databaseInfo[place].lastName);
 	$('#editFormEmail').val(databaseInfo[place].email);
 	$('#editFormDepartment').val(databaseInfo[place].department);
 
+	for (let key in departments) {
+		if (departments[key] == $('#editFormDepartment').val()) {
+		  $('#editFormDepartmentID').val(key);
+		}}
+  
+		for (x=0; x<departmentDatabaseInfo.length; x++){
+		  
+		  if (departmentDatabaseInfo[x].id == $('#editFormDepartmentID').val()){
+			  $('#editFormLocation').val(locations[departmentDatabaseInfo[x].locationID]);}
+		  
+		}
 
-	$("#editSave").click(function() {
+
+		$('#editFormSubmit').submit(function() {
 			
+console.log($('#editFormFirstName').val() +
+$('#editFormSurname').val() +
+$('#editFormEmail').val() +
+$('#editFormDepartmentID').val() +
+ editID)
+
 	$.ajax({
-		url: "php/deleteEmployee.php",
+		url: "php/updateEmployee.php",
 		type: 'POST',
 		dataType: 'json',
 		data: {
-			id: databaseInfo[place].id
+			firstName: $('#editFormFirstName').val(),
+			surname: $('#editFormSurname').val(),
+			email: $('#editFormEmail').val(),
+			departmentID: $('#editFormDepartmentID').val(),
+			id: editID
+			
 		},
 		success: function(result) {
 	
@@ -255,12 +280,10 @@ function editEntry(id){
 
 $(document).ready(()=>{
 	
-//managing the modal form auto selections (duplication here can be replaced with a function): 
+//managing the modal form auto selections (duplication here could be replaced with a function): 
 
 	$('#addFormDepartment').change( 
 		
-		
-
 		() => {
 		
 		for (let key in departments) {
@@ -328,14 +351,3 @@ $(function (){
 			  $("#addEmployeeModal").modal('hide');
 
 		})})
-
-
-
-
-  
-  
-  
-  
-  
-  
-  
