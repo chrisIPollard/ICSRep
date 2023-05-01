@@ -187,7 +187,17 @@ function deleteEntry(id){
 		`
 	)
 	$("#finalDelete").click(function() {
-			
+
+		//can't get alert to appear: 
+		// let deleteAlert = document.createElement('div');
+		// deleteAlert.classList.add('alert', 'alert-warning');
+		// deleteAlert.setAttribute('role', 'alert');
+		// deleteAlert.setAttribute('id', 'deleteCheck');
+		// deleteAlert.innerText = 'alert test';
+
+		// $('#alertLaunch').html('');
+		// $('#alertLaunch').append(deleteAlert);
+	
 	$.ajax({
 		url: "php/deleteEmployee.php",
 		type: 'POST',
@@ -210,6 +220,7 @@ function deleteEntry(id){
 	  })
 
 	  $("#deleteEmployeeModal").modal('hide');
+
 	})
 };
 
@@ -351,3 +362,48 @@ $(function (){
 			  $("#addEmployeeModal").modal('hide');
 
 		})})
+
+//nav tab setup
+
+$(document).ready(function(){
+	$('#addLocation').hide();
+	$('#addDepartment').hide();
+	$('#locationTable').hide();
+	$('#departmentTable').hide();
+
+	$('#locationTab').click(
+		()=>{
+			$('#addLocation').show();
+			$('#addEmployee').hide();
+			$('#addDepartment').hide();
+			$('#locationTable').show();
+			$('#personnelTable').hide();
+			$('#departmentTable').hide();
+		}
+	);
+
+	$('#departmentTab').click(
+		()=>{
+			$('#addLocation').hide();
+			$('#addEmployee').hide();
+			$('#addDepartment').show();
+			$('#locationTable').hide();
+			$('#personnelTable').hide();
+			$('#departmentTable').show();
+		}
+	);
+
+	$('#personnelTab').click(
+		()=>{
+			$('#addLocation').hide();
+			$('#addEmployee').show();
+			$('#addDepartment').hide();
+			$('#locationTable').hide();
+			$('#personnelTable').show();
+			$('#departmentTable').hide();
+		}
+	);
+})
+
+
+

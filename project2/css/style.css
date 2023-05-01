@@ -137,6 +137,32 @@ table.table .avatar {
 	font-size: 13px;
 }    
 
+#navTabs .nav-link {
+	color: white;
+  }
+  
+  #navTabs .nav-link:hover {
+	color: #ccc;
+  }
+
+ 
+
+  #addEmployee, #addLocation, #addDepartment {
+	position:absolute;
+	min-width: 185px;
+  }
+
+  #addEmployee {
+	z-index: 999;
+  }
+  #addLocation {
+	z-index: 998;
+  }
+  #addDepartment {
+	z-index: 997;
+  }
+ 
+
 /* media queries */
 
 @media screen and (max-width: 800px) {
@@ -151,18 +177,20 @@ table.table .avatar {
 	}
   }
 
-  @media screen and (max-width: 575px) {
+  @media screen and (max-width: 600px) {
 	.email {
 		display: none;
 	  }
   }
 
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: 900px) {
 	  
-	#addEmployee {
+	#addEmployee, #addLocation, #addDepartment {
 		position: absolute;
 		left: 0;
 	}
+	  
+
 	.table-title {
 		min-height: 120px;
 	}
@@ -178,6 +206,14 @@ table.table .avatar {
 	.your-element {
 	  max-width: 100%;
 	  height: auto;
+	}
+  }
+
+  @media (max-width: 575px) {
+	#navTabs .nav-link {
+	  font-size: 12px;
+	  padding: 5px;
+	  margin-top: 30px;
 	}
   }
 
