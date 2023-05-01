@@ -1,12 +1,5 @@
 <?php
 
-	// example use from browser
-	// http://localhost/companydirectory/libs/php/insertDepartment.php?name=New%20Department&locationID=<id>
-
-	// remove next two lines for production
-	
-	ini_set('display_errors', 'On');
-	error_reporting(E_ALL);
 
 	$executionStartTime = microtime(true);
 	
@@ -39,7 +32,7 @@
 
 	$query = $conn->prepare('INSERT INTO department (name, locationID) VALUES(?,?)');
 
-	$query->bind_param("si", $_REQUEST['name'], $_REQUEST['locationID']);
+	$query->bind_param("si", $_REQUEST['name'], $_REQUEST['addDepLocationID']);
 
 	$query->execute();
 	

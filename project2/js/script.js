@@ -2,6 +2,7 @@
 //global variables:
 let databaseInfo;
 let departmentDatabaseInfo;
+let locationDatabaseInfo;
 
 let editButtons;
 let editEmail;
@@ -51,6 +52,7 @@ $(document).ready(function(){
 function getTableData(){
 	
 	$('#tableData').empty();
+	$('#tableDatab').empty();
 
 	$.ajax({
 	  url: 'php/getAll.php',
@@ -59,7 +61,7 @@ function getTableData(){
 	  
 	  success: function(result) {
 	  
-		console.log(result.data);
+		//console.log(result.data);
 		databaseInfo = result.data;
 	  
 	  for (let n = 0; n < databaseInfo.length; n ++){
@@ -102,7 +104,7 @@ function getTableData(){
 	  }
 	}); 
 
-	//getting department info to populate the automatic drop down options:
+	//getting department info:
 
 	$.ajax({
 		url: "php/getAllDepartments.php",
@@ -116,12 +118,48 @@ function getTableData(){
 		if (result.status.name == "ok") {
 
 			departmentDatabaseInfo = result.data;
+			console.log(departmentDatabaseInfo);
+
+			for (let n = 0; n < departmentDatabaseInfo.length; n ++){
+		$('#tableDatab').append(`
+		<tr>
+		<td class="departmentb">${departmentDatabaseInfo[n].name}</td>
+		<td class="actions">
+			<a href="#editDepartmentModal" class="editButtonb" data-toggle="modal"><i class="material-icons" id='editButtonb${n}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+			<a href="#deleteEmployeeModal" class="deleteButtonb" data-toggle="modal"><i class="material-icons" id='deleteButtonb${n}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+		</td>
+		</tr>
+		`);
+		}
+
+		// running a function for the department delete button & modal with deleteButtonb class: 
+
+		deleteButtons = document.querySelectorAll('.deleteButtonb');
+
+		deleteButtons.forEach(deleteButtonb => {
+		deleteButtonb.addEventListener('click', event => {
+		// deleteEntry(event.target.id);
+		})})
+
+		// function for the edit button & modal with the editButtonb class: 
+
+		editButtons = document.querySelectorAll('.editButtonb');
+
+		editButtons.forEach(editButtonb => {
+		editButtonb.addEventListener('click', event => {
+		// editEntry(event.target.id);
+		})})
+
+			//populating drop downs (personnel/employee forms): 
+
 			result.data.forEach(item => {
 			  departments[item.id] = item.name;
 			});
-
+		
 			$('#addFormDepartmentID, #editFormDepartmentID').empty();
 			$('#addFormDepartmentID').html(`<option value="" disabled selected>Choose Department</option>`);
+			
+
 			
 			for (const key in departments) {
 				$('#addFormDepartmentID, #editFormDepartmentID').append(`<option value="${key}">${key}</option>`);
@@ -140,7 +178,7 @@ function getTableData(){
 		}
 	  })
 
-	  //getting location info to populate the automatic drop down options:
+	  //getting location info:
 
 	$.ajax({
 		url: "php/getAllLocations.php",
@@ -153,16 +191,55 @@ function getTableData(){
 		  
 		if (result.status.name == "ok") {
 
+			locationDatabaseInfo = result.data;
+
+			for (let n = 0; n < locationDatabaseInfo.length; n ++){
+				$('#tableDatac').append(`
+				<tr>
+				<td class="locationc">${locationDatabaseInfo[n].name}</td>
+				<td class="actions">
+					<a href="#editLocationModal" class="editButtonc" data-toggle="modal"><i class="material-icons" id='editButtonc${n}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+					<a href="#deleteLocationModal" class="deleteButtonc" data-toggle="modal"><i class="material-icons" id='deleteButtonc${n}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+				</td>
+				</tr>
+				`);
+				}
+		
+				// running a function for the location delete button & modal with deleteButtonc class: 
+		
+				deleteButtons = document.querySelectorAll('.deleteButtonc');
+		
+				deleteButtons.forEach(deleteButtonc => {
+				deleteButtonc.addEventListener('click', event => {
+				// deleteEntry(event.target.id);
+				})})
+		
+				// function for the edit button & modal with the editButtonb class: 
+		
+				editButtons = document.querySelectorAll('.editButtonc');
+		
+				editButtons.forEach(editButtonc => {
+				editButtonc.addEventListener('click', event => {
+				// editEntry(event.target.id);
+				})})
+
+			//populating drop downs (personnel/employee forms): 
+			
 			result.data.forEach(item => {
 			  locations[item.id] = item.name;
 			});
 
-			  $('#addFormLocation, #editFormLocation').empty();
-			  $('#addFormLocation').html(`<option value="" disabled selected>Select</option>`);
+			  $('#addFormLocation, #editFormLocation, #addDepLocation, #addDepLocationID').empty();
+			  $('#addFormLocation').html(`<option value="" disabled selected>Choose Department</option>`);
+			  $('#addDepLocationID').html(`<option value="" disabled selected>Choose Location</option>`);
   
 			  for (const key in locations) {
-				  $('#addFormLocation, #editFormLocation').append(`<option value="${locations[key]}">${locations[key]}</option>`);
+				  $('#addFormLocation, #editFormLocation, #addDepLocation').append(`<option value="${locations[key]}">${locations[key]}</option>`);
 				}		
+
+				for (const key in locations) {
+					$('#addDepLocationID').append(`<option value="${key}">${key}</option>`);
+				  }		
 
 	  }},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -321,10 +398,31 @@ $('#editFormDepartment').change( () => {
 		
 		if (departmentDatabaseInfo[x].id == $('#editFormDepartmentID').val()){
 			$('#editFormLocation').val(locations[departmentDatabaseInfo[x].locationID]);}
-		
 	  }
-
 	})
+
+	$('#addDepLocation').change( () => {
+		
+		for (let key in locations) {
+		  if (locations[key] == $('#addDepLocation').val()) {
+			$('#addDepLocationID').val(key);
+		  }}
+		})
+
+	//console.log(locations);
+	// $('#addDepLocation').change( () => {
+		
+	// 	for (let key in departments) {
+	// 	  if (departments[key] == $('#editFormDepartment').val()) {
+	// 		$('#editFormDepartmentID').val(key);
+	// 	  }}
+	
+	// 	  for (x=0; x<departmentDatabaseInfo.length; x++){
+			
+	// 		if (departmentDatabaseInfo[x].id == $('#editFormDepartmentID').val()){
+	// 			$('#editFormLocation').val(locations[departmentDatabaseInfo[x].locationID]);}
+	// 	  }
+	// 	})
 
 })
 
@@ -347,11 +445,12 @@ $(function (){
 					departmentID: $('#addFormDepartmentID').val()
 				},
 				success: function(result) {
+
+					//console.log(JSON.stringify(result));
 				  
 				if (result.status.name == "ok") {
 				  
-					getTableData();
-					
+					getTableData();		
 
 			  }},
 				error: function(jqXHR, textStatus, errorThrown) {
@@ -360,8 +459,41 @@ $(function (){
 			  })
 			  this.reset();
 			  $("#addEmployeeModal").modal('hide');
-
 		})})
+
+//on submitting a completed form in the add department modal to update the database: 
+
+		$(function (){
+			$('#addDepFormSubmit').submit(
+				
+				function(event) {
+
+					event.preventDefault();
+		
+					$.ajax({
+						url: "php/insertDepartment.php",
+						type: 'POST',
+						dataType: 'json',
+						data: {
+							name: $('#addDepDepartment').val(),
+							locationID: $('#addDepLocationID').val()
+						},
+						success: function(result) {
+
+							console.log(JSON.stringify(result));
+						  
+						if (result.status.name == "ok") {
+						  
+							getTableData();		
+		
+					  }},
+						error: function(jqXHR, textStatus, errorThrown) {
+						  console.log(jqXHR);
+						}
+					  })
+					  this.reset();
+					  $("#addDepartmentModal").modal('hide');
+				})})
 
 //nav tab setup
 
