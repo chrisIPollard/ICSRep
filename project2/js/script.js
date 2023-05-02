@@ -21,7 +21,6 @@ let addDepartmentID;
 let departments = {};
 let locations = {};
 
-
 $(document).ready(function(){
 	// Activate tooltip
 	$('[data-toggle="tooltip"]').tooltip();
@@ -256,6 +255,7 @@ $(getTableData());
 
 function deleteEntry(id){
 	place = id.replace(/[^0-9]/g, '');
+	
 	$("#lastReview").html(
 		`<ul>${databaseInfo[place].firstName} ${databaseInfo[place].lastName}</ul>
 		<ul>${databaseInfo[place].email}</ul>
@@ -265,40 +265,39 @@ function deleteEntry(id){
 	)
 	$("#finalDelete").click(function() {
 
-		//can't get alert to appear: 
-		let deleteAlert = document.createElement('div');
-		deleteAlert.classList.add('alert', 'alert-warning');
-		deleteAlert.setAttribute('role', 'alert');
-		deleteAlert.setAttribute('id', 'deleteCheck');
-		deleteAlert.innerText = 'alert test';
-
-		$('#alertLaunch').html('');
-		$('#alertLaunch').append(deleteAlert);
+		$('#alertModal').modal('show');
+		$("#deleteEmployeeModal").modal('hide');
+		$("#alertModalContent").empty();
+		$("#alertModalContent").append(`<p>Are you sure you want to delete ${databaseInfo[place].firstName} ${databaseInfo[place].lastName}?</p>`)
+		$("#cancelCommit").click(()=>{$("#deleteEmployeeModal").modal('show');})
+		$("#alertModalConfirm").click(()=>{
+		
+	$.ajax({
+		url: "php/deleteEmployee.php",
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			id: databaseInfo[place].id
+		},
+		success: function(result) {
 	
-	// $.ajax({
-	// 	url: "php/deleteEmployee.php",
-	// 	type: 'POST',
-	// 	dataType: 'json',
-	// 	data: {
-	// 		id: databaseInfo[place].id
-	// 	},
-	// 	success: function(result) {
-	
-	// 	//console.log(JSON.stringify(result));
+		//console.log(JSON.stringify(result));
 		  
-	// 	if (result.status.name == "ok") {
+		if (result.status.name == "ok") {
 		  
-	// 		getTableData();
+			getTableData();
+			$("#alertModal").modal('hide');
 			
-	//   }},
-	// 	error: function(jqXHR, textStatus, errorThrown) {
-	// 	  console.log(jqXHR);
-	// 	}
-	//   })
-
-	  $("#deleteEmployeeModal").modal('hide');
-
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
 	})
+	  
+		
+	})
+	
 };
 
 // this function is for the employee edit buttons & modal with editButton class: 
@@ -467,9 +466,9 @@ $(function (){
 			$('#addDepFormSubmit').submit(
 				
 				function(event) {
-
+					
 					event.preventDefault();
-		
+					console.log($('#addDepLocationID').val());
 					$.ajax({
 						url: "php/insertDepartment.php",
 						type: 'POST',
@@ -536,6 +535,5 @@ $(document).ready(function(){
 		}
 	);
 })
-
 
 

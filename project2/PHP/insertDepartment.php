@@ -32,7 +32,7 @@
 
 	$query = $conn->prepare('INSERT INTO department (name, locationID) VALUES(?,?)');
 
-	$query->bind_param("si", $_REQUEST['name'], $_REQUEST['addDepLocationID']);
+	$query->bind_param("si", $_REQUEST['name'], $_REQUEST['locationID']);
 
 	$query->execute();
 	
