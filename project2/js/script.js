@@ -266,35 +266,35 @@ function deleteEntry(id){
 	$("#finalDelete").click(function() {
 
 		//can't get alert to appear: 
-		// let deleteAlert = document.createElement('div');
-		// deleteAlert.classList.add('alert', 'alert-warning');
-		// deleteAlert.setAttribute('role', 'alert');
-		// deleteAlert.setAttribute('id', 'deleteCheck');
-		// deleteAlert.innerText = 'alert test';
+		let deleteAlert = document.createElement('div');
+		deleteAlert.classList.add('alert', 'alert-warning');
+		deleteAlert.setAttribute('role', 'alert');
+		deleteAlert.setAttribute('id', 'deleteCheck');
+		deleteAlert.innerText = 'alert test';
 
-		// $('#alertLaunch').html('');
-		// $('#alertLaunch').append(deleteAlert);
+		$('#alertLaunch').html('');
+		$('#alertLaunch').append(deleteAlert);
 	
-	$.ajax({
-		url: "php/deleteEmployee.php",
-		type: 'POST',
-		dataType: 'json',
-		data: {
-			id: databaseInfo[place].id
-		},
-		success: function(result) {
+	// $.ajax({
+	// 	url: "php/deleteEmployee.php",
+	// 	type: 'POST',
+	// 	dataType: 'json',
+	// 	data: {
+	// 		id: databaseInfo[place].id
+	// 	},
+	// 	success: function(result) {
 	
-		//console.log(JSON.stringify(result));
+	// 	//console.log(JSON.stringify(result));
 		  
-		if (result.status.name == "ok") {
+	// 	if (result.status.name == "ok") {
 		  
-			getTableData();
+	// 		getTableData();
 			
-	  }},
-		error: function(jqXHR, textStatus, errorThrown) {
-		  console.log(jqXHR);
-		}
-	  })
+	//   }},
+	// 	error: function(jqXHR, textStatus, errorThrown) {
+	// 	  console.log(jqXHR);
+	// 	}
+	//   })
 
 	  $("#deleteEmployeeModal").modal('hide');
 
