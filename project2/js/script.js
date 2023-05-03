@@ -105,7 +105,7 @@ async function getTableData(){
 	}); 
 
 	//getting department info:
-	let first = new Promise((resolve, reject) => {
+	
 	$.ajax({
 		url: "php/getAllDepartments.php",
 		type: 'GET',
@@ -125,7 +125,6 @@ async function getTableData(){
 		$('#tableDatab').append(`
 		<tr>
 		<td class="departmentb">${departmentDatabaseInfo[n].name}</td>
-
 		<td class="locationb" id=locationb${n}></td>
 		
 		<td class="actions">
@@ -176,18 +175,8 @@ async function getTableData(){
 				  $('#addFormDepartment, #editFormDepartment').append(`<option value="${departments[key]}">${departments[key]}</option>`);
 				}		
 
-	  }},
-		error: function(jqXHR, textStatus, errorThrown) {
-		  console.log(jqXHR);
-		}
-	  })
 
-	  resolve()
-	})
-
-	  //getting location info:
-
-	  let second = new Promise((resolve, reject) => {
+	// Getting location info (embedded)
 
 	$.ajax({
 		url: "php/getAllLocations.php",
@@ -263,12 +252,12 @@ async function getTableData(){
 		}
 	  })
 
-	  resolve()
-	})
-
-	await Promise.all([first, second])
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
 	
-
   }
 
 // 2) running the function on startup:
@@ -558,5 +547,4 @@ $(document).ready(function(){
 		}
 	);
 })
-
 
