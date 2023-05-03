@@ -48,9 +48,10 @@ $(document).ready(function(){
 //populating table:
 
 //1) Defining a function: 
-function getTableData(){
+async function getTableData(){
 	
 	$('#tableData').empty();
+	$('#tableDatab').empty();
 	$('#tableDatab').empty();
 
 	$.ajax({
@@ -104,7 +105,7 @@ function getTableData(){
 	}); 
 
 	//getting department info:
-
+	let first = new Promise((resolve, reject) => {
 	$.ajax({
 		url: "php/getAllDepartments.php",
 		type: 'GET',
@@ -117,12 +118,16 @@ function getTableData(){
 		if (result.status.name == "ok") {
 
 			departmentDatabaseInfo = result.data;
-			console.log(departmentDatabaseInfo);
+			console.log(departmentDatabaseInfo)
 
 			for (let n = 0; n < departmentDatabaseInfo.length; n ++){
+				
 		$('#tableDatab').append(`
 		<tr>
 		<td class="departmentb">${departmentDatabaseInfo[n].name}</td>
+
+		<td class="locationb" id=locationb${n}></td>
+		
 		<td class="actions">
 			<a href="#editDepartmentModal" class="editButtonb" data-toggle="modal"><i class="material-icons" id='editButtonb${n}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
 			<a href="#deleteEmployeeModal" class="deleteButtonb" data-toggle="modal"><i class="material-icons" id='deleteButtonb${n}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
@@ -177,7 +182,12 @@ function getTableData(){
 		}
 	  })
 
+	  resolve()
+	})
+
 	  //getting location info:
+
+	  let second = new Promise((resolve, reject) => {
 
 	$.ajax({
 		url: "php/getAllLocations.php",
@@ -191,6 +201,7 @@ function getTableData(){
 		if (result.status.name == "ok") {
 
 			locationDatabaseInfo = result.data;
+			console.log(locationDatabaseInfo)
 
 			for (let n = 0; n < locationDatabaseInfo.length; n ++){
 				$('#tableDatac').append(`
@@ -240,11 +251,23 @@ function getTableData(){
 					$('#addDepLocationID').append(`<option value="${key}">${key}</option>`);
 				  }		
 
+				  console.log(locations);
+				  for (let n = 0; n < departmentDatabaseInfo.length; n ++){
+					
+						$(`#locationb${n}`).text(locations[departmentDatabaseInfo[n].locationID]);
+				 }
+
 	  }},
 		error: function(jqXHR, textStatus, errorThrown) {
 		  console.log(jqXHR);
 		}
 	  })
+
+	  resolve()
+	})
+
+	await Promise.all([first, second])
+	
 
   }
 
