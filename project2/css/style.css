@@ -217,6 +217,12 @@ table.table .avatar {
 	}
   }
 
+  @media (max-width: 500px) {
+	.locationb {
+		display: none;
+	}
+  }
+
 /* Modal styles */
 .modal .modal-dialog {
 	max-width: 400px;

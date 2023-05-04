@@ -48,11 +48,12 @@ $(document).ready(function(){
 //populating table:
 
 //1) Defining a function: 
-async function getTableData(){
+function getTableData(){
 	
 	$('#tableData').empty();
 	$('#tableDatab').empty();
 	$('#tableDatab').empty();
+	let departments = {};
 
 	$.ajax({
 	  url: 'php/getAll.php',
@@ -63,6 +64,7 @@ async function getTableData(){
 	  
 		//console.log(result.data);
 		databaseInfo = result.data;
+		console.log(databaseInfo);
 	  
 	  for (let n = 0; n < databaseInfo.length; n ++){
 		$('#tableData').append(`
@@ -97,14 +99,7 @@ async function getTableData(){
 		editEntry(event.target.id);
 		})})
 
-	  },
-   
-	  error: function(jqXHR, textStatus, errorThrown) {
-		console.log(jqXHR);
-	  }
-	}); 
-
-	//getting department info:
+	//getting department info (embedded):
 	
 	$.ajax({
 		url: "php/getAllDepartments.php",
@@ -119,17 +114,26 @@ async function getTableData(){
 
 			departmentDatabaseInfo = result.data;
 			console.log(departmentDatabaseInfo)
+			function employeeNumbers (n) {
+				let num = 0;
+			for (x=0; x < databaseInfo.length; x++)
+			{if (databaseInfo[x].departmentID == departmentDatabaseInfo[n]['id']){
+					num ++;}
+				}
+				return num;}
 
 			for (let n = 0; n < departmentDatabaseInfo.length; n ++){
 				
 		$('#tableDatab').append(`
 		<tr>
-		<td class="departmentb">${departmentDatabaseInfo[n].name}</td>
-		<td class="locationb" id=locationb${n}></td>
-		
+		<td class="departmentb" id="departmentb${n}"value="${departmentDatabaseInfo[n].id}">${departmentDatabaseInfo[n].name}</td>
+		<td class="employeesb">${
+			employeeNumbers (n)
+		}</td>
+		<td class="locationb" id="locationb${n}"></td>
 		<td class="actions">
 			<a href="#editDepartmentModal" class="editButtonb" data-toggle="modal"><i class="material-icons" id='editButtonb${n}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-			<a href="#deleteEmployeeModal" class="deleteButtonb" data-toggle="modal"><i class="material-icons" id='deleteButtonb${n}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+			<a href="#deleteDepartmentModal" class="deleteButtonb" data-toggle="modal"><i class="material-icons" id='deleteButtonb${n}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
 		</td>
 		</tr>
 		`);
@@ -141,7 +145,15 @@ async function getTableData(){
 
 		deleteButtons.forEach(deleteButtonb => {
 		deleteButtonb.addEventListener('click', event => {
-		// deleteEntry(event.target.id);
+
+		let depID = event.target.id	
+		depID = depID.replace('deleteButton', 'department');
+		
+		depID = $('#' + depID).attr('value');
+
+		console.log(depID);
+		
+		deleteDepartmentEntry(depID);
 		})})
 
 		// function for the edit button & modal with the editButtonb class: 
@@ -155,11 +167,12 @@ async function getTableData(){
 
 			//populating drop downs (personnel/employee forms): 
 
-			result.data.forEach(item => {
+			departmentDatabaseInfo.forEach(item => {
 			  departments[item.id] = item.name;
 			});
 		
 			$('#addFormDepartmentID, #editFormDepartmentID').empty();
+			
 			$('#addFormDepartmentID').html(`<option value="" disabled selected>Choose Department</option>`);
 			
 
@@ -257,6 +270,13 @@ async function getTableData(){
 		  console.log(jqXHR);
 		}
 	  })
+	},
+   
+	error: function(jqXHR, textStatus, errorThrown) {
+	  console.log(jqXHR);
+	}
+	
+  })
 	
   }
 
@@ -306,10 +326,77 @@ function deleteEntry(id){
 		}
 	  })
 	})
-	  
-		
 	})
+};
+
+//this function takes in the department ID and provides a last review before submitting the correct data:
+
+function deleteDepartmentEntry(id){
+	let department;
+for (let d=0; d<departmentDatabaseInfo.length; d++){
+	if (departmentDatabaseInfo[d].id == id){ department = departmentDatabaseInfo[d];
+		console.log(department);}}
+	$("#finalDepartmentDelete").show();
+	$("#depWarning").show();
+	$("#depQuestion").show();
+	$("#lastDepartmentReview").html(
+		`<p>${department.name}<p>`
+	)
+
+	let num = 0;
+	for (x=0; x < databaseInfo.length; x++)
+	{if (databaseInfo[x].departmentID == department.id){
+			num ++;}}
+
+	if (!num == 0) {
+		$("#lastDepartmentReview").html(
+			`<p>${department.name} has ${num} employees, unable to remove a department that is in use.<p>`);
+		$("#finalDepartmentDelete").hide();
+		$("#depWarning").hide();
+		$("#depQuestion").hide();
+	} else {
+
+	$("#finalDepartmentDelete").click(function() {
+
+		$('#alertModal').modal('show');
+		$("#deleteDepartmentModal").modal('hide');
+		$("#alertModalContent").empty();
+		$("#alertModalContent").append(`<p>Are you sure you want to delete ${department.name}?</p>`)
+		$("#cancelCommit").click(()=>{$("#deleteDeprtmentModal").modal('show');})
+
+		$("#alertModalConfirm").click(()=>{
+		
+	$.ajax({
+		url: "php/deleteDepartmentByID.php",
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			id: department.id
+		},
+		success: function(result) {
 	
+		console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+		  
+			$("#alertModal").modal('hide');
+			$('#addLocation').hide();
+			$('#addEmployee').hide();
+			$('#addDepartment').show();
+			$('#locationTable').hide();
+			$('#personnelTable').hide();
+			$('#departmentTable').show();
+			getTableData();
+			
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+	})
+	})
+	}
+
 };
 
 // this function is for the employee edit buttons & modal with editButton class: 
@@ -363,6 +450,7 @@ $('#editFormDepartmentID').val() +
 		if (result.status.name == "ok") {
 		  
 			getTableData();
+			$("#editEmployeeModal").modal('hide');
 			
 	  }},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -419,21 +507,6 @@ $('#editFormDepartment').change( () => {
 			$('#addDepLocationID').val(key);
 		  }}
 		})
-
-	//console.log(locations);
-	// $('#addDepLocation').change( () => {
-		
-	// 	for (let key in departments) {
-	// 	  if (departments[key] == $('#editFormDepartment').val()) {
-	// 		$('#editFormDepartmentID').val(key);
-	// 	  }}
-	
-	// 	  for (x=0; x<departmentDatabaseInfo.length; x++){
-			
-	// 		if (departmentDatabaseInfo[x].id == $('#editFormDepartmentID').val()){
-	// 			$('#editFormLocation').val(locations[departmentDatabaseInfo[x].locationID]);}
-	// 	  }
-	// 	})
 
 })
 

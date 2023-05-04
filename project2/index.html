@@ -76,6 +76,7 @@
 					<thead>
 						<tr>
 							<th class="departmentb">Department</th>
+							<th class="employeesb">Employees</th>
 							<th class="locationb">Location</th>
 							<th class="actionsb">Actions</th>
 						</tr>
@@ -265,6 +266,29 @@
 	</div>
 </div>
 
+<!-- Delete department Modal HTML -->
+<div id="deleteDepartmentModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">						
+					<h4 class="modal-title">Delete Department</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<p id="depQuestion">Are you sure you want to delete this Department:</p>
+					<div id="lastDepartmentReview"></div>
+					<p class="text-warning" id="depWarning"><small>This action cannot be undone.</small></p>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input id="finalDepartmentDelete" type="submit" class="btn btn-danger" value="Delete">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
 <!-- alert modal -->
 <div id="alertModal" class="modal fade">
 	<div class="modal-dialog">
@@ -278,6 +302,23 @@
 				<div class="modal-footer">
 					<input type="button" id="cancelCommit" class="btn btn-default" data-dismiss="modal" value="Cancel">
 					<input type="button" id="alertModalConfirm" class="btn btn-warning" value="Confirm">
+				</div>
+		</div>
+	</div>
+</div>
+
+<!-- sorry modal -->
+<div id="sorryModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+				<div class="modal-header">						
+					<h4 class="modal-title">Unable to Complete Request</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body" id="sorryModalContent">									
+				</div>
+				<div class="modal-footer">
+					<input type="button" id="sorryCancel" class="btn btn-default" data-dismiss="modal" value="Cancel">
 				</div>
 		</div>
 	</div>
