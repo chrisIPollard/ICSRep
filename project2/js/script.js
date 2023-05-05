@@ -127,9 +127,7 @@ function getTableData(){
 			  });
 			  
 			  console.log(departmentDatabaseInfo);
-			  
-
-			console.log(departmentDatabaseInfo)
+		
 			function employeeNumbers (n) {
 				let num = 0;
 			for (x=0; x < databaseInfo.length; x++)
@@ -167,8 +165,6 @@ function getTableData(){
 		depID = depID.replace('deleteButton', 'department');
 		
 		depID = $('#' + depID).attr('value');
-
-		console.log(depID);
 		
 		deleteDepartmentEntry(depID);
 		})})
@@ -179,7 +175,12 @@ function getTableData(){
 
 		editButtons.forEach(editButtonb => {
 		editButtonb.addEventListener('click', event => {
-		// editEntry(event.target.id);
+			let depID = event.target.id	
+			depID = depID.replace('editButton', 'department');
+		
+			depID = $('#' + depID).attr('value');
+			
+			editDepartmentEntry(depID);
 		})})
 
 			//populating drop downs (personnel/employee forms): 
@@ -273,17 +274,17 @@ function getTableData(){
 			  locations[item.id] = item.name;
 			});
 
-			  $('#addFormLocation, #editFormLocation, #addDepLocation, #addDepLocationID').empty();
+			  $('#addFormLocation, #editFormLocation, #addDepLocation, #addDepLocationID, #editDepartmentLocation, #editDepartmentLocationID' ).empty();
 			  $('#addFormLocation').html(`<option value="" disabled selected>Choose Department</option>`);
-			  $('#addDepLocation').html(`<option value="" disabled selected>Select</option>`);
-			  $('#addDepLocationID').html(`<option value="" disabled selected>Choose Location</option>`);
+			  $('#addDepLocation, #editDepartmentLocation').html(`<option value="" disabled selected>Select</option>`);
+			  $('#addDepLocationID, #editDepartmentLocationID').html(`<option value="" disabled selected>Choose Location</option>`);
   
 			  for (const key in locations) {
-				  $('#addFormLocation, #editFormLocation, #addDepLocation').append(`<option value="${locations[key]}">${locations[key]}</option>`);
+				  $('#addFormLocation, #editFormLocation, #addDepLocation, #editDepartmentLocation').append(`<option value="${locations[key]}">${locations[key]}</option>`);
 				}		
 
 				for (const key in locations) {
-					$('#addDepLocationID').append(`<option value="${key}">${key}</option>`);
+					$('#addDepLocationID, #editDepartmentLocationID').append(`<option value="${key}">${key}</option>`);
 				  }		
 
 				  console.log(locations);
@@ -364,11 +365,70 @@ function deleteEntry(id){
 
 //this function takes in the department ID and provides a last review before submitting the correct data:
 
+function editDepartmentEntry(id){
+
+	let dep 
+	for (d=0; d<departmentDatabaseInfo.length; d++)
+	{if (departmentDatabaseInfo[d].id == id) {
+		dep = departmentDatabaseInfo[d]}}
+	$('#editDepartmentDepartment').val(dep.name);
+	$('#editDepartmentLocation').val(locations[dep.locationID]);
+	$('#editDepartmentLocationID').val(dep.locationID);
+
+		$('#editDepartmentSave').click(function() {
+			$('#alertModale').modal('show');
+			$("#editDepartmentModal").modal('hide');
+			$("#alertModalContente").empty();
+			$("#alertModalContente").append(`<p>Are you sure you want to replace:
+			<ul>${dep.name}</ul>
+			<ul>${locations[dep.locationID]}</ul>
+			with
+			<ul>${$('#editDepartmentDepartment').val()}</ul>
+			<ul>${$('#editDepartmentLocation').val()}</ul>
+			</p>`)
+			
+			$("#cancelCommite").click(()=>{$("#editDepartmentModal").modal('show');})
+	
+			$("#alertModalConfirme").click(()=>{
+				console.log(id);
+				console.log($('#editDepartmentDepartment').val());
+				console.log($('#editDepartmentLocationID').val());
+	$.ajax({
+		url: "php/updateDepartment.php",
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			id: id,
+			name: $('#editDepartmentDepartment').val(),
+			locationID: $('#editDepartmentLocationID').val(),
+		},
+		success: function(result) {
+	
+		//console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+		  
+			$("#alertModale").modal('hide');
+			getTableData();
+			
+			
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+
+	  $("#editDepartmentModal").modal('hide');
+
+	})
+	
+	})
+}
+
 function deleteDepartmentEntry(id){
 	let department;
 for (let d=0; d<departmentDatabaseInfo.length; d++){
-	if (departmentDatabaseInfo[d].id == id){ department = departmentDatabaseInfo[d];
-		console.log(department);}}
+	if (departmentDatabaseInfo[d].id == id){ department = departmentDatabaseInfo[d];}}
 	$("#finalDepartmentDelete").show();
 	$("#depWarning").show();
 	$("#depQuestion").show();
@@ -456,13 +516,20 @@ function editEntry(id){
 		}
 
 
-		$('#editFormSubmit').submit(function(event) {
-			event.preventDefault();
+		$('#editEmployeeSave').click(function() {
 
 			$('#alertModald').modal('show');
 			$("#editEmployeeModal").modal('hide');
 			$("#alertModalContentd").empty();
-			$("#alertModalContentd").append(`<p>Are you sure you want to edit ?</p>`)
+			$("#alertModalContentd").append(`<p>Are you sure you want to replace:
+			<ul>${databaseInfo[place].firstName + ' ' + databaseInfo[place].lastName}</ul>
+			<ul>${databaseInfo[place].email}</ul>
+			<ul>${databaseInfo[place].department}</ul>
+			with
+			<ul>${$('#editFormFirstName').val() + ' ' + $('#editFormSurname').val()}</ul>
+			<ul>${$('#editFormEmail').val()}</ul>
+			<ul>${$('#editFormDepartment').val()}</ul>
+			</p>`)
 			
 			$("#cancelCommitd").click(()=>{$("#editEmployeeModal").modal('show');})
 	
@@ -495,7 +562,6 @@ function editEntry(id){
 		}
 	  })
 
-	  this.reset();
 	  $("#editEmployeeModal").modal('hide');
 
 	})
@@ -554,6 +620,14 @@ $('#editFormDepartment').change( () => {
 			$('#addDepLocationID').val(key);
 		  }}
 		})
+
+		$('#editDepartmentLocation').change( () => {
+		
+			for (let key in locations) {
+			  if (locations[key] == $('#editDepartmentLocation').val()) {
+				$('#editDepartmentLocationID').val(key);
+			  }}
+			})
 
 })
 
