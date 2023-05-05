@@ -243,6 +243,7 @@ function getTableData(){
 
 			  $('#addFormLocation, #editFormLocation, #addDepLocation, #addDepLocationID').empty();
 			  $('#addFormLocation').html(`<option value="" disabled selected>Choose Department</option>`);
+			  $('#addDepLocation').html(`<option value="" disabled selected>Select</option>`);
 			  $('#addDepLocationID').html(`<option value="" disabled selected>Choose Location</option>`);
   
 			  for (const key in locations) {
@@ -358,13 +359,13 @@ for (let d=0; d<departmentDatabaseInfo.length; d++){
 
 	$("#finalDepartmentDelete").click(function() {
 
-		$('#alertModal').modal('show');
+		$('#alertModalb').modal('show');
 		$("#deleteDepartmentModal").modal('hide');
-		$("#alertModalContent").empty();
-		$("#alertModalContent").append(`<p>Are you sure you want to delete ${department.name}?</p>`)
-		$("#cancelCommit").click(()=>{$("#deleteDeprtmentModal").modal('show');})
+		$("#alertModalContentb").empty();
+		$("#alertModalContentb").append(`<p>Are you sure you want to delete ${department.name}?</p>`)
+		$("#cancelCommit").click(()=>{$("#deleteDepartmentModal").modal('show');})
 
-		$("#alertModalConfirm").click(()=>{
+		$("#alertModalConfirmb").click(()=>{
 		
 	$.ajax({
 		url: "php/deleteDepartmentByID.php",
@@ -379,7 +380,7 @@ for (let d=0; d<departmentDatabaseInfo.length; d++){
 		  
 		if (result.status.name == "ok") {
 		  
-			$("#alertModal").modal('hide');
+			$("#alertModalb").modal('hide');
 			$('#addLocation').hide();
 			$('#addEmployee').hide();
 			$('#addDepartment').show();
@@ -530,7 +531,8 @@ $(function (){
 		$("#alertModalContent").append(`<p>Are you sure you want to add:</p>
 		<ul>${$('#addFormFirstName').val()} ${$('#addFormSurname').val()}</ul>
 		<ul>${$('#addFormEmail').val()}</ul>
-		<ul>${$('#addFormDepartmentID').val()}</ul>
+		<ul>${$('#addFormDepartment').val()}</ul>
+		<ul>${$('#addFormLocation').val()}</ul>
 		`)
 		$("#cancelCommit").click(()=>{$("#addEmployeeModal").modal('show');})
 
