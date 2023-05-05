@@ -472,7 +472,10 @@ $(document).ready(()=>{
 	$('#addFormDepartment').change( 
 		
 		() => {
-		
+			let departments ={};
+			departmentDatabaseInfo.forEach(item => {
+				departments[item.id] = item.name;
+			  });
 		for (let key in departments) {
 		  if (departments[key] == $('#addFormDepartment').val()) {
 			$('#addFormDepartmentID').val(key);
@@ -487,7 +490,10 @@ $(document).ready(()=>{
 })
 
 $('#editFormDepartment').change( () => {
-		
+		let departments ={};
+			departmentDatabaseInfo.forEach(item => {
+				departments[item.id] = item.name;
+			  });
 	for (let key in departments) {
 	  if (departments[key] == $('#editFormDepartment').val()) {
 		$('#editFormDepartmentID').val(key);
@@ -514,9 +520,21 @@ $('#editFormDepartment').change( () => {
 
 $(function (){
 	$('#addFormSubmit').submit(
-
+		
 		function(event) {
 			event.preventDefault();
+
+			$('#alertModal').modal('show');
+		$("#addEmployeeModal").modal('hide');
+		$("#alertModalContent").empty();
+		$("#alertModalContent").append(`<p>Are you sure you want to add:</p>
+		<ul>${$('#addFormFirstName').val()} ${$('#addFormSurname').val()}</ul>
+		<ul>${$('#addFormEmail').val()}</ul>
+		<ul>${$('#addFormDepartmentID').val()}</ul>
+		`)
+		$("#cancelCommit").click(()=>{$("#addEmployeeModal").modal('show');})
+
+		$("#alertModalConfirm").click(()=>{
 
 			$.ajax({
 				url: "php/insertEmployee.php",
@@ -534,6 +552,7 @@ $(function (){
 				  
 				if (result.status.name == "ok") {
 				  
+					$("#alertModal").modal('hide');
 					getTableData();		
 
 			  }},
@@ -541,9 +560,16 @@ $(function (){
 				  console.log(jqXHR);
 				}
 			  })
+			
 			  this.reset();
+			  
 			  $("#addEmployeeModal").modal('hide');
-		})})
+		
+			})
+			}
+		
+		
+		)})
 
 //on submitting a completed form in the add department modal to update the database: 
 
