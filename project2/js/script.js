@@ -49,11 +49,6 @@ $(document).ready(function(){
 
 //1) Defining a function: 
 function getTableData(){
-	
-	$('#tableData').empty();
-	$('#tableDatab').empty();
-	$('#tableDatab').empty();
-	let departments = {};
 
 	$.ajax({
 	  url: 'php/getAll.php',
@@ -61,6 +56,8 @@ function getTableData(){
 	  dataType: "json",
 	  
 	  success: function(result) {
+
+		$('#tableData').empty();
 	  
 		//console.log(result.data);
 		databaseInfo = result.data;
@@ -112,7 +109,26 @@ function getTableData(){
 		  
 		if (result.status.name == "ok") {
 
+			departments = {};
+			$('#tableDatab').empty();
+
 			departmentDatabaseInfo = result.data;
+			  
+			departmentDatabaseInfo.sort(function(a, b) {
+				const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+				const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+				if (nameA < nameB) {
+				  return -1;
+				}
+				if (nameA > nameB) {
+				  return 1;
+				}
+				return 0;
+			  });
+			  
+			  console.log(departmentDatabaseInfo);
+			  
+
 			console.log(departmentDatabaseInfo)
 			function employeeNumbers (n) {
 				let num = 0;
@@ -137,6 +153,7 @@ function getTableData(){
 		</td>
 		</tr>
 		`);
+
 		}
 
 		// running a function for the department delete button & modal with deleteButtonb class: 
@@ -202,7 +219,22 @@ function getTableData(){
 		  
 		if (result.status.name == "ok") {
 
+			$('#tableDatac').empty();
+
 			locationDatabaseInfo = result.data;
+
+			locationDatabaseInfo.sort(function(a, b) {
+				const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+				const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+				if (nameA < nameB) {
+				  return -1;
+				}
+				if (nameA > nameB) {
+				  return 1;
+				}
+				return 0;
+			  });
+
 			console.log(locationDatabaseInfo)
 
 			for (let n = 0; n < locationDatabaseInfo.length; n ++){
@@ -298,12 +330,12 @@ function deleteEntry(id){
 	)
 	$("#finalDelete").click(function() {
 
-		$('#alertModal').modal('show');
+		$('#alertModalc').modal('show');
 		$("#deleteEmployeeModal").modal('hide');
-		$("#alertModalContent").empty();
-		$("#alertModalContent").append(`<p>Are you sure you want to delete ${databaseInfo[place].firstName} ${databaseInfo[place].lastName}?</p>`)
-		$("#cancelCommit").click(()=>{$("#deleteEmployeeModal").modal('show');})
-		$("#alertModalConfirm").click(()=>{
+		$("#alertModalContentc").empty();
+		$("#alertModalContentc").append(`<p>Are you sure you want to delete ${databaseInfo[place].firstName} ${databaseInfo[place].lastName}?</p>`)
+		$("#cancelCommitc").click(()=>{$("#deleteEmployeeModal").modal('show');})
+		$("#alertModalConfirmc").click(()=>{
 		
 	$.ajax({
 		url: "php/deleteEmployee.php",
@@ -319,7 +351,7 @@ function deleteEntry(id){
 		if (result.status.name == "ok") {
 		  
 			getTableData();
-			$("#alertModal").modal('hide');
+			$("#alertModalc").modal('hide');
 			
 	  }},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -363,7 +395,7 @@ for (let d=0; d<departmentDatabaseInfo.length; d++){
 		$("#deleteDepartmentModal").modal('hide');
 		$("#alertModalContentb").empty();
 		$("#alertModalContentb").append(`<p>Are you sure you want to delete ${department.name}?</p>`)
-		$("#cancelCommit").click(()=>{$("#deleteDepartmentModal").modal('show');})
+		$("#cancelCommitb").click(()=>{$("#deleteDepartmentModal").modal('show');})
 
 		$("#alertModalConfirmb").click(()=>{
 		
@@ -424,14 +456,17 @@ function editEntry(id){
 		}
 
 
-		$('#editFormSubmit').submit(function() {
-			
-console.log($('#editFormFirstName').val() +
-$('#editFormSurname').val() +
-$('#editFormEmail').val() +
-$('#editFormDepartmentID').val() +
- editID)
+		$('#editFormSubmit').submit(function(event) {
+			event.preventDefault();
 
+			$('#alertModald').modal('show');
+			$("#editEmployeeModal").modal('hide');
+			$("#alertModalContentd").empty();
+			$("#alertModalContentd").append(`<p>Are you sure you want to edit ?</p>`)
+			
+			$("#cancelCommitd").click(()=>{$("#editEmployeeModal").modal('show');})
+	
+			$("#alertModalConfirmd").click(()=>{
 	$.ajax({
 		url: "php/updateEmployee.php",
 		type: 'POST',
@@ -450,8 +485,9 @@ $('#editFormDepartmentID').val() +
 		  
 		if (result.status.name == "ok") {
 		  
+			$("#alertModald").modal('hide');
 			getTableData();
-			$("#editEmployeeModal").modal('hide');
+			
 			
 	  }},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -459,7 +495,11 @@ $('#editFormDepartmentID').val() +
 		}
 	  })
 
-	  $("#deleteEmployeeModal").modal('hide');
+	  this.reset();
+	  $("#editEmployeeModal").modal('hide');
+
+	})
+	
 	})
 }
 ;
