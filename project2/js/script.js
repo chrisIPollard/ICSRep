@@ -136,6 +136,13 @@ function getTableData(){
 				}
 				return num;}
 
+				function departmentNumbers(n){
+					let num =0;
+						for (x=0;x<departmentDatabaseInfo.length;x++){
+					if (locationDatabaseInfo[n].id == departmentDatabaseInfo[x].locationID){
+						num ++;}
+					} return num;}
+
 			for (let n = 0; n < departmentDatabaseInfo.length; n ++){
 				
 		$('#tableDatab').append(`
@@ -241,7 +248,8 @@ function getTableData(){
 			for (let n = 0; n < locationDatabaseInfo.length; n ++){
 				$('#tableDatac').append(`
 				<tr>
-				<td class="locationc">${locationDatabaseInfo[n].name}</td>
+				<td class="locationc" id="${locationDatabaseInfo[n].id}">${locationDatabaseInfo[n].name}</td>
+				<td class="locationc"> ${departmentNumbers(n)} </td>
 				<td class="actions">
 					<a href="#editLocationModal" class="editButtonc" data-toggle="modal"><i class="material-icons" id='editButtonc${n}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
 					<a href="#deleteLocationModal" class="deleteButtonc" data-toggle="modal"><i class="material-icons" id='deleteButtonc${n}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
@@ -256,7 +264,11 @@ function getTableData(){
 		
 				deleteButtons.forEach(deleteButtonc => {
 				deleteButtonc.addEventListener('click', event => {
-				// deleteEntry(event.target.id);
+
+					console.log(event.target.parentNode.parentNode.parentNode.querySelector('.locationc').id)
+
+
+				deleteLocation(event.target.parentNode.parentNode.parentNode.querySelector('.locationc').id);
 				})})
 		
 				// function for the edit button & modal with the editButtonb class: 
@@ -473,12 +485,6 @@ for (let d=0; d<departmentDatabaseInfo.length; d++){
 		if (result.status.name == "ok") {
 		  
 			$("#alertModalb").modal('hide');
-			$('#addLocation').hide();
-			$('#addEmployee').hide();
-			$('#addDepartment').show();
-			$('#locationTable').hide();
-			$('#personnelTable').hide();
-			$('#departmentTable').show();
 			getTableData();
 			
 	  }},
@@ -491,6 +497,79 @@ for (let d=0; d<departmentDatabaseInfo.length; d++){
 	}
 
 };
+
+function deleteLocation (locationID) {
+	let location;
+for (let l=0; l<locationDatabaseInfo.length; l++){
+	if (locationDatabaseInfo[l].id == locationID){ location = locationDatabaseInfo[l];}}
+
+	console.log(location);
+		
+	$("#finalLocationDelete").show();
+	$("#locWarning").show();
+	$("#locQuestion").show();
+	$("#lastLocationReview").html(
+		`<p>${location.name}<p>`
+	)
+
+	let num =0;
+	for (x=0;x<departmentDatabaseInfo.length;x++){
+	if (locationID == departmentDatabaseInfo[x].locationID){
+		num ++;}
+	} 
+	console.log(num);
+
+	if (!num == 0) {
+		$("#lastLocationReview").html(
+			`<p>${location.name} has ${num} employees, unable to remove a location that is in use.<p>`);
+		$("#finalLocationDelete").hide();
+		$("#locWarning").hide();
+		$("#locQuestion").hide();
+	} else {
+		
+		$("#finalLocationDelete").click(function() {
+
+		$('#alertModalf').modal('show');
+		$("#deleteLocationModal").modal('hide');
+		$("#alertModalContentf").empty();
+		$("#alertModalContentf").append(`<p>Are you sure you want to delete ${location.name}?</p>`)
+		$("#cancelCommitf").click(()=>{$("#deleteLocationModal").modal('show');})
+
+		$("#alertModalConfirmf").click(()=>{
+		
+	$.ajax({
+		url: "php/deleteLocationByID.php",
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			id: locationID
+		},
+		success: function(result) {
+	
+		console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+		  
+			$("#alertModalf").modal('hide');
+			getTableData();
+			
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+	})
+	})
+	}
+
+
+
+
+}
+	
+	
+
+
 
 // this function is for the employee edit buttons & modal with editButton class: 
 
