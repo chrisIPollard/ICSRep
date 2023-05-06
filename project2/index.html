@@ -350,6 +350,31 @@
 	</div>
 </div>
 
+<!-- Edit Location Modal HTML -->
+<div id="editLocationModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="editLocationSubmit">
+				<div class="modal-header">						
+					<h4 class="modal-title">Edit Location</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<div class="form-group">
+						<label>Location</label>
+						<br>
+						<input id="editLocationLocation" type="text" class="form-control" required>  
+					</div>			
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="submit" id="editLocationSave" class="btn btn-success" value="Save">
+				</div>	
+			</form>
+		</div>
+	</div>
+</div>
+
 <!-- alert modal -->
 <div id="alertModal" class="modal fade">
 	<div class="modal-dialog">
@@ -453,6 +478,24 @@
 				<div class="modal-footer">
 					<input type="button" id="cancelCommitf" class="btn btn-default" data-dismiss="modal" value="Cancel">
 					<input type="button" id="alertModalConfirmf" class="btn btn-warning" value="Confirm">
+				</div>
+		</div>
+	</div>
+</div>
+
+<!-- alert modal g-->
+<div id="alertModalg" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+				<div class="modal-header">						
+					<h4 class="modal-title">Confirm Change</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body" id="alertModalContentg">									
+				</div>
+				<div class="modal-footer">
+					<input type="button" id="cancelCommitg" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="button" id="alertModalConfirmg" class="btn btn-warning" value="Confirm">
 				</div>
 		</div>
 	</div>

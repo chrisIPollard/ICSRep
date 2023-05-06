@@ -265,19 +265,17 @@ function getTableData(){
 				deleteButtons.forEach(deleteButtonc => {
 				deleteButtonc.addEventListener('click', event => {
 
-					console.log(event.target.parentNode.parentNode.parentNode.querySelector('.locationc').id)
-
-
 				deleteLocation(event.target.parentNode.parentNode.parentNode.querySelector('.locationc').id);
 				})})
 		
-				// function for the edit button & modal with the editButtonb class: 
+				// function for the edit location & modal with the editButtonc class: 
 		
 				editButtons = document.querySelectorAll('.editButtonc');
 		
 				editButtons.forEach(editButtonc => {
 				editButtonc.addEventListener('click', event => {
-				// editEntry(event.target.id);
+				
+				editLocationEntry(event.target.parentNode.parentNode.parentNode.querySelector('.locationc').id);
 				})})
 
 			//populating drop downs (personnel/employee forms): 
@@ -402,9 +400,7 @@ function editDepartmentEntry(id){
 			$("#cancelCommite").click(()=>{$("#editDepartmentModal").modal('show');})
 	
 			$("#alertModalConfirme").click(()=>{
-				console.log(id);
-				console.log($('#editDepartmentDepartment').val());
-				console.log($('#editDepartmentLocationID').val());
+
 	$.ajax({
 		url: "php/updateDepartment.php",
 		type: 'POST',
@@ -480,7 +476,7 @@ for (let d=0; d<departmentDatabaseInfo.length; d++){
 		},
 		success: function(result) {
 	
-		console.log(JSON.stringify(result));
+		//console.log(JSON.stringify(result));
 		  
 		if (result.status.name == "ok") {
 		  
@@ -502,8 +498,6 @@ function deleteLocation (locationID) {
 	let location;
 for (let l=0; l<locationDatabaseInfo.length; l++){
 	if (locationDatabaseInfo[l].id == locationID){ location = locationDatabaseInfo[l];}}
-
-	console.log(location);
 		
 	$("#finalLocationDelete").show();
 	$("#locWarning").show();
@@ -517,7 +511,6 @@ for (let l=0; l<locationDatabaseInfo.length; l++){
 	if (locationID == departmentDatabaseInfo[x].locationID){
 		num ++;}
 	} 
-	console.log(num);
 
 	if (!num == 0) {
 		$("#lastLocationReview").html(
@@ -560,11 +553,61 @@ for (let l=0; l<locationDatabaseInfo.length; l++){
 	  })
 	})
 	})
-	}
+	}}
 
+//this function takes in the department ID and provides a last review before submitting the correct data:
 
+function editLocationEntry(locationID){
 
+	let location 
+	for (l=0; l<locationDatabaseInfo.length; l++)
+	{if (locationDatabaseInfo[l].id == locationID) {
+		location = locationDatabaseInfo[l]}}
 
+	$('#editLocationLocation').val(location.name);
+
+		$('#editLocationSave').click(function() {
+			$('#alertModalg').modal('show');
+			$("#editLocationModal").modal('hide');
+			$("#alertModalContentg").empty();
+			$("#alertModalContentg").append(`<p>Are you sure you want to replace:
+			<ul>${location.name}</ul>
+			with
+			<ul>${$('#editLocationLocation').val()}</ul>
+			</p>`)
+			
+			$("#cancelCommitg").click(()=>{$("#editLocationModal").modal('show');})
+	
+			$("#alertModalConfirmg").click(()=>{
+				
+	$.ajax({
+		url: "php/updateLocation.php",
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			id: locationID,
+			name: $('#editLocationLocation').val()
+		},
+		success: function(result) {
+	
+		//console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+		  
+			$("#alertModalg").modal('hide');
+			getTableData();
+			
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+
+	  $("#editDepartmentModal").modal('hide');
+
+	})
+	
+	})
 }
 	
 	
