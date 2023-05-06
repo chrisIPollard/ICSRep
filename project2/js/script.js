@@ -756,11 +756,10 @@ $('#editFormDepartment').change( () => {
 //on submitting a completed form in the add employee modal to update the database: 
 
 $(function (){
-	$('#addFormSubmit').submit(
+	$('#addEmployeeSubmit').click(
 		
-		function(event) {
-			event.preventDefault();
-
+		function() {
+			
 			$('#alertModal').modal('show');
 		$("#addEmployeeModal").modal('hide');
 		$("#alertModalContent").empty();
@@ -791,6 +790,9 @@ $(function (){
 				if (result.status.name == "ok") {
 				  
 					$("#alertModal").modal('hide');
+					$('#addFormFirstName').val('');
+					$('#addFormSurname').val('');
+					$('#addFormEmail').val('');
 					getTableData();		
 
 			  }},
@@ -812,12 +814,19 @@ $(function (){
 //on submitting a completed form in the add department modal to update the database: 
 
 		$(function (){
-			$('#addDepFormSubmit').submit(
-				
-				function(event) {
-					
-					event.preventDefault();
-					console.log($('#addDepLocationID').val());
+			$('#addDepartmentSubmit').click(
+				function() {
+		$('#alertModalh').modal('show');
+		$("#addDepartmentModal").modal('hide');
+		$("#alertModalContenth").empty();
+		$("#alertModalContenth").append(`<p>Are you sure you want to add:</p>
+		<ul>${$('#addDepDepartment').val()}</ul>
+		<ul>${$('#addDepLocation').val()}</ul>
+		`)
+		$("#cancelCommith").click(()=>{$("#addDepartmentModal").modal('show');})
+
+		$("#alertModalConfirmh").click(()=>{
+
 					$.ajax({
 						url: "php/insertDepartment.php",
 						type: 'POST',
@@ -831,7 +840,8 @@ $(function (){
 							console.log(JSON.stringify(result));
 						  
 						if (result.status.name == "ok") {
-						  
+							$("#alertModalh").modal('hide');
+							$('#addDepDepartment').val('');
 							getTableData();		
 		
 					  }},
@@ -841,7 +851,51 @@ $(function (){
 					  })
 					  this.reset();
 					  $("#addDepartmentModal").modal('hide');
+
+					})
 				})})
+
+//on submitting a completed form in the add location modal to update the database: 
+
+$(function (){
+	$('#addLocationSubmit').click(
+		function() {
+$('#alertModali').modal('show');
+$("#addLocationModal").modal('hide');
+$("#alertModalContenti").empty();
+$("#alertModalContenti").append(`<p>Are you sure you want to add:</p>
+<ul>${$('#addLocLocation').val()}</ul>
+`)
+$("#cancelCommiti").click(()=>{$("#addLocationModal").modal('show');})
+
+$("#alertModalConfirmi").click(()=>{
+
+			$.ajax({
+				url: "php/insertLocation.php",
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					name: $('#addLocLocation').val()
+				},
+				success: function(result) {
+
+					console.log(JSON.stringify(result));
+				  
+				if (result.status.name == "ok") {
+					$("#alertModali").modal('hide');
+					$('#addLocLocation').val('');
+					getTableData();		
+
+			  }},
+				error: function(jqXHR, textStatus, errorThrown) {
+				  console.log(jqXHR);
+				}
+			  })
+			  this.reset();
+			  $("#addLocationtModal").modal('hide');
+
+			})
+		})})
 
 //nav tab setup
 

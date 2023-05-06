@@ -147,7 +147,7 @@
 				</div>
 				<div class="modal-footer">
 					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-					<input type="submit" class="btn btn-success" value="Add">
+					<input type="submit" id="addEmployeeSubmit" class="btn btn-success" value="Add">
 				</div>	
 			</form>
 		</div>
@@ -259,7 +259,31 @@
 				</div>
 				<div class="modal-footer">
 					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-					<input type="submit" class="btn btn-success" value="Add">
+					<input id="addDepartmentSubmit" type="submit" class="btn btn-success" value="Add">
+				</div>	
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Add Location Modal HTML -->
+<div id="addLocationModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">						
+					<h4 class="modal-title">Add Department</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<div class="form-group">
+						<label>Department</label>
+						<input id="addLocLocation" type="text" class="form-control" required>
+					</div>				
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input id="addLocationSubmit" type="submit" class="btn btn-success" value="Add">
 				</div>	
 			</form>
 		</div>
@@ -501,6 +525,42 @@
 	</div>
 </div>
 
+<!-- alert modal h-->
+<div id="alertModalh" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+				<div class="modal-header">						
+					<h4 class="modal-title">Confirm Change</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body" id="alertModalContenth">									
+				</div>
+				<div class="modal-footer">
+					<input type="button" id="cancelCommith" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="button" id="alertModalConfirmh" class="btn btn-warning" value="Confirm">
+				</div>
+		</div>
+	</div>
+</div>
+
+<!-- alert modal i-->
+<div id="alertModali" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+				<div class="modal-header">						
+					<h4 class="modal-title">Confirm Change</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body" id="alertModalContenti">									
+				</div>
+				<div class="modal-footer">
+					<input type="button" id="cancelCommiti" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="button" id="alertModalConfirmi" class="btn btn-warning" value="Confirm">
+				</div>
+		</div>
+	</div>
+</div>
+
 <!-- sorry modal -->
 <div id="sorryModal" class="modal fade">
 	<div class="modal-dialog">
@@ -517,6 +577,8 @@
 		</div>
 	</div>
 </div>
+
+
 
 </body>
 </html>
