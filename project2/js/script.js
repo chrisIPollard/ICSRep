@@ -514,7 +514,7 @@ for (let l=0; l<locationDatabaseInfo.length; l++){
 
 	if (!num == 0) {
 		$("#lastLocationReview").html(
-			`<p>${location.name} has ${num} employees, unable to remove a location that is in use.<p>`);
+			`<p>${location.name} has ${num} departments, unable to remove a location that is in use.<p>`);
 		$("#finalLocationDelete").hide();
 		$("#locWarning").hide();
 		$("#locQuestion").hide();
