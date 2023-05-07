@@ -902,6 +902,8 @@ $("#alertModalConfirmi").click(()=>{
 $(document).ready(function(){
 	$('#addLocation').hide();
 	$('#addDepartment').hide();
+	$('#searchLocation').hide();
+	$('#searchDepartment').hide();
 	$('#locationTable').hide();
 	$('#departmentTable').hide();
 
@@ -910,6 +912,9 @@ $(document).ready(function(){
 			$('#addLocation').show();
 			$('#addEmployee').hide();
 			$('#addDepartment').hide();
+			$('#searchEmployee').hide();
+			$('#searchLocation').show();
+			$('#searchDepartment').hide();
 			$('#locationTable').show();
 			$('#personnelTable').hide();
 			$('#departmentTable').hide();
@@ -921,6 +926,9 @@ $(document).ready(function(){
 			$('#addLocation').hide();
 			$('#addEmployee').hide();
 			$('#addDepartment').show();
+			$('#searchEmployee').hide();
+			$('#searchLocation').hide();
+			$('#searchDepartment').show();
 			$('#locationTable').hide();
 			$('#personnelTable').hide();
 			$('#departmentTable').show();
@@ -932,6 +940,9 @@ $(document).ready(function(){
 			$('#addLocation').hide();
 			$('#addEmployee').show();
 			$('#addDepartment').hide();
+			$('#searchEmployee').show();
+			$('#searchLocation').hide();
+			$('#searchDepartment').hide();
 			$('#locationTable').hide();
 			$('#personnelTable').show();
 			$('#departmentTable').hide();

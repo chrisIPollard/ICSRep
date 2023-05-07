@@ -153,14 +153,6 @@ table.table .avatar {
 	color: #435d7d;
   }
 
- 
-
-  #addEmployee, #addLocation, #addDepartment {
-	position:absolute;
-	min-width: 185px;
-  }
- 
-
 /* media queries */
 
 @media screen and (max-width: 800px) {
@@ -181,12 +173,15 @@ table.table .avatar {
 	  }
   }
 
+  @media screen and (max-width: 750px) {
+  #addEmployee, #addLocation, #addDepartment, #searchEmployee, #searchLocation, #searchDepartment {
+	float: left;
+}
+  }
+
+
   @media screen and (max-width: 900px) {
-	  
-	#addEmployee, #addLocation, #addDepartment {
-		position: absolute;
-		left: 0;
-	}
+	
 
 	.table-title {
 		min-height: 120px;
