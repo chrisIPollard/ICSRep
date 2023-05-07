@@ -204,9 +204,13 @@ table.table .avatar {
   @media (max-width: 575px) {
 	#navTabs .nav-link {
 	  font-size: 12px;
-	  padding: 5px;
-	  margin-top: 30px;
-	}
+	}}
+
+	@media (max-width: 450px) {
+		#addEmployee, #addLocation, #addDepartment, #searchEmployee, #searchLocation, #searchDepartment {
+		  font-size: 12px;
+		}
+
   }
 
   @media (max-width: 500px) {
