@@ -1073,16 +1073,23 @@ $(function (){
 					
 					if ($('#searchDepEmployees').val() == num && departmentDatabaseInfo[s]['name'].includes($('#searchDepDepartment').val()) && departmentDatabaseInfo[s]['locationID'].includes($('#searchDepLocation').val()))
 					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
+
 					else if ($('#searchDepEmployees').val() == num && departmentDatabaseInfo[s]['name'].includes($('#searchDepDepartment').val()) )
 					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
-					else if (departmentDatabaseInfo[s]['name'].includes($('#searchDepDepartment').val()) && departmentDatabaseInfo[s]['locationID'].includes($('#searchDepLocation').val()))
+
+					else if (!$('#searchDepEmployees').val() &&
+						departmentDatabaseInfo[s]['name'].includes($('#searchDepDepartment').val()) && departmentDatabaseInfo[s]['locationID'].includes($('#searchDepLocation').val()))
 					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
+
 					else if ($('#searchDepEmployees').val() == num && departmentDatabaseInfo[s]['locationID'].includes($('#searchDepLocation').val()))
 					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
-					else if (departmentDatabaseInfo[s]['name'].includes($('#searchDepDepartment').val()) )
+
+					else if (!$('#searchDepEmployees').val() && departmentDatabaseInfo[s]['name'].includes($('#searchDepDepartment').val()) )
 					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
-					else if (departmentDatabaseInfo[s]['locationID'].includes($('#searchDepLocation').val()) )
+
+					else if (!$('#searchDepEmployees').val() && departmentDatabaseInfo[s]['locationID'].includes($('#searchDepLocation').val()) )
 					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
+
 					else if ($('#searchDepEmployees').val() == num)
 					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
 				}
