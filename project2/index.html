@@ -343,7 +343,40 @@
 			</form>
 		</div>
 	</div>
-</div>				
+</div>			
+
+<!-- Search Location Modal HTML -->
+<div id="searchLocationModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="">
+				<div class="modal-header">						
+					<h4 class="modal-title">Search Location</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">		
+					<p>Select from one or both dropdowns:</p>			
+					<br>
+					<div class="form-group">
+						<label>Location</label>
+						<br>
+						<select id="searchLocLocation" class="form-select shadow-sm" ></select>  
+					</div>
+					<div class="form-group">
+						<label>Departments</label>
+						<br>
+						<select id="searchLocDepartments" class="form-select shadow-sm" >   
+						</select>
+					</div>				
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input id="searchLocationSubmit" type="submit" class="btn btn-success" value="Search">
+				</div>	
+			</form>
+		</div>
+	</div>
+</div>			
 
 
 <!-- Add Location Modal HTML -->

@@ -21,6 +21,7 @@ let addDepartmentID;
 let departments = {};
 let locations = {};
 let departmentEmployees = [];
+let locationDepartments = [];
 
 $(document).ready(function(){
 	// Activate tooltip
@@ -51,7 +52,8 @@ $(document).ready(function(){
 //1) Defining a function: 
 function getTableData(){
 
-	departmentEmployees = []
+	departmentEmployees = [];
+	locationDepartments = [];
 
 	$.ajax({
 	  url: 'php/getAll.php',
@@ -148,7 +150,13 @@ function getTableData(){
 						for (x=0;x<departmentDatabaseInfo.length;x++){
 					if (locationDatabaseInfo[n].id == departmentDatabaseInfo[x].locationID){
 						num ++;}
-					} return num;}
+					} 
+
+					let obj = {};
+					obj[departmentDatabaseInfo[n]['locationID']] = num;
+					locationDepartments.push(obj)
+					return num;}
+					
 
 			for (let n = 0; n < departmentDatabaseInfo.length; n ++){
 				
@@ -293,9 +301,9 @@ function getTableData(){
 			  locations[item.id] = item.name;
 			});
 
-			  $('#addFormLocation, #editFormLocation, #addDepLocation, #searchEmployeeLocation, #addDepLocationID, #editDepartmentLocation, #editDepartmentLocationID, #searchDepLocation, searchDepEmployees' ).empty();
+			  $('#addFormLocation, #editFormLocation, #addDepLocation, #searchEmployeeLocation, #addDepLocationID, #editDepartmentLocation, #editDepartmentLocationID, #searchDepLocation, #searchDepEmployees, #searchLocDepartments, #searchLocLocation' ).empty();
 			  $('#addFormLocation').html(`<option value="" disabled selected>Choose Department</option>`);
-			  $('#addDepLocation, #editDepartmentLocation, #searchDepLocation, #searchDepEmployees, #searchEmployeeLocation').html(`<option value="" disabled selected>Select</option>`);
+			  $('#addDepLocation, #editDepartmentLocation, #searchDepLocation, #searchLocLocation, #searchDepEmployees, #searchLocDepartments, #searchEmployeeLocation').html(`<option value="" disabled selected>Select</option>`);
 			  $('#addDepLocationID, #editDepartmentLocationID').html(`<option value="" disabled selected>Choose Location</option>`);
   
 			  for (const key in locations) {
@@ -303,7 +311,7 @@ function getTableData(){
 				}
 				
 				for (const key in locations) {
-					$('#searchDepLocation').append(`<option value="${key}">${locations[key]}</option>`);
+					$('#searchDepLocation, #searchLocLocation').append(`<option value="${key}">${locations[key]}</option>`);
 				  }
 
 				for (const key in locations) {
@@ -311,13 +319,18 @@ function getTableData(){
 				  }		
 
 					// populating the number of employees dropdown in the department search: 
-					const uniqueValues = Array.from(new Set(departmentEmployees.map(obj => Object.values(obj)[0])));
-					const sortedValues = uniqueValues.sort((a, b) => a - b);
+					let uniqueValues = Array.from(new Set(departmentEmployees.map(obj => Object.values(obj)[0])));
+					let sortedValues = uniqueValues.sort((a, b) => a - b);
 					$.each(sortedValues, function(index, value) {
 					$('#searchDepEmployees').append(`<option value="${value}">${value}</option>`);
 					});
 
-				  
+					// populating the number of departments dropdown in the location search: 
+					let uniqueValuesb = Array.from(new Set(locationDepartments.map(obj => Object.values(obj)[0])));
+					let sortedValuesb = uniqueValuesb.sort((a, b) => a - b);
+					$.each(sortedValuesb, function(index, value) {
+					$('#searchLocDepartments').append(`<option value="${value}">${value}</option>`);
+					});
 
 				  console.log(locations);
 				  for (let n = 0; n < departmentDatabaseInfo.length; n ++){
@@ -998,18 +1011,22 @@ $(document).ready(function(){
 $(function (){
 	$('#searchEmployeeSubmit').click(
 		
-		function() {
-		let searchDatabaseInfo = [];
-		{
-		for (s=0; s<databaseInfo.length; s++)
-		{
-			if (databaseInfo[s]['firstName'].includes($('#searchEmployeeFirstName').val()) && 
-			databaseInfo[s]['lastName'].includes($('#searchEmployeeSurname').val())&&
-			databaseInfo[s]['email'].includes($('#searchEmployeeEmail').val())&&
-			databaseInfo[s]['department'].includes($('#searchEmployeeDepartment').val())&&
-			databaseInfo[s]['location'].includes($('#searchEmployeeLocation').val()))
-			{searchDatabaseInfo.push(databaseInfo[s])}
-		}
+		function searchEmployees() {
+			let searchDatabaseInfo = [];
+			let fieldsToSearch = ['firstName', 'lastName', 'email', 'department', 'location'];
+			for (let s = 0; s < databaseInfo.length; s++) {
+			  let match = true;
+			  for (let i = 0; i < fieldsToSearch.length; i++) {
+				const field = fieldsToSearch[i];
+				const query = $(`#searchEmployee${field.charAt(0).toUpperCase()}${field.slice(1)}`).val();
+				if (query && !databaseInfo[s][field].toLowerCase().includes(query.toLowerCase())) {
+				  match = false;
+				  break;
+				}
+			  }
+			  if (match) {
+				searchDatabaseInfo.push(databaseInfo[s]);
+			  }
 		
 		$('#tableData').empty();
 		for (let n = 0; n < searchDatabaseInfo.length; n ++){
@@ -1068,8 +1085,6 @@ $(function (){
 					for (x=0; x < databaseInfo.length; x++)
 					{if (databaseInfo[x].departmentID == departmentDatabaseInfo[s]['id']){
 					num ++;}}
-
-					//this logic needs fixed:
 					
 					if ($('#searchDepEmployees').val() == num && departmentDatabaseInfo[s]['name'].includes($('#searchDepDepartment').val()) && departmentDatabaseInfo[s]['locationID'].includes($('#searchDepLocation').val()))
 					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
@@ -1155,3 +1170,90 @@ $(function (){
 				$('#searchDepLocation').val('')
 				$('#searchDepEmployees').val('')
 				})})
+
+//search location
+
+$(function (){
+	$('#searchLocationSubmit').click(
+		
+		function() {
+		let searchLocationDatabaseInfo = [];
+		{
+
+		for (s=0; s<locationDatabaseInfo.length; s++)
+		{
+			let num = 0;
+			for (x=0; x < departmentDatabaseInfo.length; x++)
+			{if (departmentDatabaseInfo[x].locationID == locationDatabaseInfo[s]['id']){
+			num ++;}}
+			
+			if ($('#searchLocDepartments').val() == num && locationDatabaseInfo[s]['id'].includes($('#searchLocLocation').val()))
+			{searchLocationDatabaseInfo.push(locationDatabaseInfo[s])}
+
+			else if (!$('#searchLocDepartments').val() && locationDatabaseInfo[s]['id'].includes($('#searchLocLocation').val()))
+			{searchLocationDatabaseInfo.push(locationDatabaseInfo[s])}
+
+			else if ($('#searchLocDepartments').val() == num && !$('#searchLocLocation').val())
+			{searchLocationDatabaseInfo.push(locationDatabaseInfo[s])}
+		}
+		
+		console.log(searchLocationDatabaseInfo);
+
+		$('#tableDatac').empty();
+
+		function countLocDepartment (n){
+			let num =0;
+				for (x=0;x<departmentDatabaseInfo.length;x++){
+			if (searchLocationDatabaseInfo[n].id == departmentDatabaseInfo[x].locationID){
+				num ++;
+			console.log(num);}
+			}return num;}
+
+		for (let n = 0; n < searchLocationDatabaseInfo.length; n ++){
+
+			$('#tableDatac').append(`
+			<tr>
+			<td class="locationc" id="departmentb${n}"value="${searchLocationDatabaseInfo[n].id}">${searchLocationDatabaseInfo[n].name}</td>
+			<td class="departmentsc">${
+				countLocDepartment (n)
+			}</td>
+			<td class="actions">
+				<a href="#editLocationModal" class="editButtonb" data-toggle="modal"><i class="material-icons" id='editButtonb${searchLocationDatabaseInfo[n].id}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+				<a href="#deleteLocationModal" class="deleteButtonb" data-toggle="modal"><i class="material-icons" id='deleteButtonb${searchLocationDatabaseInfo[n].id}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+			</td>
+			</tr>
+			`);
+			
+			}
+	
+			// running a function for the department delete button & modal with deleteButtonb class: 
+
+deleteButtons = document.querySelectorAll('.deleteButtonb');
+
+deleteButtons.forEach(deleteButtonb => {
+deleteButtonb.addEventListener('click', event => {
+
+let depID = event.target.id	
+
+depID = depID.replace(/[^0-9]/g, '');
+
+deleteLocation(depID);
+})})
+
+// function for the edit button & modal with the editButtonb class: 
+
+editButtons = document.querySelectorAll('.editButtonb');
+
+editButtons.forEach(editButtonb => {
+editButtonb.addEventListener('click', event => {
+	let depID = event.target.id	
+	depID = depID.replace(/[^0-9]/g, '');
+	
+	editLocationEntry(depID);
+})})
+		}
+		$('#searchDepartmentModal').modal('hide');
+		$('#searchDepDepartment').val('')
+		$('#searchDepLocation').val('')
+		$('#searchDepEmployees').val('')
+		})})
