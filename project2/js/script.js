@@ -1205,8 +1205,7 @@ $(function (){
 			let num =0;
 				for (x=0;x<departmentDatabaseInfo.length;x++){
 			if (searchLocationDatabaseInfo[n].id == departmentDatabaseInfo[x].locationID){
-				num ++;
-			console.log(num);}
+				num ++;}
 			}return num;}
 
 		for (let n = 0; n < searchLocationDatabaseInfo.length; n ++){
@@ -1252,8 +1251,7 @@ editButtonb.addEventListener('click', event => {
 	editLocationEntry(depID);
 })})
 		}
-		$('#searchDepartmentModal').modal('hide');
-		$('#searchDepDepartment').val('')
-		$('#searchDepLocation').val('')
-		$('#searchDepEmployees').val('')
+		$('#searchLocationModal').modal('hide');
+		$('#searchLocLocation').val('')
+		$('#searchLocDepartments').val('')
 		})})
