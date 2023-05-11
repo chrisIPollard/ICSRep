@@ -29,7 +29,7 @@
 
     $query = $conn->prepare('SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.departmentID, d.name as department, l.name as location FROM personnel p WHERE p.firstName =  ?, p.lastName = ? LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) ORDER BY p.lastName, p.firstName, d.name, l.name WHERE p.lastName like ?, p.firstName like ?');
 
-	$query->bind_param("ss", $_REQUEST['lastName'], $_REQUEST['firstName'], );
+	$query->bind_param("ss", $_REQUEST['lastName'], $_REQUEST['firstName'] );
 
 	$query->execute();
 

@@ -1012,7 +1012,8 @@ $(function (){
 	$('#searchEmployeeSubmit').click(
 		
 		function searchEmployees() {
-			
+			console.log($('#searchEmployeeFirstName').val())
+			console.log($('#searchEmployeeLastName').val())
 			$.ajax({
 				url: "php/searchEmployee.php",
 				type: 'POST',
