@@ -39,7 +39,7 @@
 
 	$query = $conn->prepare('INSERT INTO personnel (firstName, lastName, email, departmentID) VALUES(?,?,?,?)');
 
-	$query->bind_param("sssi", $_REQUEST['firstName'], $_REQUEST['surname'], $_REQUEST['email'], $_REQUEST['departmentID']);
+	$query->bind_param("sssi", $_REQUEST['firstName'], $_REQUEST['lastName'], $_REQUEST['email'], $_REQUEST['departmentID']);
 
 	$query->execute();
 	

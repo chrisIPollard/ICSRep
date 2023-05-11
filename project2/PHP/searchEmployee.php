@@ -24,13 +24,18 @@
 
 	}	
 
-	$query = $conn->prepare('UPDATE personnel SET firstName = ?, lastName = ?, email = ?, departmentID = ? WHERE id = ?');
-	
-	$query->bind_param("sssii", $_REQUEST['firstName'], $_REQUEST['lastName'], $_REQUEST['email'], $_REQUEST['departmentID'], $_REQUEST['id']);
+	// SQL does not accept parameters and so is not prepared
+
+
+    $query = $conn->prepare('SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.departmentID, d.name as department, l.name as location FROM personnel p WHERE p.firstName =  ?, p.lastName = ? LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) ORDER BY p.lastName, p.firstName, d.name, l.name WHERE p.lastName like ?, p.firstName like ?');
+
+	$query->bind_param("ss", $_REQUEST['lastName'], $_REQUEST['firstName'], );
 
 	$query->execute();
+
+	$result = $conn->query($query);
 	
-	if (false === $query) {
+	if (!$result) {
 
 		$output['status']['code'] = "400";
 		$output['status']['name'] = "executed";
@@ -44,15 +49,20 @@
 		exit;
 
 	}
+   
+   	$data = [];
+
+	while ($row = mysqli_fetch_assoc($result)) {
+
+		array_push($data, $row);
+
+	}
 
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = (microtime(true) - $executionStartTime) / 1000 . " ms";
-	$output['data'] = [
-		'firstName' => $_REQUEST['firstName'],
-		'lastName' => $_REQUEST['lastName']
-	];
+	$output['data'] = $data;
 	
 	mysqli_close($conn);
 

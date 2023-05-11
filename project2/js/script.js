@@ -14,7 +14,7 @@ let deleteButtons;
 let place;
 
 let addFirstName;
-let addSurname;
+let addLastName;
 let addEmail;
 let addDepartmentID;
 
@@ -669,7 +669,7 @@ function editEntry(id){
 	}}
 
 	$('#editFormFirstName').val(thisdatabase.firstName);
-	$('#editFormSurname').val(thisdatabase.lastName);
+	$('#editFormLastName').val(thisdatabase.lastName);
 	$('#editFormEmail').val(thisdatabase.email);
 	$('#editFormDepartment').val(thisdatabase.department);
 
@@ -696,7 +696,7 @@ function editEntry(id){
 			<ul>${thisdatabase.email}</ul>
 			<ul>${thisdatabase.department}</ul>
 			with
-			<ul>${$('#editFormFirstName').val() + ' ' + $('#editFormSurname').val()}</ul>
+			<ul>${$('#editFormFirstName').val() + ' ' + $('#editFormLastName').val()}</ul>
 			<ul>${$('#editFormEmail').val()}</ul>
 			<ul>${$('#editFormDepartment').val()}</ul>
 			</p>`)
@@ -710,7 +710,7 @@ function editEntry(id){
 		dataType: 'json',
 		data: {
 			firstName: $('#editFormFirstName').val(),
-			surname: $('#editFormSurname').val(),
+			lastName: $('#editFormLastName').val(),
 			email: $('#editFormEmail').val(),
 			departmentID: $('#editFormDepartmentID').val(),
 			id: editID
@@ -813,7 +813,7 @@ $(function (){
 		$("#addEmployeeModal").modal('hide');
 		$("#alertModalContent").empty();
 		$("#alertModalContent").append(`<p>Are you sure you want to add:</p>
-		<ul>${$('#addFormFirstName').val()} ${$('#addFormSurname').val()}</ul>
+		<ul>${$('#addFormFirstName').val()} ${$('#addFormLastName').val()}</ul>
 		<ul>${$('#addFormEmail').val()}</ul>
 		<ul>${$('#addFormDepartment').val()}</ul>
 		<ul>${$('#addFormLocation').val()}</ul>
@@ -828,7 +828,7 @@ $(function (){
 				dataType: 'json',
 				data: {
 					firstName: $('#addFormFirstName').val(),
-					surname: $('#addFormSurname').val(),
+					lastName: $('#addFormLastName').val(),
 					email: $('#addFormEmail').val(),
 					departmentID: $('#addFormDepartmentID').val()
 				},
@@ -840,7 +840,7 @@ $(function (){
 				  
 					$("#alertModal").modal('hide');
 					$('#addFormFirstName').val('');
-					$('#addFormSurname').val('');
+					$('#addFormLastName').val('');
 					$('#addFormEmail').val('');
 					
 					getTableData();		
@@ -930,7 +930,7 @@ $("#alertModalConfirmi").click(()=>{
 				},
 				success: function(result) {
 
-					console.log(JSON.stringify(result));
+					//console.log(JSON.stringify(result));
 				  
 				if (result.status.name == "ok") {
 					$("#alertModali").modal('hide');
@@ -1012,62 +1012,68 @@ $(function (){
 	$('#searchEmployeeSubmit').click(
 		
 		function searchEmployees() {
-			let searchDatabaseInfo = [];
-			let fieldsToSearch = ['firstName', 'lastName', 'email', 'department', 'location'];
-			for (let s = 0; s < databaseInfo.length; s++) {
-			  let match = true;
-			  for (let i = 0; i < fieldsToSearch.length; i++) {
-				const field = fieldsToSearch[i];
-				const query = $(`#searchEmployee${field.charAt(0).toUpperCase()}${field.slice(1)}`).val();
-				if (query && !databaseInfo[s][field].toLowerCase().includes(query.toLowerCase())) {
-				  match = false;
-				  break;
+			
+			$.ajax({
+				url: "php/searchEmployee.php",
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					firstName: $('#searchEmployeeFirstName').val(),
+					lastName: $('#searchEmployeeLastName').val()
+				},
+				success: function(result) {
+
+					console.log(JSON.stringify(result));
+				  
+				if (result.status.name == "ok") {
+						
+
+			  }},
+				error: function(jqXHR, textStatus, errorThrown) {
+				  console.log(jqXHR);
 				}
-			  }
-			  if (match) {
-				searchDatabaseInfo.push(databaseInfo[s]);
-			  }
+			  })
+			  
+		// $('#tableData').empty();
+		// for (let n = 0; n < searchDatabaseInfo.length; n ++){
+		// 	$('#tableData').append(`
+		// 	<tr>
+		// 	<td class="name">${searchDatabaseInfo[n].firstName + ' ' + searchDatabaseInfo[n].lastName}</td>
+		// 	<td class="email">${searchDatabaseInfo[n].email}</td>
+		// 	<td class="department">${searchDatabaseInfo[n].department}</td>
+		// 	<td class="location">${searchDatabaseInfo[n].location}</td>
+		// 	<td class="actions">
+		// 		<a href="#editEmployeeModal" class="editButton" data-toggle="modal"><i class="material-icons" id='editButton${searchDatabaseInfo[n].id}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+		// 		<a href="#deleteEmployeeModal" class="deleteButton" data-toggle="modal"><i class="material-icons" id='deleteButton${searchDatabaseInfo[n].id}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+		// 	</td>
+		// 	</tr>
+		// 	`);
+		// 	}
+	
+		// 	// running a function for the employee delete button & modal with deleteButton class: 
+	
+		// 	deleteButtons = document.querySelectorAll('.deleteButton');
+	
+		// 	deleteButtons.forEach(deleteButton => {
+		// 	deleteButton.addEventListener('click', event => {
+		// 	deleteEntry(event.target.id);
+		// 	})})
+	
+		// 	// function for the edit button & modal with the editButton class: 
+	
+		// 	editButtons = document.querySelectorAll('.editButton');
+	
+		// 	editButtons.forEach(editButton => {
+		// 	editButton.addEventListener('click', event => {
+		// 	editEntry(event.target.id);
+		// 	})})
 		
-		$('#tableData').empty();
-		for (let n = 0; n < searchDatabaseInfo.length; n ++){
-			$('#tableData').append(`
-			<tr>
-			<td class="name">${searchDatabaseInfo[n].firstName + ' ' + searchDatabaseInfo[n].lastName}</td>
-			<td class="email">${searchDatabaseInfo[n].email}</td>
-			<td class="department">${searchDatabaseInfo[n].department}</td>
-			<td class="location">${searchDatabaseInfo[n].location}</td>
-			<td class="actions">
-				<a href="#editEmployeeModal" class="editButton" data-toggle="modal"><i class="material-icons" id='editButton${searchDatabaseInfo[n].id}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-				<a href="#deleteEmployeeModal" class="deleteButton" data-toggle="modal"><i class="material-icons" id='deleteButton${searchDatabaseInfo[n].id}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-			</td>
-			</tr>
-			`);
-			}
-	
-			// running a function for the employee delete button & modal with deleteButton class: 
-	
-			deleteButtons = document.querySelectorAll('.deleteButton');
-	
-			deleteButtons.forEach(deleteButton => {
-			deleteButton.addEventListener('click', event => {
-			deleteEntry(event.target.id);
-			})})
-	
-			// function for the edit button & modal with the editButton class: 
-	
-			editButtons = document.querySelectorAll('.editButton');
-	
-			editButtons.forEach(editButton => {
-			editButton.addEventListener('click', event => {
-			editEntry(event.target.id);
-			})})
-		}
-		$('#searchEmployeeModal').modal('hide');
-		$('#searchEmployeeFirstName').val('')
-		$('#searchEmployeeSurname').val('')
-		$('#searchEmployeeEmail').val('')
-		$('#searchEmployeeDepartment').val('')
-		$('#searchEmployeeLocation').val('')
+		// $('#searchEmployeeModal').modal('hide');
+		// $('#searchEmployeeFirstName').val('')
+		// $('#searchEmployeeLastName').val('')
+		// $('#searchEmployeeEmail').val('')
+		// $('#searchEmployeeDepartment').val('')
+		// $('#searchEmployeeLocation').val('')
 		})})
 
 //search department
@@ -1255,3 +1261,10 @@ editButtonb.addEventListener('click', event => {
 		$('#searchLocLocation').val('')
 		$('#searchLocDepartments').val('')
 		})})
+
+$(function () {
+	$('#addFormDepartmentID').hide()
+	$('#editFormDepartmentID').hide()
+	$('#addDepLocationID').hide()
+	$('#editDepartmentLocationID').hide()
+})
