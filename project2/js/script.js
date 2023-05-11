@@ -3,6 +3,8 @@
 let databaseInfo;
 let departmentDatabaseInfo;
 let locationDatabaseInfo;
+let locationIDCount
+let departmentIDCount
 
 let editButtons;
 let editEmail;
@@ -52,8 +54,8 @@ $(document).ready(function(){
 //1) Defining a function: 
 function getTableData(){
 
-	departmentEmployees = [];
-	locationDepartments = [];
+	countLocationIDs ()
+	countDepartmentIDs ()
 
 	$.ajax({
 	  url: 'php/getAll.php',
@@ -133,38 +135,14 @@ function getTableData(){
 			  
 			  console.log(departmentDatabaseInfo);
 		
-			function employeeNumbers (n) {
-				let num = 0;
-			for (x=0; x < databaseInfo.length; x++)
-			{if (databaseInfo[x].departmentID == departmentDatabaseInfo[n]['id']){
-					num ++;}
-				}
-				
-				let obj = {};
-				obj[departmentDatabaseInfo[n]['id']] = num;
-				departmentEmployees.push(obj)
-				return num;}
-
-				function departmentNumbers(n){
-					let num =0;
-						for (x=0;x<departmentDatabaseInfo.length;x++){
-					if (locationDatabaseInfo[n].id == departmentDatabaseInfo[x].locationID){
-						num ++;}
-					} 
-
-					let obj = {};
-					obj[departmentDatabaseInfo[n]['locationID']] = num;
-					locationDepartments.push(obj)
-					return num;}
-					
-
+			  countDepartmentIDs ()
 			for (let n = 0; n < departmentDatabaseInfo.length; n ++){
 				
 		$('#tableDatab').append(`
 		<tr>
 		<td class="departmentb" id="departmentb${n}"value="${departmentDatabaseInfo[n].id}">${departmentDatabaseInfo[n].name}</td>
 		<td class="employeesb">${
-			employeeNumbers (n)
+			getDepartmentCount(departmentDatabaseInfo[n].id)
 		}</td>
 		<td class="locationb" id="locationb${n}"></td>
 		<td class="actions">
@@ -261,12 +239,13 @@ function getTableData(){
 			  });
 
 			console.log(locationDatabaseInfo)
-
+			countLocationIDs ()
 			for (let n = 0; n < locationDatabaseInfo.length; n ++){
+				
 				$('#tableDatac').append(`
 				<tr>
 				<td class="locationc" id="${locationDatabaseInfo[n].id}">${locationDatabaseInfo[n].name}</td>
-				<td class="locationc"> ${departmentNumbers(n)} </td>
+				<td class="locationc"> ${getLocationCount(locationDatabaseInfo[n].id)} </td>
 				<td class="actions">
 					<a href="#editLocationModal" class="editButtonc" data-toggle="modal"><i class="material-icons" id='editButtonc${n}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
 					<a href="#deleteLocationModal" class="deleteButtonc" data-toggle="modal"><i class="material-icons" id='deleteButtonc${n}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
@@ -1014,6 +993,7 @@ $(function (){
 		function searchEmployees() {
 			console.log($('#searchEmployeeFirstName').val())
 			console.log($('#searchEmployeeLastName').val())
+
 			$.ajax({
 				url: "php/searchEmployee.php",
 				type: 'POST',
@@ -1080,43 +1060,32 @@ $(function (){
 //search department
 
 		$(function (){
+
+			
 			$('#searchDepartmentSubmit').click(
 				
 				function() {
-				let searchDepartmentDatabaseInfo = [];
-				{
-
-				for (s=0; s<departmentDatabaseInfo.length; s++)
-				{
-					let num = 0;
-					for (x=0; x < databaseInfo.length; x++)
-					{if (databaseInfo[x].departmentID == departmentDatabaseInfo[s]['id']){
-					num ++;}}
-					
-					if ($('#searchDepEmployees').val() == num && departmentDatabaseInfo[s]['name'].includes($('#searchDepDepartment').val()) && departmentDatabaseInfo[s]['locationID'].includes($('#searchDepLocation').val()))
-					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
-
-					else if ($('#searchDepEmployees').val() == num && departmentDatabaseInfo[s]['name'].includes($('#searchDepDepartment').val()) )
-					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
-
-					else if (!$('#searchDepEmployees').val() &&
-						departmentDatabaseInfo[s]['name'].includes($('#searchDepDepartment').val()) && departmentDatabaseInfo[s]['locationID'].includes($('#searchDepLocation').val()))
-					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
-
-					else if ($('#searchDepEmployees').val() == num && departmentDatabaseInfo[s]['locationID'].includes($('#searchDepLocation').val()))
-					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
-
-					else if (!$('#searchDepEmployees').val() && departmentDatabaseInfo[s]['name'].includes($('#searchDepDepartment').val()) )
-					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
-
-					else if (!$('#searchDepEmployees').val() && departmentDatabaseInfo[s]['locationID'].includes($('#searchDepLocation').val()) )
-					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
-
-					else if ($('#searchDepEmployees').val() == num)
-					{searchDepartmentDatabaseInfo.push(departmentDatabaseInfo[s])}
-				}
+					console.log($('#searchDepDepartment').val())
+					$.ajax({
+						url: "php/searchDepartment.php",
+						type: 'POST',
+						dataType: 'json',
+						data: {
+							department: $('#searchDepDepartment').val()
+						},
+						success: function(result) {
+		
+							console.log(JSON.stringify(result));
+						  
+						if (result.status.name == "ok") {
+								
+		
+					  }},
+						error: function(jqXHR, textStatus, errorThrown) {
+						  console.log(jqXHR);
+						}
+					  })
 				
-				console.log(searchDepartmentDatabaseInfo)
 
 				$('#tableDatab').empty();
 				for (let n = 0; n < searchDepartmentDatabaseInfo.length; n ++){
@@ -1144,7 +1113,7 @@ $(function (){
 					</tr>
 					`);
 					
-					}
+					
 			
 					// running a function for the department delete button & modal with deleteButtonb class: 
 
@@ -1268,4 +1237,69 @@ $(function () {
 	$('#editFormDepartmentID').hide()
 	$('#addDepLocationID').hide()
 	$('#editDepartmentLocationID').hide()
+
 })
+
+// Streamlining database & location counts to run from mySQL and be consistent:
+
+function countLocationIDs (){
+	$.ajax({
+		url: "php/countLocations.php",
+		type: 'GET',
+		dataType: 'json',
+	
+		success: function(result) {
+	
+		//console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+
+			locationIDCount = result.data;
+
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+}
+
+function countDepartmentIDs (){
+	$.ajax({
+		url: "php/countDepartments.php",
+		type: 'GET',
+		dataType: 'json',
+	
+		success: function(result) {
+	
+		//console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+
+			departmentIDCount = result.data;
+
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+}
+
+//first run: countLocationIDs ()
+function getLocationCount(locationID) {
+	for (let i = 0; i < locationIDCount.length; i++) {
+	  if (locationIDCount[i].locationID == locationID) {
+		return locationIDCount[i]['COUNT(locationID)'];
+	  }
+	}
+	return 0;
+  }
+
+//first run: countDepartmentIDs ()
+function getDepartmentCount(departmentID) {
+	for (let i = 0; i < departmentIDCount.length; i++) {
+	  if (departmentIDCount[i].departmentID == departmentID) {
+		return departmentIDCount[i]['COUNT(departmentID)'];
+	  }
+	}
+	return 0;
+  } 

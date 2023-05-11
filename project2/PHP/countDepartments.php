@@ -26,12 +26,7 @@
 
 	// SQL does not accept parameters and so is not prepared
 
-
-    $query = $conn->prepare('SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.departmentID, d.name as department, l.name as location FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) WHERE p.lastName like ? AND p.firstName like ? ORDER BY p.lastName, p.firstName, d.name, l.name');
-
-	$query->bind_param("ss", $_REQUEST['lastName'], $_REQUEST['firstName'] );
-
-	$query->execute();
+	$query = 'SELECT departmentID, COUNT(departmentID) FROM personnel GROUP BY departmentID;';
 
 	$result = $conn->query($query);
 	

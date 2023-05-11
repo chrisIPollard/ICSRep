@@ -27,9 +27,9 @@
 	// SQL does not accept parameters and so is not prepared
 
 
-    $query = $conn->prepare('SELECT p.id, p.lastName, p.firstName, p.jobTitle, p.email, p.departmentID, d.name as department, l.name as location FROM personnel p LEFT JOIN department d ON (d.id = p.departmentID) LEFT JOIN location l ON (l.id = d.locationID) WHERE p.lastName like ? AND p.firstName like ? ORDER BY p.lastName, p.firstName, d.name, l.name');
+    $query = $conn->prepare('SELECT id, name, locationID FROM department WHERE name LIKE ?');
 
-	$query->bind_param("ss", $_REQUEST['lastName'], $_REQUEST['firstName'] );
+	$query->bind_param("s", $_REQUEST['department']);
 
 	$query->execute();
 
