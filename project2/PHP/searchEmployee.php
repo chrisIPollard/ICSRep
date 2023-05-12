@@ -33,20 +33,20 @@
 
 	$query->execute();
 
-	$result = $conn->query($query);
-	
-	if (!$result) {
+    $result = $query->get_result();
 
-		$output['status']['code'] = "400";
-		$output['status']['name'] = "executed";
-		$output['status']['description'] = "query failed";	
-		$output['data'] = [];
+    if (!$result) {
 
-		mysqli_close($conn);
+        $output['status']['code'] = "400";
+        $output['status']['name'] = "executed";
+        $output['status']['description'] = "query failed";  
+        $output['data'] = [];
 
-		echo json_encode($output); 
+        mysqli_close($conn);
 
-		exit;
+        echo json_encode($output);
+
+        exit;
 
 	}
    

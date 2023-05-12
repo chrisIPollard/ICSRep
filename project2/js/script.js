@@ -22,8 +22,8 @@ let addDepartmentID;
 
 let departments = {};
 let locations = {};
-let departmentEmployees = [];
-let locationDepartments = [];
+let departmentEmployees = [''];
+let locationDepartments = [''];
 
 $(document).ready(function(){
 	// Activate tooltip
@@ -54,9 +54,6 @@ $(document).ready(function(){
 //1) Defining a function: 
 function getTableData(){
 
-	countLocationIDs ()
-	countDepartmentIDs ()
-
 	$.ajax({
 	  url: 'php/getAll.php',
 	  type: 'GET',
@@ -65,6 +62,8 @@ function getTableData(){
 	  success: function(result) {
 
 		$('#tableData').empty();
+		countLocationIDs ()
+		countDepartmentIDs ()
 	  
 		//console.log(result.data);
 		databaseInfo = result.data;
@@ -829,8 +828,6 @@ $(function (){
 				  console.log(jqXHR);
 				}
 			  })
-			
-			  this.reset();
 			  
 			  $("#addEmployeeModal").modal('hide');
 		

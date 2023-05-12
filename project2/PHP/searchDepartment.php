@@ -33,7 +33,7 @@
 
 	$query->execute();
 
-	$result = $conn->query($query);
+	$result = $query->get_result();
 	
 	if (!$result) {
 
