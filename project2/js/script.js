@@ -5,6 +5,7 @@ let departmentDatabaseInfo;
 let locationDatabaseInfo;
 let locationIDCount
 let departmentIDCount
+let searchEmployeeResult
 
 let editButtons;
 let editEmail;
@@ -61,7 +62,6 @@ function getTableData(){
 	  
 	  success: function(result) {
 
-		$('#tableData').empty();
 		countLocationIDs ()
 		countDepartmentIDs ()
 	  
@@ -69,38 +69,7 @@ function getTableData(){
 		databaseInfo = result.data;
 		console.log(databaseInfo);
 	  
-	  for (let n = 0; n < databaseInfo.length; n ++){
-		$('#tableData').append(`
-		<tr>
-		<td class="name">${databaseInfo[n].firstName + ' ' + databaseInfo[n].lastName}</td>
-		<td class="email">${databaseInfo[n].email}</td>
-		<td class="department">${databaseInfo[n].department}</td>
-		<td class="location">${databaseInfo[n].location}</td>
-		<td class="actions">
-			<a href="#editEmployeeModal" class="editButton" data-toggle="modal"><i class="material-icons" id='editButton${databaseInfo[n].id}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-			<a href="#deleteEmployeeModal" class="deleteButton" data-toggle="modal"><i class="material-icons" id='deleteButton${databaseInfo[n].id}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-		</td>
-		</tr>
-		`);
-		}
-
-		// running a function for the employee delete button & modal with deleteButton class: 
-
-		deleteButtons = document.querySelectorAll('.deleteButton');
-
-		deleteButtons.forEach(deleteButton => {
-		deleteButton.addEventListener('click', event => {
-		deleteEntry(event.target.id);
-		})})
-
-		// function for the edit button & modal with the editButton class: 
-
-		editButtons = document.querySelectorAll('.editButton');
-
-		editButtons.forEach(editButton => {
-		editButton.addEventListener('click', event => {
-		editEntry(event.target.id);
-		})})
+	  populatePersonnelTab(databaseInfo);
 
 	//getting department info (embedded):
 	
@@ -115,72 +84,11 @@ function getTableData(){
 		  
 		if (result.status.name == "ok") {
 
-			departments = {};
-			$('#tableDatab').empty();
-
 			departmentDatabaseInfo = result.data;
-			  
-			departmentDatabaseInfo.sort(function(a, b) {
-				const nameA = a.name.toUpperCase(); // ignore upper and lowercase
-				const nameB = b.name.toUpperCase(); // ignore upper and lowercase
-				if (nameA < nameB) {
-				  return -1;
-				}
-				if (nameA > nameB) {
-				  return 1;
-				}
-				return 0;
-			  });
-			  
-			  console.log(departmentDatabaseInfo);
-		
-			  countDepartmentIDs ()
-			for (let n = 0; n < departmentDatabaseInfo.length; n ++){
-				
-		$('#tableDatab').append(`
-		<tr>
-		<td class="departmentb" id="departmentb${n}"value="${departmentDatabaseInfo[n].id}">${departmentDatabaseInfo[n].name}</td>
-		<td class="employeesb">${
-			getDepartmentCount(departmentDatabaseInfo[n].id)
-		}</td>
-		<td class="locationb" id="locationb${n}"></td>
-		<td class="actions">
-			<a href="#editDepartmentModal" class="editButtonb" data-toggle="modal"><i class="material-icons" id='editButtonb${n}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-			<a href="#deleteDepartmentModal" class="deleteButtonb" data-toggle="modal"><i class="material-icons" id='deleteButtonb${n}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-		</td>
-		</tr>
-		`);
+			console.log(departmentDatabaseInfo);
+			departments = {};
 
-		}
-
-		// running a function for the department delete button & modal with deleteButtonb class: 
-
-		deleteButtons = document.querySelectorAll('.deleteButtonb');
-
-		deleteButtons.forEach(deleteButtonb => {
-		deleteButtonb.addEventListener('click', event => {
-
-		let depID = event.target.id	
-		depID = depID.replace('deleteButton', 'department');
-		
-		depID = $('#' + depID).attr('value');
-		console.log(depID)
-		deleteDepartmentEntry(depID);
-		})})
-
-		// function for the edit button & modal with the editButtonb class: 
-
-		editButtons = document.querySelectorAll('.editButtonb');
-
-		editButtons.forEach(editButtonb => {
-		editButtonb.addEventListener('click', event => {
-			let depID = event.target.id	
-			depID = depID.replace('editButton', 'department');
-		
-			depID = $('#' + depID).attr('value');
-			
-			editDepartmentEntry(depID);
-		})})
+			populateDepartmentTab(departmentDatabaseInfo);
 
 			//populating drop downs (personnel/employee forms): 
 
@@ -220,58 +128,10 @@ function getTableData(){
 		//console.log(JSON.stringify(result));
 		  
 		if (result.status.name == "ok") {
-
-			$('#tableDatac').empty();
-
 			locationDatabaseInfo = result.data;
-
-			locationDatabaseInfo.sort(function(a, b) {
-				const nameA = a.name.toUpperCase(); // ignore upper and lowercase
-				const nameB = b.name.toUpperCase(); // ignore upper and lowercase
-				if (nameA < nameB) {
-				  return -1;
-				}
-				if (nameA > nameB) {
-				  return 1;
-				}
-				return 0;
-			  });
-
 			console.log(locationDatabaseInfo)
-			countLocationIDs ()
-			for (let n = 0; n < locationDatabaseInfo.length; n ++){
-				
-				$('#tableDatac').append(`
-				<tr>
-				<td class="locationc" id="${locationDatabaseInfo[n].id}">${locationDatabaseInfo[n].name}</td>
-				<td class="locationc"> ${getLocationCount(locationDatabaseInfo[n].id)} </td>
-				<td class="actions">
-					<a href="#editLocationModal" class="editButtonc" data-toggle="modal"><i class="material-icons" id='editButtonc${n}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-					<a href="#deleteLocationModal" class="deleteButtonc" data-toggle="modal"><i class="material-icons" id='deleteButtonc${n}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-				</td>
-				</tr>
-				`);
-				}
-		
-				// running a function for the location delete button & modal with deleteButtonc class: 
-		
-				deleteButtons = document.querySelectorAll('.deleteButtonc');
-		
-				deleteButtons.forEach(deleteButtonc => {
-				deleteButtonc.addEventListener('click', event => {
 
-				deleteLocation(event.target.parentNode.parentNode.parentNode.querySelector('.locationc').id);
-				})})
-		
-				// function for the edit location & modal with the editButtonc class: 
-		
-				editButtons = document.querySelectorAll('.editButtonc');
-		
-				editButtons.forEach(editButtonc => {
-				editButtonc.addEventListener('click', event => {
-				
-				editLocationEntry(event.target.parentNode.parentNode.parentNode.querySelector('.locationc').id);
-				})})
+			populateLocationTab(locationDatabaseInfo);
 
 			//populating drop downs (personnel/employee forms): 
 			
@@ -289,7 +149,7 @@ function getTableData(){
 				}
 				
 				for (const key in locations) {
-					$('#searchDepLocation, #searchLocLocation').append(`<option value="${key}">${locations[key]}</option>`);
+					$('#searchDepLocation, #searchLocLocation').append(`<option value="${locations[key]}">${locations[key]}</option>`);
 				  }
 
 				for (const key in locations) {
@@ -981,6 +841,132 @@ $(document).ready(function(){
 	);
 })
 
+// Tab population functions:
+
+function populatePersonnelTab(info){
+$('#tableData').empty();
+for (let n = 0; n < info.length; n ++){
+	$('#tableData').append(`
+	<tr>
+	<td class="name">${info[n].firstName + ' ' + info[n].lastName}</td>
+	<td class="email">${info[n].email}</td>
+	<td class="department">${info[n].department}</td>
+	<td class="location">${info[n].location}</td>
+	<td class="actions">
+		<a href="#editEmployeeModal" class="editButton" data-toggle="modal"><i class="material-icons" id='editButton${info[n].id}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+		<a href="#deleteEmployeeModal" class="deleteButton" data-toggle="modal"><i class="material-icons" id='deleteButton${info[n].id}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+	</td>
+	</tr>
+	`);
+	}
+
+	// running a function for the employee delete button & modal with deleteButton class: 
+
+	deleteButtons = document.querySelectorAll('.deleteButton');
+
+	deleteButtons.forEach(deleteButton => {
+	deleteButton.addEventListener('click', event => {
+	deleteEntry(event.target.id);
+	})})
+
+	// function for the edit button & modal with the editButton class: 
+
+	editButtons = document.querySelectorAll('.editButton');
+
+	editButtons.forEach(editButton => {
+	editButton.addEventListener('click', event => {
+	editEntry(event.target.id);
+	})})}
+
+	function populateDepartmentTab (info) 
+	{$('#tableDatab').empty();
+			
+	countDepartmentIDs ()
+  for (let n = 0; n < info.length; n ++){
+	  
+$('#tableDatab').append(`
+<tr>
+<td class="departmentb" id="departmentb${n}"value="${info[n].id}">${info[n].name}</td>
+<td class="employeesb">${
+  getDepartmentCount(info[n].id)
+}</td>
+<td class="locationb" id="locationb${n}"></td>
+<td class="actions">
+  <a href="#editDepartmentModal" class="editButtonb" data-toggle="modal"><i class="material-icons" id='editButtonb${n}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+  <a href="#deleteDepartmentModal" class="deleteButtonb" data-toggle="modal"><i class="material-icons" id='deleteButtonb${n}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+</td>
+</tr>
+`);
+
+}
+
+// running a function for the department delete button & modal with deleteButtonb class: 
+
+deleteButtons = document.querySelectorAll('.deleteButtonb');
+
+deleteButtons.forEach(deleteButtonb => {
+deleteButtonb.addEventListener('click', event => {
+
+let depID = event.target.id	
+depID = depID.replace('deleteButton', 'department');
+
+depID = $('#' + depID).attr('value');
+console.log(depID)
+deleteDepartmentEntry(depID);
+})})
+
+// function for the edit button & modal with the editButtonb class: 
+
+editButtons = document.querySelectorAll('.editButtonb');
+
+editButtons.forEach(editButtonb => {
+editButtonb.addEventListener('click', event => {
+  let depID = event.target.id	
+  depID = depID.replace('editButton', 'department');
+
+  depID = $('#' + depID).attr('value');
+  
+  editDepartmentEntry(depID);
+})})}
+
+function populateLocationTab(info) {
+	$('#tableDatac').empty();
+			countLocationIDs ()
+			for (let n = 0; n < info.length; n ++){
+				
+				$('#tableDatac').append(`
+				<tr>
+				<td class="locationc" id="${info[n].id}">${info[n].name}</td>
+				<td class="locationc"> ${getLocationCount(info[n].id)} </td>
+				<td class="actions">
+					<a href="#editLocationModal" class="editButtonc" data-toggle="modal"><i class="material-icons" id='editButtonc${n}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+					<a href="#deleteLocationModal" class="deleteButtonc" data-toggle="modal"><i class="material-icons" id='deleteButtonc${n}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+				</td>
+				</tr>
+				`);
+				}
+		
+				// running a function for the location delete button & modal with deleteButtonc class: 
+		
+				deleteButtons = document.querySelectorAll('.deleteButtonc');
+		
+				deleteButtons.forEach(deleteButtonc => {
+				deleteButtonc.addEventListener('click', event => {
+
+				deleteLocation(event.target.parentNode.parentNode.parentNode.querySelector('.locationc').id);
+				})})
+		
+				// function for the edit location & modal with the editButtonc class: 
+		
+				editButtons = document.querySelectorAll('.editButtonc');
+		
+				editButtons.forEach(editButtonc => {
+				editButtonc.addEventListener('click', event => {
+				
+				editLocationEntry(event.target.parentNode.parentNode.parentNode.querySelector('.locationc').id);
+				})})
+}
+
 //search functions: 
 
 //search employee:
@@ -988,8 +974,6 @@ $(function (){
 	$('#searchEmployeeSubmit').click(
 		
 		function searchEmployees() {
-			console.log($('#searchEmployeeFirstName').val())
-			console.log($('#searchEmployeeLastName').val())
 
 			$.ajax({
 				url: "php/searchEmployee.php",
@@ -1001,68 +985,32 @@ $(function (){
 				},
 				success: function(result) {
 
-					console.log(JSON.stringify(result));
+					//console.log(JSON.stringify(result));
 				  
 				if (result.status.name == "ok") {
 						
-
+					searchEmployeeResult = result.data;
+					populatePersonnelTab(searchEmployeeResult)
 			  }},
 				error: function(jqXHR, textStatus, errorThrown) {
 				  console.log(jqXHR);
 				}
 			  })
 			  
-		// $('#tableData').empty();
-		// for (let n = 0; n < searchDatabaseInfo.length; n ++){
-		// 	$('#tableData').append(`
-		// 	<tr>
-		// 	<td class="name">${searchDatabaseInfo[n].firstName + ' ' + searchDatabaseInfo[n].lastName}</td>
-		// 	<td class="email">${searchDatabaseInfo[n].email}</td>
-		// 	<td class="department">${searchDatabaseInfo[n].department}</td>
-		// 	<td class="location">${searchDatabaseInfo[n].location}</td>
-		// 	<td class="actions">
-		// 		<a href="#editEmployeeModal" class="editButton" data-toggle="modal"><i class="material-icons" id='editButton${searchDatabaseInfo[n].id}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-		// 		<a href="#deleteEmployeeModal" class="deleteButton" data-toggle="modal"><i class="material-icons" id='deleteButton${searchDatabaseInfo[n].id}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-		// 	</td>
-		// 	</tr>
-		// 	`);
-		// 	}
-	
-		// 	// running a function for the employee delete button & modal with deleteButton class: 
-	
-		// 	deleteButtons = document.querySelectorAll('.deleteButton');
-	
-		// 	deleteButtons.forEach(deleteButton => {
-		// 	deleteButton.addEventListener('click', event => {
-		// 	deleteEntry(event.target.id);
-		// 	})})
-	
-		// 	// function for the edit button & modal with the editButton class: 
-	
-		// 	editButtons = document.querySelectorAll('.editButton');
-	
-		// 	editButtons.forEach(editButton => {
-		// 	editButton.addEventListener('click', event => {
-		// 	editEntry(event.target.id);
-		// 	})})
+			  	$('#searchEmployeeModal').modal('hide');
+				$('#searchEmployeeFirstName').val('');
+				$('#searchEmployeeLastName').val('');
 		
-		// $('#searchEmployeeModal').modal('hide');
-		// $('#searchEmployeeFirstName').val('')
-		// $('#searchEmployeeLastName').val('')
-		// $('#searchEmployeeEmail').val('')
-		// $('#searchEmployeeDepartment').val('')
-		// $('#searchEmployeeLocation').val('')
 		})})
 
 //search department
 
 		$(function (){
 
-			
 			$('#searchDepartmentSubmit').click(
 				
 				function() {
-					console.log($('#searchDepDepartment').val())
+					
 					$.ajax({
 						url: "php/searchDepartment.php",
 						type: 'POST',
@@ -1072,77 +1020,23 @@ $(function (){
 						},
 						success: function(result) {
 		
-							console.log(JSON.stringify(result));
+							//console.log(JSON.stringify(result));
 						  
 						if (result.status.name == "ok") {
-								
+
+							searchDepartmentResult = result.data;
+							populateDepartmentTab (searchDepartmentResult);
+							$(`#locationb0`).text(locations[searchDepartmentResult[0].locationID]);
 		
 					  }},
 						error: function(jqXHR, textStatus, errorThrown) {
 						  console.log(jqXHR);
 						}
-					  })
-				
-
-				$('#tableDatab').empty();
-				for (let n = 0; n < searchDepartmentDatabaseInfo.length; n ++){
-
-					function searchDepEmployee (n){
-					for (const obj of departmentEmployees) {
-  					if (searchDepartmentDatabaseInfo[n].id in obj) {
-   					return obj[searchDepartmentDatabaseInfo[n].id];}}}
-
-					   let loca = locationDatabaseInfo.find(location => location.id === searchDepartmentDatabaseInfo[n].locationID);
-
-					$('#tableDatab').append(`
-					<tr>
-					<td class="departmentb" id="departmentb${n}"value="${searchDepartmentDatabaseInfo[n].id}">${searchDepartmentDatabaseInfo[n].name}</td>
-					<td class="employeesb">${
-						searchDepEmployee (n)
-					}</td>
-					<td class="locationb" id="locationb${n}"
-					"value="${loca.id}">${loca.name}
-					</td>
-					<td class="actions">
-						<a href="#editDepartmentModal" class="editButtonb" data-toggle="modal"><i class="material-icons" id='editButtonb${searchDepartmentDatabaseInfo[n].id}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-						<a href="#deleteDepartmentModal" class="deleteButtonb" data-toggle="modal"><i class="material-icons" id='deleteButtonb${searchDepartmentDatabaseInfo[n].id}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-					</td>
-					</tr>
-					`);
-					
-					
-			
-					// running a function for the department delete button & modal with deleteButtonb class: 
-
-		deleteButtons = document.querySelectorAll('.deleteButtonb');
-
-		deleteButtons.forEach(deleteButtonb => {
-		deleteButtonb.addEventListener('click', event => {
-
-		let depID = event.target.id	
-		
-		depID = depID.replace(/[^0-9]/g, '');
-		
-		deleteDepartmentEntry(depID);
-		})})
-
-		// function for the edit button & modal with the editButtonb class: 
-
-		editButtons = document.querySelectorAll('.editButtonb');
-
-		editButtons.forEach(editButtonb => {
-		editButtonb.addEventListener('click', event => {
-			let depID = event.target.id	
-			depID = depID.replace(/[^0-9]/g, '');
-			
-			editDepartmentEntry(depID);
-		})})
-				}
-				$('#searchDepartmentModal').modal('hide');
-				$('#searchDepDepartment').val('')
-				$('#searchDepLocation').val('')
-				$('#searchDepEmployees').val('')
-				})})
+					})
+					$('#searchDepartmentModal').modal('hide');
+					$('#searchDepDepartment').val('');
+			  
+			  })})
 
 //search location
 
@@ -1150,92 +1044,32 @@ $(function (){
 	$('#searchLocationSubmit').click(
 		
 		function() {
-		let searchLocationDatabaseInfo = [];
-		{
-
-		for (s=0; s<locationDatabaseInfo.length; s++)
-		{
-			let num = 0;
-			for (x=0; x < departmentDatabaseInfo.length; x++)
-			{if (departmentDatabaseInfo[x].locationID == locationDatabaseInfo[s]['id']){
-			num ++;}}
 			
-			if ($('#searchLocDepartments').val() == num && locationDatabaseInfo[s]['id'].includes($('#searchLocLocation').val()))
-			{searchLocationDatabaseInfo.push(locationDatabaseInfo[s])}
+			$.ajax({
+				url: "php/searchLocation.php",
+				type: 'POST',
+				dataType: 'json',
+				data: {
+					location: $('#searchLocLocation').val()
+				},
+				success: function(result) {
 
-			else if (!$('#searchLocDepartments').val() && locationDatabaseInfo[s]['id'].includes($('#searchLocLocation').val()))
-			{searchLocationDatabaseInfo.push(locationDatabaseInfo[s])}
+					//console.log(JSON.stringify(result));
+				  
+				if (result.status.name == "ok") {
 
-			else if ($('#searchLocDepartments').val() == num && !$('#searchLocLocation').val())
-			{searchLocationDatabaseInfo.push(locationDatabaseInfo[s])}
-		}
-		
-		console.log(searchLocationDatabaseInfo);
+					searchLocationResult = result.data;
+					populateLocationTab (searchLocationResult);
 
-		$('#tableDatac').empty();
-
-		function countLocDepartment (n){
-			let num =0;
-				for (x=0;x<departmentDatabaseInfo.length;x++){
-			if (searchLocationDatabaseInfo[n].id == departmentDatabaseInfo[x].locationID){
-				num ++;}
-			}return num;}
-
-		for (let n = 0; n < searchLocationDatabaseInfo.length; n ++){
-
-			$('#tableDatac').append(`
-			<tr>
-			<td class="locationc" id="departmentb${n}"value="${searchLocationDatabaseInfo[n].id}">${searchLocationDatabaseInfo[n].name}</td>
-			<td class="departmentsc">${
-				countLocDepartment (n)
-			}</td>
-			<td class="actions">
-				<a href="#editLocationModal" class="editButtonb" data-toggle="modal"><i class="material-icons" id='editButtonb${searchLocationDatabaseInfo[n].id}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-				<a href="#deleteLocationModal" class="deleteButtonb" data-toggle="modal"><i class="material-icons" id='deleteButtonb${searchLocationDatabaseInfo[n].id}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-			</td>
-			</tr>
-			`);
-			
-			}
-	
-			// running a function for the department delete button & modal with deleteButtonb class: 
-
-deleteButtons = document.querySelectorAll('.deleteButtonb');
-
-deleteButtons.forEach(deleteButtonb => {
-deleteButtonb.addEventListener('click', event => {
-
-let depID = event.target.id	
-
-depID = depID.replace(/[^0-9]/g, '');
-
-deleteLocation(depID);
-})})
-
-// function for the edit button & modal with the editButtonb class: 
-
-editButtons = document.querySelectorAll('.editButtonb');
-
-editButtons.forEach(editButtonb => {
-editButtonb.addEventListener('click', event => {
-	let depID = event.target.id	
-	depID = depID.replace(/[^0-9]/g, '');
-	
-	editLocationEntry(depID);
-})})
-		}
-		$('#searchLocationModal').modal('hide');
-		$('#searchLocLocation').val('')
-		$('#searchLocDepartments').val('')
-		})})
-
-$(function () {
-	$('#addFormDepartmentID').hide()
-	$('#editFormDepartmentID').hide()
-	$('#addDepLocationID').hide()
-	$('#editDepartmentLocationID').hide()
-
-})
+			  }},
+				error: function(jqXHR, textStatus, errorThrown) {
+				  console.log(jqXHR);
+				}
+			})
+			$('#searchLocationModal').modal('hide');
+			$('#searchLocLocation').val('');
+	  
+	  })})
 
 // Streamlining database & location counts to run from mySQL and be consistent:
 

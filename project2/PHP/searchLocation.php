@@ -27,11 +27,11 @@ if (mysqli_connect_errno()) {
 
 }
 
-$query = $conn->prepare('SELECT id, name, locationID FROM department WHERE name LIKE ?');
+$query = $conn->prepare('SELECT id, name FROM location WHERE name LIKE ?');
 
-$departmentName = '%' . $_REQUEST['department'] . '%';
+$locationName = '%' . $_REQUEST['location'] . '%';
 
-if (!$query->bind_param("s", $departmentName)) {
+if (!$query->bind_param("s", $locationName)) {
 
     $output['status']['code'] = "400";
     $output['status']['name'] = "binding parameters";
@@ -47,7 +47,7 @@ if (!$query->bind_param("s", $departmentName)) {
 
 $query->execute();
 
-$query->bind_result($id, $name, $locationID);
+$query->bind_result($id, $name);
 
 $data = [];
 
@@ -55,8 +55,7 @@ while ($query->fetch()) {
 
     $row = [
         'id' => $id,
-        'name' => $name,
-        'locationID' => $locationID
+        'name' => $name
     ];
 
     array_push($data, $row);
