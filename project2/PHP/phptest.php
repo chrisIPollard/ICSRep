@@ -1,28 +1,28 @@
 <?php
-		// database credentials
-		$servername = "localhost";
-		$username = "chris320_user";
-		$password = "579dogbiscuits";
-		$dbname = "chris320_companydirectory";
 
-		// create connection
-		$conn = mysqli_connect($servername, $username, $password, $dbname);
+ini_set('display_errors', 'On');
+error_reporting(E_ALL);
 
-		// check connection
-		if (!$conn) {
-		    die("Connection failed: " . mysqli_connect_error());
-		}
+$executionStartTime = microtime(true);
 
-		// select names from employees table
-		$sql = "SELECT * FROM personnel";
-		$result = mysqli_query($conn, $sql);
+include("config.php");
 
-		// output names
-    
-    $row = mysqli_fetch_array($result);
-		echo $row["firstName"];
-		
+header('Content-Type: application/json; charset=UTF-8');
 
-		// close connection
-		mysqli_close($conn);
-	?>
+$conn = new mysqli($cd_host, $cd_user, $cd_password, $cd_dbname, $cd_port, $cd_socket);
+
+$query = 'SELECT id, name, locationID FROM department ORDER BY name ASC';
+
+$result = $query->get_result();
+
+while ($row = $result->fetch_assoc()) {
+    echo $row['username'] . " - " . $row['email'] . "<br>";
+}
+
+$mysqli->close();
+
+?>
+
+
+
+

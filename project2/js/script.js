@@ -21,6 +21,8 @@ let addLastName;
 let addEmail;
 let addDepartmentID;
 
+let department;
+
 let departments = {};
 let locations = {};
 let departmentEmployees = [''];
@@ -313,45 +315,12 @@ function editDepartmentEntry(id){
 }
 
 function deleteDepartmentEntry(id){
-	let department;
-for (let d=0; d<departmentDatabaseInfo.length; d++){
-	if (departmentDatabaseInfo[d].id == id){ department = departmentDatabaseInfo[d];}}
-	$("#finalDepartmentDelete").show();
-	$("#depWarning").show();
-	$("#depQuestion").show();
-	$("#lastDepartmentReview").html(
-		`<p>${department.name}<p>`
-	)
-
-	let num = 0;
-	for (x=0; x < databaseInfo.length; x++)
-	{if (databaseInfo[x].departmentID == department.id){
-			num ++;}}
-
-	if (!num == 0) {
-		$("#lastDepartmentReview").html(
-			`<p>${department.name} has ${num} employees, unable to remove a department that is in use.<p>`);
-		$("#finalDepartmentDelete").hide();
-		$("#depWarning").hide();
-		$("#depQuestion").hide();
-	} else {
-
-	$("#finalDepartmentDelete").click(function() {
-
-		$('#alertModalb').modal('show');
-		$("#deleteDepartmentModal").modal('hide');
-		$("#alertModalContentb").empty();
-		$("#alertModalContentb").append(`<p>Are you sure you want to delete ${department.name}?</p>`)
-		$("#cancelCommitb").click(()=>{$("#deleteDepartmentModal").modal('show');})
-
-		$("#alertModalConfirmb").click(()=>{
-		
 	$.ajax({
-		url: "php/deleteDepartmentByID.php",
+		url: "php/getDepartmentByID.php",
 		type: 'POST',
 		dataType: 'json',
 		data: {
-			id: department.id
+			id: id
 		},
 		success: function(result) {
 	
@@ -359,19 +328,65 @@ for (let d=0; d<departmentDatabaseInfo.length; d++){
 		  
 		if (result.status.name == "ok") {
 		  
-			$("#alertModalb").modal('hide');
+			department = result.data;
+			$("#finalDepartmentDelete").show();
+			$("#lastDepartmentReview").html(`${department[0]['name']}`);
 			
-			getTableData();
+			$("#finalDepartmentDelete").click(function() {
+				console.log(id);
+				$.ajax({
+					url: "php/countDepartment.php",
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						id: department[0]['id']
+					},
+					success: function(result) {
+					  
+					if (result.status.name == "ok") {
+					  
+						if (result.data[0]['count'] == 0){
+							$.ajax({
+								url: "php/deleteDepartmentByID.php",
+								type: 'POST',
+								dataType: 'json',
+								data: {
+									id: department[0]['id']
+								},
+								success: function(result) {
+							
+								//console.log(JSON.stringify(result));
+								  
+								if (result.status.name == "ok") {
+								  
+									$("#deleteDepartmentModal").modal('hide');
+									getTableData();
+									
+							  }},
+								error: function(jqXHR, textStatus, errorThrown) {
+								  console.log(jqXHR);
+								}
+							  })
+							
+						}
+						else {
+							$("#deleteDepartmentModal").modal('hide');
+							$("#alertModalb").modal('show');
+							$("#alertModalContentb").html(`${department[0]['name']} has ${result.data[0]['count']} employees and therefore cannot be deleted.`);
+						}
+						
+				  }},
+					error: function(jqXHR, textStatus, errorThrown) {
+					  console.log(jqXHR);
+					}
+				  })
 			
+			})
 	  }},
 		error: function(jqXHR, textStatus, errorThrown) {
 		  console.log(jqXHR);
 		}
 	  })
-	})
-	})
-	}
-
 };
 
 function deleteLocation (locationID) {
@@ -736,7 +751,6 @@ $(function (){
 						  console.log(jqXHR);
 						}
 					  })
-					  this.reset();
 					  $("#addDepartmentModal").modal('hide');
 
 					})
@@ -911,7 +925,7 @@ let depID = event.target.id
 depID = depID.replace('deleteButton', 'department');
 
 depID = $('#' + depID).attr('value');
-console.log(depID)
+
 deleteDepartmentEntry(depID);
 })})
 
