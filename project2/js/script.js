@@ -329,11 +329,10 @@ function deleteDepartmentEntry(id){
 		if (result.status.name == "ok") {
 		  
 			department = result.data;
-			$("#finalDepartmentDelete").show();
 			$("#lastDepartmentReview").html(`${department[0]['name']}`);
 			
 			$("#finalDepartmentDelete").click(function() {
-				console.log(id);
+				
 				$.ajax({
 					url: "php/countDepartment.php",
 					type: 'POST',
@@ -342,6 +341,8 @@ function deleteDepartmentEntry(id){
 						id: department[0]['id']
 					},
 					success: function(result) {
+
+						//console.log(JSON.stringify(result));
 					  
 					if (result.status.name == "ok") {
 					  
@@ -390,43 +391,8 @@ function deleteDepartmentEntry(id){
 };
 
 function deleteLocation (locationID) {
-	let location;
-for (let l=0; l<locationDatabaseInfo.length; l++){
-	if (locationDatabaseInfo[l].id == locationID){ location = locationDatabaseInfo[l];}}
-		
-	$("#finalLocationDelete").show();
-	$("#locWarning").show();
-	$("#locQuestion").show();
-	$("#lastLocationReview").html(
-		`<p>${location.name}<p>`
-	)
-
-	let num =0;
-	for (x=0;x<departmentDatabaseInfo.length;x++){
-	if (locationID == departmentDatabaseInfo[x].locationID){
-		num ++;}
-	} 
-
-	if (!num == 0) {
-		$("#lastLocationReview").html(
-			`<p>${location.name} has ${num} departments, unable to remove a location that is in use.<p>`);
-		$("#finalLocationDelete").hide();
-		$("#locWarning").hide();
-		$("#locQuestion").hide();
-	} else {
-		
-		$("#finalLocationDelete").click(function() {
-
-		$('#alertModalf').modal('show');
-		$("#deleteLocationModal").modal('hide');
-		$("#alertModalContentf").empty();
-		$("#alertModalContentf").append(`<p>Are you sure you want to delete ${location.name}?</p>`)
-		$("#cancelCommitf").click(()=>{$("#deleteLocationModal").modal('show');})
-
-		$("#alertModalConfirmf").click(()=>{
-		
 	$.ajax({
-		url: "php/deleteLocationByID.php",
+		url: "php/getLocationByID.php",
 		type: 'POST',
 		dataType: 'json',
 		data: {
@@ -434,22 +400,71 @@ for (let l=0; l<locationDatabaseInfo.length; l++){
 		},
 		success: function(result) {
 	
-		console.log(JSON.stringify(result));
+		//console.log(JSON.stringify(result));
 		  
 		if (result.status.name == "ok") {
 		  
-			$("#alertModalf").modal('hide');
+			let location = result.data;
+			$("#lastLocationReview").html(`${location[0]['name']}`);
 			
-			getTableData();
+			$("#finalLocationDelete").click(function() {
+				
+				$.ajax({
+					url: "php/countLocation.php",
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						id: location[0]['id']
+					},
+					success: function(result) {
+					  
+						//console.log(JSON.stringify(result));
+
+					if (result.status.name == "ok") {
+					  
+						if (result.data[0]['count'] == 0){
+							$.ajax({
+								url: "php/deleteLocationByID.php",
+								type: 'POST',
+								dataType: 'json',
+								data: {
+									id: location[0]['id']
+								},
+								success: function(result) {
+							
+								//console.log(JSON.stringify(result));
+								  
+								if (result.status.name == "ok") {
+								  
+									$("#deleteLocationModal").modal('hide');
+									getTableData();
+									
+							  }},
+								error: function(jqXHR, textStatus, errorThrown) {
+								  console.log(jqXHR);
+								}
+							  })
+							
+						}
+						else {
+							$("#deleteLocationModal").modal('hide');
+							$("#alertModalf").modal('show');
+							$("#alertModalContentf").html(`${location[0]['name']} has ${result.data[0]['count']} departments and therefore cannot be deleted.`);
+						}
+						
+				  }},
+					error: function(jqXHR, textStatus, errorThrown) {
+					  console.log(jqXHR);
+					}
+				  })
 			
+			})
 	  }},
 		error: function(jqXHR, textStatus, errorThrown) {
 		  console.log(jqXHR);
 		}
 	  })
-	})
-	})
-	}}
+};
 
 //this function takes in the department ID and provides a last review before submitting the correct data:
 
@@ -793,7 +808,7 @@ $("#alertModalConfirmi").click(()=>{
 				  console.log(jqXHR);
 				}
 			  })
-			  this.reset();
+			  
 			  $("#addLocationtModal").modal('hide');
 
 			})
