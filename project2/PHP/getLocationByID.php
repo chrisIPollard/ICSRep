@@ -27,14 +27,12 @@
 
     }   
 
-    // SQL statement accepts parameters and so is prepared to avoid SQL injection.
-    // $_REQUEST used for development / debugging. Remember to change to $_POST for production
+    $query = $conn->prepare('SELECT name
+    FROM location WHERE id = ?');
 
-    $query = $conn->prepare('SELECT id, name FROM location WHERE id =  ?');
+	$query->bind_param("i", $_REQUEST['id']);
 
-    $query->bind_param("i", $_REQUEST['id']);
-
-    $query->execute();
+	$query->execute();
 
     if (false === $query) {
 
@@ -50,17 +48,14 @@
 
     }
 
-    $query->bind_result($id, $name);
+    $query->execute();
 
+    $result = $query->get_result();
+    
     $data = [];
-
-    while ($query->fetch()) {
-
-        $row = array(
-            "id" => $id,
-            "name" => $name
-        );
-
+    
+    while ($row = $result->fetch_assoc()) {
+    
         array_push($data, $row);
     }
 

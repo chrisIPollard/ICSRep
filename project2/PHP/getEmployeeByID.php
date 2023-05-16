@@ -27,7 +27,13 @@
 
     }   
 
-    $query = $conn->prepare('SELECT name, locationID FROM department WHERE id = ?');
+    // SQL statement accepts parameters and so is prepared to avoid SQL injection.
+    // $_REQUEST used for development / debugging. Remember to change to $_POST for production
+
+    $query = $conn->prepare('SELECT p.id, p.firstName, p.lastName, p.email, p.departmentID, d.name AS departmentName
+    FROM personnel p
+    JOIN department d ON p.departmentID = d.id
+    WHERE p.id = ?');
 
 	$query->bind_param("i", $_REQUEST['id']);
 
@@ -47,14 +53,21 @@
 
     }
 
-    $query->execute();
+    $query->bind_result($id, $firstName, $lastName, $email, $departmentID, $departmentName);
 
-    $result = $query->get_result();
-    
     $data = [];
-    
-    while ($row = $result->fetch_assoc()) {
-    
+
+    while ($query->fetch()) {
+
+        $row = array(
+            "id" => $id,
+            "firstName" => $firstName,
+            "lastName" => $lastName,
+            "email" => $email,
+            "departmentID" => $departmentID,
+            "departmentName" => $departmentName,
+        );
+
         array_push($data, $row);
     }
 

@@ -27,7 +27,11 @@
 
     }   
 
-    $query = $conn->prepare('SELECT name, locationID FROM department WHERE id = ?');
+    $query = $conn->prepare('SELECT department.name, department.locationID, COUNT(personnel.departmentID) as personnel_count
+    FROM department
+    INNER JOIN personnel ON department.departmentID = personnel.departmentID
+    WHERE personnel.departmentID = ?
+    GROUP BY department.name, department.locationID');
 
 	$query->bind_param("i", $_REQUEST['id']);
 
