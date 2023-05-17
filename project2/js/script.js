@@ -288,17 +288,13 @@ function deleteDepartmentEntry(id){
 			id: id
 		},
 		success: function(result) {
+
+		//console.log(JSON.stringify(result));
 		  
 		if (result.status.name == "ok") {
 		  
 			deleteDepartment = result.data;
 			$("#lastDepartmentReview").html(`${deleteDepartment[0]['name']}`);
-			
-	  }},
-		error: function(jqXHR, textStatus, errorThrown) {
-		  console.log(jqXHR);
-		}
-	  })
 
 	  $("#finalDepartmentDelete").click(function() {
 
@@ -342,6 +338,7 @@ function deleteDepartmentEntry(id){
 					
 				}
 				else {
+					$("#deleteDepartmentModal").modal('hide');
 					$("#alertModalb").modal('show');
 					$("#alertModalContentb").html(`${deleteDepartment[0]['name']} has ${result.data[0]["COUNT(departmentID)"]} employees and therefore cannot be deleted.`);
 				}
@@ -353,6 +350,11 @@ function deleteDepartmentEntry(id){
 		  })
 	
 	})
+}},
+error: function(jqXHR, textStatus, errorThrown) {
+  console.log(jqXHR);
+}
+})
 };
 
 function deleteLocation (locationID) {
