@@ -28,7 +28,7 @@
 	LEFT JOIN department d ON (d.id = p.departmentID) 
 	LEFT JOIN location l ON (l.id = d.locationID) 
 	WHERE LOWER(p.lastName) LIKE LOWER(?) 
-	AND LOWER(p.firstName) LIKE LOWER(?)
+	OR LOWER(p.firstName) LIKE LOWER(?)
 	ORDER BY p.lastName, p.firstName, d.name, l.name');
 
     $query->bind_param("ss", $lastName, $firstName);
