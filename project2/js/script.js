@@ -10,6 +10,7 @@ let editButtons;
 let editID;
 let deleteID;
 let deleteDepartment;
+let deleteEmployeeID;
 let delLocation;
 let editDepartment;
 let editLocation;
@@ -500,6 +501,90 @@ function editLocationEntry(locationID){
 
 // this function is for the employee edit buttons & modal with editButton class: 
 
+$('#editEmployeeModal').on('show.bs.modal', function (e) {
+	
+	
+    $.ajax({
+      url: "php/getEmployeeByID.php",
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        id: $(e.relatedTarget).attr('data-id')
+      },
+      success: function (result) {
+            
+      //console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+        
+        $('#employeeID').val(result.data[0].id);
+        
+        $('#editFormFirstName').val(result.data[0].firstName);
+        $('#editFormLastName').val(result.data[0].lastName);
+        $('#editFormJobTitle').val(result.data[0].jobTitle);
+		$('#editFormEmail').val(result.data[0].email);
+        $('#editFormDepartment').val(result.data[0].departmentID);
+        
+      } else {
+
+        $('#exampleModal .modal-title').replaceWith("Error retrieving data");
+
+      } 
+
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      $('#exampleModal .modal-title').replaceWith("Error retrieving data");
+    }
+  });
+})
+
+$('#editEmployeeFormSubmit').on("submit", function(e) {
+  
+  e.preventDefault();
+  
+  $.ajax({
+	url: "php/updateEmployee.php",
+	type: 'POST',
+	dataType: 'json',
+	data: {
+		firstName: $('#editFormFirstName').val(),
+		lastName: $('#editFormLastName').val(),
+		jobTitle: $('#editFormJobTitle').val(),
+		email: $('#editFormEmail').val(),
+		departmentID: $('#editFormDepartment').val(),
+		id: $('#employeeID').val()
+		
+	},
+	success: function(result) {
+
+	//console.log(JSON.stringify(result));
+	  
+	if (result.status.name == "ok") {
+	  
+		$('#editEmployeeModal').modal('hide')
+		getTableData();
+			
+  }},
+	error: function(jqXHR, textStatus, errorThrown) {
+	  console.log(jqXHR);
+	}
+  })
+  
+  
+})
+
+$('#exampleModal').on('shown.bs.modal', function () {
+  
+  $('##editEmployeeModal').focus();
+  
+});
+
+$('#editEmployeeModal').on('hidden.bs.modal', function () {
+
+	//anything to rest on hiding goes here
+  
+});
+
 function editEntry(id){
 	
 	$.ajax({
@@ -765,15 +850,15 @@ $('#tableData').empty();
 for (let n = 0; n < info.length; n ++){
 	$('#tableData').append(`
 	<tr>
-	<td class="name">${info[n].firstName + ' ' + info[n].lastName}</td>
+	<td class="name">${info[n].lastName + ', ' + info[n].firstName}</td>
 	<td class="email">${info[n].email}</td>
 	<td class="department">${info[n].department}</td>
 	<td class="location">${info[n].location}</td>
 	<td class="actions">
 
-		<a href="" class="editButton" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" id='${info[n].id}'><i class="material-icons" title="Edit">&#xE254;</i></a>
+		<a href="" class="editButton" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" data-id='${info[n].id}'><i class="material-icons" title="Edit">&#xE254;</i></a>
 
-		<a href="" class="deleteButton" data-toggle="modal" data-bs-target="#deleteEmployeeModal" id='${info[n].id}' ><i class="material-icons" title="Delete">&#xE872;</i></a>
+		<a href="" class="deleteButton" data-toggle="modal" data-bs-target="#deleteEmployeeModal" data-id='${info[n].id}' ><i class="material-icons" title="Delete">&#xE872;</i></a>
 	</td>
 	</tr>
 	`);
@@ -790,12 +875,7 @@ for (let n = 0; n < info.length; n ++){
 
 	// function for the edit button & modal with the editButton class: 
 
-	editButtons = document.querySelectorAll('.editButton');
-
-	editButtons.forEach(editButton => {
-	editButton.addEventListener('click', event => {
-	editEntry(event.target.id);
-	})})}
+	}
 
 	function populateDepartmentTab (info) 
 	{$('#tableDatab').empty();
@@ -808,9 +888,9 @@ $('#tableDatab').append(`
 <td class="locationb" id="locationb${n}"></td>
 <td class="actions">
 
-<a href="" class="editButton" data-bs-toggle="modal" data-bs-target="#editDepartmentModal" id='${info[n].id}'><i class="material-icons" title="Edit">&#xE254;</i></a>
+<a href="" class="editButton" data-bs-toggle="modal" data-bs-target="#editDepartmentModal" data-id='${info[n].id}'><i class="material-icons" title="Edit" >&#xE254;</i></a>
 
-<a href="" class="deleteButton" data-toggle="modal" data-bs-target="#deleteDepartmentModal" id='${info[n].id}' ><i class="material-icons" title="Delete">&#xE872;</i></a>
+<a href="" class="deleteButton" data-toggle="modal" data-bs-target="#deleteDepartmentModal" data-id='${info[n].id}' ><i class="material-icons" title="Delete" >&#xE872;</i></a>
 
 </td>
 </tr>

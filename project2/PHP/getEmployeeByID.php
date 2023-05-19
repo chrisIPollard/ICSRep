@@ -30,7 +30,7 @@
     // SQL statement accepts parameters and so is prepared to avoid SQL injection.
     // $_REQUEST used for development / debugging. Remember to change to $_POST for production
 
-    $query = $conn->prepare('SELECT p.id, p.firstName, p.lastName, p.email, p.departmentID, d.name AS departmentName
+    $query = $conn->prepare('SELECT p.id, p.firstName, p.lastName, p.jobTitle, p.email, p.departmentID, d.name AS departmentName
     FROM personnel p
     JOIN department d ON p.departmentID = d.id
     WHERE p.id = ?');
@@ -53,7 +53,7 @@
 
     }
 
-    $query->bind_result($id, $firstName, $lastName, $email, $departmentID, $departmentName);
+    $query->bind_result($id, $firstName, $lastName, $jobTitle, $email, $departmentID, $departmentName);
 
     $data = [];
 
@@ -63,6 +63,7 @@
             "id" => $id,
             "firstName" => $firstName,
             "lastName" => $lastName,
+            "jobTitle" => $jobTitle,
             "email" => $email,
             "departmentID" => $departmentID,
             "departmentName" => $departmentName,
