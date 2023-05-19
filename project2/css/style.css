@@ -138,19 +138,25 @@ table.table .avatar {
 }    
 
 #navTabs .nav-link {
-	color: white;
+	color: #7AC5CD;
   }
   
   #navTabs .nav-link:hover {
-	color: #435d7d;
+	color: #ADD8E6;
   }
 
   #navTabs .nav-link:active{
-	background-color: #435d7d;
+	color: #435d7d;
   }
 
   #navTabs .nav-link:focus{
 	color: #435d7d;
+  }
+
+  .table-title, #navTabs, .threeHeaders {
+	position: sticky;
+	top: 0;
+	z-index: 100;
   }
 
 /* media queries */

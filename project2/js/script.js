@@ -18,12 +18,6 @@ let departmentEmployees = [''];
 let locationDepartments = [''];
 let getEmployeeByID;
 
-
-$(document).ready(function(){
-	// Activate tooltip
-	$('[data-toggle="tooltip"]').tooltip();
-});
-
 //populating table:
 
 //1) Defining a function: 
@@ -35,9 +29,6 @@ function getTableData(){
 	  dataType: "json",
 	  
 	  success: function(result) {
-
-		countLocationIDs ()
-		countDepartmentIDs ()
 	  
 		//console.log(result.data);
 		databaseInfo = result.data;
@@ -736,22 +727,12 @@ function editEntry(id){
 //nav tab setup
 
 $(document).ready(function(){
-	$('#addLocation').hide();
-	$('#addDepartment').hide();
-	$('#searchLocation').hide();
-	$('#searchDepartment').hide();
 	$('#locationTable').hide();
 	$('#departmentTable').hide();
 
 	$('#locationTab').click(
 		()=>{
 			getTableData()
-			$('#addLocation').show();
-			$('#addEmployee').hide();
-			$('#addDepartment').hide();
-			$('#searchEmployee').hide();
-			$('#searchLocation').show();
-			$('#searchDepartment').hide();
 			$('#locationTable').show();
 			$('#personnelTable').hide();
 			$('#departmentTable').hide();
@@ -761,12 +742,6 @@ $(document).ready(function(){
 	$('#departmentTab').click(
 		()=>{
 			getTableData()
-			$('#addLocation').hide();
-			$('#addEmployee').hide();
-			$('#addDepartment').show();
-			$('#searchEmployee').hide();
-			$('#searchLocation').hide();
-			$('#searchDepartment').show();
 			$('#locationTable').hide();
 			$('#personnelTable').hide();
 			$('#departmentTable').show();
@@ -776,12 +751,6 @@ $(document).ready(function(){
 	$('#personnelTab').click(
 		()=>{
 			getTableData()
-			$('#addLocation').hide();
-			$('#addEmployee').show();
-			$('#addDepartment').hide();
-			$('#searchEmployee').show();
-			$('#searchLocation').hide();
-			$('#searchDepartment').hide();
 			$('#locationTable').hide();
 			$('#personnelTable').show();
 			$('#departmentTable').hide();
@@ -801,8 +770,10 @@ for (let n = 0; n < info.length; n ++){
 	<td class="department">${info[n].department}</td>
 	<td class="location">${info[n].location}</td>
 	<td class="actions">
-		<a href="#editEmployeeModal" class="editButton" data-toggle="modal"><i class="material-icons" id='${info[n].id}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-		<a href="#deleteEmployeeModal" class="deleteButton" data-toggle="modal"><i class="material-icons" id='${info[n].id}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+
+		<a href="" class="editButton" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" id='${info[n].id}'><i class="material-icons" title="Edit">&#xE254;</i></a>
+
+		<a href="" class="deleteButton" data-toggle="modal" data-bs-target="#deleteEmployeeModal" id='${info[n].id}' ><i class="material-icons" title="Delete">&#xE872;</i></a>
 	</td>
 	</tr>
 	`);
@@ -829,19 +800,18 @@ for (let n = 0; n < info.length; n ++){
 	function populateDepartmentTab (info) 
 	{$('#tableDatab').empty();
 			
-	countDepartmentIDs ()
   for (let n = 0; n < info.length; n ++){
 	  
 $('#tableDatab').append(`
 <tr>
 <td class="departmentb" id="departmentb${n}"value="${info[n].id}">${info[n].name}</td>
-<td class="employeesb">${
-  getDepartmentCount(info[n].id)
-}</td>
 <td class="locationb" id="locationb${n}"></td>
 <td class="actions">
-  <a href="#editDepartmentModal" class="editButtonb" data-toggle="modal"><i class="material-icons" id='${info[n].id}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-  <a href="#deleteDepartmentModal" class="deleteButtonb" data-toggle="modal"><i class="material-icons" id='${info[n].id}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+
+<a href="" class="editButton" data-bs-toggle="modal" data-bs-target="#editDepartmentModal" id='${info[n].id}'><i class="material-icons" title="Edit">&#xE254;</i></a>
+
+<a href="" class="deleteButton" data-toggle="modal" data-bs-target="#deleteDepartmentModal" id='${info[n].id}' ><i class="material-icons" title="Delete">&#xE872;</i></a>
+
 </td>
 </tr>
 `);
@@ -873,16 +843,16 @@ editButtonb.addEventListener('click', event => {
 
 function populateLocationTab(info) {
 	$('#tableDatac').empty();
-			countLocationIDs ()
+			
 			for (let n = 0; n < info.length; n ++){
 				
 				$('#tableDatac').append(`
 				<tr>
 				<td class="locationc" id="${info[n].id}">${info[n].name}</td>
-				<td class="locationc"> ${getLocationCount(info[n].id)} </td>
 				<td class="actions">
-					<a href="#editLocationModal" class="editButtonc" data-toggle="modal"><i class="material-icons" id='${info[n].id}' data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-					<a href="#deleteLocationModal" class="deleteButtonc" data-toggle="modal"><i class="material-icons" id='${info[n].id}' data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+				<a href="" class="editButton" data-bs-toggle="modal" data-bs-target="#editLocationModal" id='${info[n].id}'><i class="material-icons" title="Edit">&#xE254;</i></a>
+
+				<a href="" class="deleteButton" data-toggle="modal" data-bs-target="#deleteLocationModal" id='${info[n].id}' ><i class="material-icons" title="Delete">&#xE872;</i></a>
 				</td>
 				</tr>
 				`);
@@ -1016,67 +986,3 @@ $(function (){
 			$('#searchLocLocation').val('');
 	  
 	  })})
-
-// Streamlining database & location counts to run from mySQL and be consistent:
-
-function countLocationIDs (){
-	$.ajax({
-		url: "php/countLocations.php",
-		type: 'GET',
-		dataType: 'json',
-	
-		success: function(result) {
-	
-		//console.log(JSON.stringify(result));
-		  
-		if (result.status.name == "ok") {
-
-			locationIDCount = result.data;
-
-	  }},
-		error: function(jqXHR, textStatus, errorThrown) {
-		  console.log(jqXHR);
-		}
-	  })
-}
-
-function countDepartmentIDs (){
-	$.ajax({
-		url: "php/countDepartments.php",
-		type: 'GET',
-		dataType: 'json',
-	
-		success: function(result) {
-	
-		//console.log(JSON.stringify(result));
-		  
-		if (result.status.name == "ok") {
-
-			departmentIDCount = result.data;
-
-	  }},
-		error: function(jqXHR, textStatus, errorThrown) {
-		  console.log(jqXHR);
-		}
-	  })
-}
-
-//first run: countLocationIDs ()
-function getLocationCount(locationID) {
-	for (let i = 0; i < locationIDCount.length; i++) {
-	  if (locationIDCount[i].locationID == locationID) {
-		return locationIDCount[i]['COUNT(locationID)'];
-	  }
-	}
-	return 0;
-  }
-
-//first run: countDepartmentIDs ()
-function getDepartmentCount(departmentID) {
-	for (let i = 0; i < departmentIDCount.length; i++) {
-	  if (departmentIDCount[i].departmentID == departmentID) {
-		return departmentIDCount[i]['COUNT(departmentID)'];
-	  }
-	}
-	return 0;
-  } 
