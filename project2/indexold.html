@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<meta charset="utf-8">
+<title>Company Directory</title>
+
+<!-- bootstrap -->
+<link rel="stylesheet" href="css/bootstrap.css">
+<!-- fontawesome icons -->
+<link rel="stylesheet" href="../project1/css/all.css" /> 
+<!-- CSS -->
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+	<div class="container-xl">
+		<div class="table-responsive">
+			<div class="table-wrapper">
+				<div>
+				<div class="table-title">
+					<div class="row">
+						<div class="col-sm-6 col-12">
+							<h2 id="pageTitle">Company Directory</h2>
+						</div>
+						<div class="col-sm-6 col-12">
+							<div class="d-flex justify-content-end">
+								<a id="searchAll"  class="btn btn-primary" ><i class="fas fa-search"></i> <span>Search</span></a>
+								<a id="addAll"  class="btn btn-success" ><i class="fas fa-plus"></i> <span>Add</span></a>
+</div>
+						</div>
+					</div>
+					<br>
+					<div id="navTabs">
+						<ul class="nav nav-tabs">
+							<li class="nav-item">
+								<a id="personnelTab" href="#" class="nav-link active" data-bs-toggle="tab">Personnel</a>
+							</li>
+							<li class="nav-item">
+								<a id="departmentTab" href="#" class="nav-link" data-bs-toggle="tab">Departments</a>
+							</li>
+							<li class="nav-item">
+								<a id="locationTab" href="#" class="nav-link" data-bs-toggle="tab">Locations</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				
+				<div id="personnelTable">
+					<table class="table table-striped table-hover">
+						<thead class="threeHeaders">
+							<tr>
+								<th class="name">Name</th>
+								<th class="email">Email</th>
+								<th class="department">Department</th>
+								<th class="location">Location</th>
+								<th class="actions">Actions</th>
+							</tr>
+						</thead>
+						<tbody id="tableData">
+						</tbody>
+					</table>
+				</div>
+			<div id="departmentTable">
+				<table class="table table-striped table-hover">
+					<thead class="threeHeaders">
+						<tr>
+							<th class="departmentb">Department</th>
+							<th class="locationb">Location</th>
+							<th class="actionsb">Actions</th>
+						</tr>
+					</thead>
+					<tbody id="tableDatab">
+					</tbody>
+				</table>
+				</div>
+				<div id="locationTable">
+					<table class="table table-striped table-hover">
+						<thead class="threeHeaders">
+							<tr>
+								<th class="locationc">Location</th>
+								<th class="actionsc">Actions</th>
+							</tr>
+						</thead>
+						<tbody id="tableDatac">
+						</tbody>
+					</table>
+					</div>
+				</div>
+		</div>
+	</div>        
+</div>
+
+<!-- Add Employee/personnel Modal HTML -->
+<div id="addEmployeeModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="addFormSubmit">
+				<div class="modal-header">						
+					<h4 class="modal-title">Add Employee</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<div class="form-group">
+						<label>First Name</label>
+						<input id="addFormFirstName" type="text" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Surname</label>
+						<input id="addFormLastName" type="text" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Email</label>
+						<input id="addFormEmail" type="email" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Department</label>
+						<br>
+						<select id="addFormDepartment" class="form-select" required>   
+						
+						</select>
+					</div>	
+			
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="submit" id="addEmployeeSubmit" class="btn btn-success" value="Add">
+				</div>	
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Search Employee/personnel Modal HTML -->
+<div id="searchEmployeeModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">						
+					<h4 class="modal-title">Search Employee</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<div class="form-group">
+						<label>First Name</label>
+						<input id="searchEmployeeFirstName" type="text" class="form-control">
+					</div>
+					<div class="form-group">
+						<label>Surname</label>
+						<input id="searchEmployeeLastName" type="text" class="form-control">
+					</div>			
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="submit" id="searchEmployeeSubmit" class="btn btn-success" value="Search">
+				</div>	
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Edit employee/personnel Modal HTML -->
+
+<div id="editEmployeeModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+	  <div class="modal-content shadow"> 
+		<div class="modal-header bg-secondary bg-gradient text-white">
+		  <h5 class="modal-title">Edit employee</h5>
+		  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+		  <form id="editEmployeeFormSubmit">
+			<input type="hidden" id="employeeID">
+			<div class="form-floating mb-3">
+			  <input type="text" class="form-control" id="editFormFirstName" placeholder="First name" required>
+			  <label for="firstName">First name</label>
+			</div>
+			<div class="form-floating mb-3">
+			  <input type="text" class="form-control" id="editFormLastName" placeholder="Last name" required>
+			  <label for="lastName">Last name</label>
+			</div>       
+			<div class="form-floating mb-3">
+			  <input type="email" class="form-control" id="editFormEmail" placeholder="Email address" required>
+			  <label for="emailAddress">Email Address</label>
+			</div>    
+			<div class="form-floating">
+			  <select class="form-select" id="editFormDepartment" placeholder="Department">
+			  </select>
+			  <label for="department">Department</label>
+			</div>  
+		  </form>
+		</div>
+		<div class="modal-footer">
+		  <button type="submit" form="editEmployeeFormSubmit" class="btn btn-outline-secondary btn-sm myBtn">SAVE</button>
+		  <button type="button" class="btn btn-outline-secondary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+<!-- Delete employee Modal HTML -->
+<div id="deleteEmployeeModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">						
+					<h4 class="modal-title">Delete Employee</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<p>Are you sure you want to delete these Records:</p>
+					<div id="lastReview"></div>
+					<p class="text-warning"><small>This action cannot be undone.</small></p>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input id="finalDelete" type="submit" class="btn btn-danger" value="Delete">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Add Department Modal HTML -->
+<div id="addDepartmentModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="addDepFormSubmit">
+				<div class="modal-header">						
+					<h4 class="modal-title">Add Department</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<div class="form-group">
+						<label>Department</label>
+						<input id="addDepDepartment" type="text" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Location</label>
+						<br>
+						<select id="addDepLocation" class="form-select" required>   
+						</select>
+					</div>	
+										
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input id="addDepartmentSubmit" type="submit" class="btn btn-success" value="Add">
+				</div>	
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Search Department Modal HTML -->
+<div id="searchDepartmentModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="">
+				<div class="modal-header">						
+					<h4 class="modal-title">Search Department</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">				
+					<br>
+					<div class="form-group">
+						<label>Department</label>
+						<br>
+						<select id="searchDepDepartment" class="form-select" ></select>  
+					</div>				
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input id="searchDepartmentSubmit" type="submit" class="btn btn-success" value="Search">
+				</div>	
+			</form>
+		</div>
+	</div>
+</div>			
+
+<!-- Search Location Modal HTML -->
+<div id="searchLocationModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="">
+				<div class="modal-header">						
+					<h4 class="modal-title">Search Location</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">				
+					<br>
+					<div class="form-group">
+						<label>Location</label>
+						<br>
+						<select id="searchLocLocation" class="form-select" ></select>  
+					</div>			
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input id="searchLocationSubmit" type="submit" class="btn btn-success" value="Search">
+				</div>	
+			</form>
+		</div>
+	</div>
+</div>			
+
+
+<!-- Add Location Modal HTML -->
+<div id="addLocationModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">						
+					<h4 class="modal-title">Add Location</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<div class="form-group">
+						<label>Location</label>
+						<input id="addLocLocation" type="text" class="form-control" required>
+					</div>				
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input id="addLocationSubmit" type="submit" class="btn btn-success" value="Add">
+				</div>	
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Delete department Modal HTML -->
+<div id="deleteDepartmentModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">						
+					<h4 class="modal-title">Delete Department</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<p id="depQuestion">Are you sure you want to delete this Department:</p>
+					<div id="lastDepartmentReview"></div>
+					<br>
+					<p class="text-warning" id="depWarning"><small>This action will only work when employees is 0.</small></p>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input id="finalDepartmentDelete" type="submit" class="btn btn-danger" value="Delete">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Delete location Modal HTML -->
+<div id="deleteLocationModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">						
+					<h4 class="modal-title">Delete Location</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<p id="locQuestion">Are you sure you want to delete this Location:</p>
+					<div id="lastLocationReview"></div>
+					<br>
+					<p class="text-warning" id="locWarning"><small>This action will only work when departments is 0.</small></p>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input id="finalLocationDelete" type="submit" class="btn btn-danger" value="Delete">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Edit Department Modal HTML -->
+<div id="editDepartmentModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="editDepartmentSubmit">
+				<div class="modal-header">						
+					<h4 class="modal-title">Edit Department</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<div class="form-group">
+						<label>Department</label>
+						<br>
+						<input id="editDepartmentDepartment" type="text" class="form-control" required>  
+						</select>
+					</div>	
+					<div class="form-group">
+						<label>Location</label>
+						<br>
+						<select id="editDepartmentLocation" class="form-select"> 
+						</select>
+					</div>			
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="submit" id="editDepartmentSave" class="btn btn-success" value="Save">
+				</div>	
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Edit Location Modal HTML -->
+<div id="editLocationModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="editLocationSubmit">
+				<div class="modal-header">						
+					<h4 class="modal-title">Edit Location</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<div class="form-group">
+						<label>Location</label>
+						<br>
+						<input id="editLocationLocation" type="text" class="form-control" required>  
+					</div>			
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="submit" id="editLocationSave" class="btn btn-success" value="Save">
+				</div>	
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- alert modal -->
+<div id="alertModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+				<div class="modal-header">						
+					<h4 class="modal-title">Confirm Change</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body" id="alertModalContent">									
+				</div>
+				<div class="modal-footer">
+					<input type="button" id="cancelCommit" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="button" id="alertModalConfirm" class="btn btn-warning" value="Confirm">
+				</div>
+		</div>
+	</div>
+</div>
+
+<!-- alert modal b-->
+<div id="alertModalb" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+				<div class="modal-header">						
+					<h4 class="modal-title">Unable to Delete</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body" id="alertModalContentb">									
+				</div>
+				<div class="modal-footer">
+					<input type="button" id="cancelCommitb" class="btn btn-default" data-dismiss="modal" value="Cancel">
+				
+				</div>
+		</div>
+	</div>
+</div>
+
+<!-- alert modal c-->
+<div id="alertModalc" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+				<div class="modal-header">						
+					<h4 class="modal-title">Confirm Change</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body" id="alertModalContentc">									
+				</div>
+				<div class="modal-footer">
+					<input type="button" id="cancelCommitc" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="button" id="alertModalConfirmc" class="btn btn-warning" value="Confirm">
+				</div>
+		</div>
+	</div>
+</div>
+
+<!-- alert modal d-->
+<div id="alertModald" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+				<div class="modal-header">						
+					<h4 class="modal-title">Confirm Change</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body" id="alertModalContentd">									
+				</div>
+				<div class="modal-footer">
+					<input type="button" id="cancelCommitd" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="button" id="alertModalConfirmd" class="btn btn-warning" value="Confirm">
+				</div>
+		</div>
+	</div>
+</div>
+
+<!-- alert modal e-->
+<div id="alertModale" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+				<div class="modal-header">						
+					<h4 class="modal-title">Confirm Change</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body" id="alertModalContente">									
+				</div>
+				<div class="modal-footer">
+					<input type="button" id="cancelCommite" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="button" id="alertModalConfirme" class="btn btn-warning" value="Confirm">
+				</div>
+		</div>
+	</div>
+</div>
+
+<!-- alert modal f-->
+<div id="alertModalf" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+				<div class="modal-header">						
+					<h4 class="modal-title">Unable to Delete</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body" id="alertModalContentf">									
+				</div>
+				<div class="modal-footer">
+					<input type="button" id="cancelCommitf" class="btn btn-default" data-dismiss="modal" value="Cancel">
+				</div>
+		</div>
+	</div>
+</div>
+
+<!-- alert modal g-->
+<div id="alertModalg" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+				<div class="modal-header">						
+					<h4 class="modal-title">Confirm Change</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body" id="alertModalContentg">									
+				</div>
+				<div class="modal-footer">
+					<input type="button" id="cancelCommitg" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="button" id="alertModalConfirmg" class="btn btn-warning" value="Confirm">
+				</div>
+		</div>
+	</div>
+</div>
+
+<!-- alert modal h-->
+<div id="alertModalh" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+				<div class="modal-header">						
+					<h4 class="modal-title">Confirm Change</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body" id="alertModalContenth">									
+				</div>
+				<div class="modal-footer">
+					<input type="button" id="cancelCommith" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="button" id="alertModalConfirmh" class="btn btn-warning" value="Confirm">
+				</div>
+		</div>
+	</div>
+</div>
+
+<!-- alert modal i-->
+<div id="alertModali" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+				<div class="modal-header">						
+					<h4 class="modal-title">Confirm Change</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body" id="alertModalContenti">									
+				</div>
+				<div class="modal-footer">
+					<input type="button" id="cancelCommiti" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="button" id="alertModalConfirmi" class="btn btn-warning" value="Confirm">
+				</div>
+		</div>
+	</div>
+</div>
+
+<!-- scripts: -->
+<script src="js/jquery-2.2.3.min.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/script.js"></script>
+
+</body>
+</html>

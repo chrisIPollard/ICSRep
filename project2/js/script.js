@@ -1,5 +1,8 @@
 
 //global variables:
+let activeTab;
+let addModalID;
+let searchModalID;
 let databaseInfo;
 let departmentDatabaseInfo;
 let locationDatabaseInfo;
@@ -102,6 +105,7 @@ function getTableData(){
 				  for (let n = 0; n < departmentDatabaseInfo.length; n ++){
 						$(`#locationb${n}`).text(locations[departmentDatabaseInfo[n].locationID]);
 				 }
+				 $('#pre-load').addClass("fadeOut");
 
 	  }},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -124,73 +128,10 @@ function getTableData(){
 
 // 2) running the function on startup:
 $(getTableData()); 
-
+$('#pre-load').removeClass("fadeOut");
 // this function is for the employee delete buttons & modal with deleteButton class: 
 
-function deleteEntry(id){
 
-	$.ajax({
-		url: "php/getEmployeeByID.php",
-		type: 'POST',
-		dataType: 'json',
-		data: {
-			id: id
-		},
-		success: function(result) {
-	
-		//console.log(JSON.stringify(result));
-		  
-		if (result.status.name == "ok") {
-
-			deleteID = result.data;
-			
-			$("#lastReview").html(
-				`<ul>${deleteID[0].firstName} ${deleteID[0].lastName}</ul>
-				<ul>${deleteID[0].email}</ul>
-				<ul>${deleteID[0].departmentName}</ul>
-				`
-			)
-			
-	  }},
-		error: function(jqXHR, textStatus, errorThrown) {
-		  console.log(jqXHR);
-		}
-	  })
-
-	$("#finalDelete").click(function() {
-
-		$('#alertModalc').modal('show');
-		$("#deleteEmployeeModal").modal('hide');
-		$("#alertModalContentc").empty();
-		$("#alertModalContentc").append(`<p>Are you sure you want to delete ${deleteID[0].firstName} ${deleteID[0].lastName}?</p>`)
-		$("#cancelCommitc").click(()=>{$("#deleteEmployeeModal").modal('show');})
-		$("#alertModalConfirmc").click(()=>{
-		
-	$.ajax({
-		url: "php/deleteEmployee.php",
-		type: 'POST',
-		dataType: 'json',
-		data: {
-			id: id
-		},
-		success: function(result) {
-	
-		//console.log(JSON.stringify(result));
-		  
-		if (result.status.name == "ok") {
-			
-			getTableData();
-			$("#alertModalc").modal('hide');
-			$('#lertModalConfirmc').off();
-			
-	  }},
-		error: function(jqXHR, textStatus, errorThrown) {
-		  console.log(jqXHR);
-		}
-	  })
-	})
-	})
-};
 
 //this function takes in the department ID and provides a last review before submitting the correct data:
 
@@ -585,88 +526,61 @@ $('#editEmployeeModal').on('hidden.bs.modal', function () {
   
 });
 
-function editEntry(id){
+//functions for the delete employee modal: 
+
+$('#deleteEmployeeModal').on('show.bs.modal', function (e) {
+
+		$.ajax({
+			url: "php/getEmployeeByID.php",
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				id: $(e.relatedTarget).attr('data-id')
+			},
+			success: function(result) {
+		
+			//console.log(JSON.stringify(result));
+			  
+			if (result.status.name == "ok") {
 	
-	$.ajax({
-		url: "php/getEmployeeByID.php",
-		type: 'POST',
-		dataType: 'json',
-		data: {
-			id: id
-		},
-		success: function(result) {
-	
-		//console.log(JSON.stringify(result));
+		$('#employeeID').val(result.data[0].id);
+        $('#DeleteEmployeeName').html(' ' + result.data[0].firstName + ' ' + result.data[0].lastName);
+				
+		  }},
+			error: function(jqXHR, textStatus, errorThrown) {
+			  console.log(jqXHR);
+			}
+		  })
 		  
-		if (result.status.name == "ok") {
-			getEmployeeByID = result.data;
+		  $('#deleteEmployeeFormSubmit').on("submit", function(e) {
+  
+			e.preventDefault();
 			
-			$('#editFormFirstName').val(getEmployeeByID[0]['firstName']);
-			$('#editFormLastName').val(getEmployeeByID[0]['lastName']);
-			$('#editFormEmail').val(getEmployeeByID[0]['email']);
-			$('#editFormDepartment').val(getEmployeeByID[0]['departmentID']);
 			
-	  }},
-		error: function(jqXHR, textStatus, errorThrown) {
-		  console.log(jqXHR);
-		}
-	  })
+		$.ajax({
+			url: "php/deleteEmployee.php",
+			type: 'POST',
+			dataType: 'json',
+			data: {
+				id: $('#employeeID').val()
+			},
+			success: function(result) {
+		
+			//console.log(JSON.stringify(result));
+			  
+			if (result.status.name == "ok") {
+				
+				$('#dleteEmployeeModal').modal('hide')
+				getTableData();
+				
+		  }},
+			error: function(jqXHR, textStatus, errorThrown) {
+			  console.log(jqXHR);
+			}
+		  })
+		})
+		})
 
-		$('#editEmployeeSave').click(function() {
-
-			$('#alertModald').modal('show');
-			$("#editEmployeeModal").modal('hide');
-			$("#alertModalContentd").empty();
-			$("#alertModalContentd").append(`<p>Are you sure you want to replace:
-			<ul>${getEmployeeByID[0]['firstName'] + ' ' + getEmployeeByID[0]['lastName']}</ul>
-			<ul>${getEmployeeByID[0]['email']}</ul>
-			<ul>${getEmployeeByID[0]['departmentName']}</ul>
-			with
-			<ul>${$('#editFormFirstName').val() + ' ' + $('#editFormLastName').val()}</ul>
-			<ul>${$('#editFormEmail').val()}</ul>
-			<ul>${$('#editFormDepartment option:selected').text()}</ul>
-			</p>`)
-			
-			$("#cancelCommitd").click(()=>{$("#editEmployeeModal").modal('show');})
-	
-			$("#alertModalConfirmd").click(()=>{
-
-	$.ajax({
-		url: "php/updateEmployee.php",
-		type: 'POST',
-		dataType: 'json',
-		data: {
-			firstName: $('#editFormFirstName').val(),
-			lastName: $('#editFormLastName').val(),
-			email: $('#editFormEmail').val(),
-			departmentID: $('#editFormDepartment').val(),
-			id: getEmployeeByID[0]['id']
-			
-		},
-		success: function(result) {
-	
-		//console.log(JSON.stringify(result));
-		  
-		if (result.status.name == "ok") {
-		  
-			$("#alertModald").modal('hide');
-			$("#alertModalConfirmd").off();
-			getTableData();
-			
-			
-	  }},
-		error: function(jqXHR, textStatus, errorThrown) {
-		  console.log(jqXHR);
-		}
-	  })
-
-	  $("#editEmployeeModal").modal('hide');
-
-	})
-	
-	})
-}
-;
 
 //on submitting a completed form in the add employee modal to update the database: 
 
@@ -814,6 +728,9 @@ function editEntry(id){
 $(document).ready(function(){
 	$('#locationTable').hide();
 	$('#departmentTable').hide();
+	
+	searchModalID = 'searchEmployeeModal';
+	$('#searchAll').attr('data-bs-target', '#' + searchModalID);
 
 	$('#locationTab').click(
 		()=>{
@@ -821,6 +738,8 @@ $(document).ready(function(){
 			$('#locationTable').show();
 			$('#personnelTable').hide();
 			$('#departmentTable').hide();
+			searchModalID = 'searchlocationModal';
+			$('#searchAll').attr('data-bs-target', '#' + searchModalID);
 		}
 	);
 
@@ -830,6 +749,8 @@ $(document).ready(function(){
 			$('#locationTable').hide();
 			$('#personnelTable').hide();
 			$('#departmentTable').show();
+			searchModalID = 'searchDepartmentModal';
+			$('#searchAll').attr('data-bs-target', '#' + searchModalID);
 		}
 	);
 
@@ -839,8 +760,15 @@ $(document).ready(function(){
 			$('#locationTable').hide();
 			$('#personnelTable').show();
 			$('#departmentTable').hide();
+			searchModalID = 'searchEmployeeModal';
+			$('#searchAll').attr('data-bs-target', '#' + searchModalID);
 		}
 	);
+
+	//addModalID = activeTab.attr('data-addModal-id');
+	
+
+
 })
 
 // Tab population functions:
@@ -858,24 +786,11 @@ for (let n = 0; n < info.length; n ++){
 
 		<a href="" class="editButton" data-bs-toggle="modal" data-bs-target="#editEmployeeModal" data-id='${info[n].id}'><i class="material-icons" title="Edit">&#xE254;</i></a>
 
-		<a href="" class="deleteButton" data-toggle="modal" data-bs-target="#deleteEmployeeModal" data-id='${info[n].id}' ><i class="material-icons" title="Delete">&#xE872;</i></a>
+		<a href="" class="deleteButton" data-bs-toggle="modal" data-bs-target="#deleteEmployeeModal" data-id='${info[n].id}' ><i class="material-icons" title="Delete">&#xE872;</i></a>
 	</td>
 	</tr>
 	`);
-	}
-
-	// running a function for the employee delete button & modal with deleteButton class: 
-
-	deleteButtons = document.querySelectorAll('.deleteButton');
-
-	deleteButtons.forEach(deleteButton => {
-	deleteButton.addEventListener('click', event => {
-	deleteEntry(event.target.id);
-	})})
-
-	// function for the edit button & modal with the editButton class: 
-
-	}
+	}}
 
 	function populateDepartmentTab (info) 
 	{$('#tableDatab').empty();
@@ -896,30 +811,7 @@ $('#tableDatab').append(`
 </tr>
 `);
 
-}
-
-// running a function for the department delete button & modal with deleteButtonb class: 
-
-deleteButtons = document.querySelectorAll('.deleteButtonb');
-
-deleteButtons.forEach(deleteButtonb => {
-deleteButtonb.addEventListener('click', event => {
-
-let depID = event.target.id;
-
-deleteDepartmentEntry(depID);
-})})
-
-// function for the edit button & modal with the editButtonb class: 
-
-editButtons = document.querySelectorAll('.editButtonb');
-
-editButtons.forEach(editButtonb => {
-editButtonb.addEventListener('click', event => {
-	let depID = event.target.id;
-  
-  editDepartmentEntry(depID);
-})})}
+}}
 
 function populateLocationTab(info) {
 	$('#tableDatac').empty();
