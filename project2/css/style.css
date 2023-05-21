@@ -1,7 +1,11 @@
 
-    tbody.overflow-auto {
-      max-height: calc(100vh - 152.5px);
-    }
+     #personnelTable        { overflow: auto; height: calc(100vh - 112px); }
+
+	 #personnelTable thead th, #personnelTable thead tr, #personnelTable thead { 
+		position: sticky; 
+		background-color: white;
+		top: 0; 
+		z-index: 1; }  
 
 @media screen and (max-width: 800px) {
 	.department {
