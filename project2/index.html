@@ -40,13 +40,13 @@
         <nav class="navbar navbar-light bg-light  ">
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a id="personnelTab" data-addModal-id="" data-searchModal-id="searchEmployeeModal" href="#" class="nav-link active" data-bs-toggle="tab">Personnel</a>
+                <a id="personnelTab" href="#" class="nav-link active" data-bs-toggle="tab">Personnel</a>
             </li>
             <li class="nav-item">
-                <a id="departmentTab" data-addModal-id="" data-searchModal-id="" href="#" class="nav-link" data-bs-toggle="tab">Departments</a>
+                <a id="departmentTab" href="#" class="nav-link" data-bs-toggle="tab">Departments</a>
             </li>
             <li class="nav-item">
-                <a id="locationTab" data-addModal-id="" data-searchModal-id="" href="#" class="nav-link" data-bs-toggle="tab">Locations</a>
+                <a id="locationTab" href="#" class="nav-link" data-bs-toggle="tab">Locations</a>
             </li>
         </ul>
     </nav>
@@ -157,17 +157,41 @@
 			<input type="hidden" id="departmentID">
 			<div class="form-floating mb-3">
 			  <input type="text" class="form-control" id="editDepartmentDepartment" placeholder="Last name" required>
-			  <label for="lastName">Department</label>
+			  <label for="lastName">Last Name</label>
 			</div>         
 			<div class="form-floating">
 			  <select class="form-select" id="editDepartmentLocation" placeholder="Department">
 			  </select>
-			  <label for="department">Location</label>
+			  <label for="department">Department</label>
 			</div>  
 		  </form>
 		</div>
 		<div class="modal-footer">
 		  <button type="submit" form="editDepartmentSubmit" class="btn btn-outline-secondary btn-sm myBtn">SAVE</button>
+		  <button type="button" class="btn btn-outline-secondary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+  <div id="editLocationModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="" aria-hidden="true">
+	<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+	  <div class="modal-content shadow"> 
+		<div class="modal-header bg-secondary bg-gradient text-white">
+		  <h5 class="modal-title">Edit Location</h5>
+		  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+		  <form id="editLocationSubmit">
+			<input type="hidden" id="editLocationID">
+			<div class="form-floating mb-3">
+			  <input type="text" class="form-control" id="editLocationLocation" placeholder="Location" required>
+			  <label for="Location">Location</label>
+			</div>         
+		  </form>
+		</div>
+		<div class="modal-footer">
+		  <button type="submit" form="editLocationSubmit" class="btn btn-outline-secondary btn-sm myBtn">SAVE</button>
 		  <button type="button" class="btn btn-outline-secondary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
 		</div>
 	  </div>
@@ -269,6 +293,80 @@
 	</div>
   </div>
 
+<!-- Search Department Modal HTML -->
+
+<div id="searchDepartmentModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="" aria-hidden="true">
+	<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+	  <div class="modal-content shadow"> 
+		<div class="modal-header bg-secondary bg-gradient text-white">
+		  <h5 class="modal-title">Search Department</h5>
+		  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+            <form id="searchDepartmentSubmit">
+				<div class="form-floating mb-3">
+					<select id="searchDepDepartment" class="form-select" placeholder="Department"></select>  
+					<label for="Department">Department</label>
+				</div>	  
+            </form>
+          </div>
+		<div class="modal-footer">
+		  <button type="submit" form="searchDepartmentSubmit" class="btn btn-outline-secondary btn-sm myBtn">SEARCH</button>
+		  <button type="button" class="btn btn-outline-secondary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+<!-- Search Location Modal HTML -->
+
+<div id="searchLocationModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="" aria-hidden="true">
+	<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+	  <div class="modal-content shadow"> 
+		<div class="modal-header bg-secondary bg-gradient text-white">
+		  <h5 class="modal-title">Search Location</h5>
+		  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+            <form id="searchLocationSubmit">
+				<div class="form-floating mb-3">
+					<select id="searchLocLocation" class="form-select" placeholder="Location"></select>  
+					<label for="Location">Location</label>
+				</div>	  
+            </form>
+          </div>
+		<div class="modal-footer">
+		  <button type="submit" form="searchLocationSubmit" class="btn btn-outline-secondary btn-sm myBtn">SEARCH</button>
+		  <button type="button" class="btn btn-outline-secondary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+<div id="searchLocationModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="">
+				<div class="modal-header">						
+					<h4 class="modal-title">Search Location</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">				
+					<br>
+					<div class="form-group">
+						<label>Location</label>
+						<br>
+						<select id="searchLocLocation" class="form-select" ></select>  
+					</div>			
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input id="searchLocationSubmit" type="submit" class="btn btn-success" value="Search">
+				</div>	
+			</form>
+		</div>
+	</div>
+</div>			
+
 <!-- Add employee/personnel Modal HTML -->
 
 <div id="addEmployeeModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="" aria-hidden="true">
@@ -307,6 +405,84 @@
 	  </div>
 	</div>
   </div>
+
+<!-- Add Department Modal HTML -->
+<div id="addDepartmentModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="" aria-hidden="true">
+	<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+	  <div class="modal-content shadow"> 
+		<div class="modal-header bg-secondary bg-gradient text-white">
+		  <h5 class="modal-title">Add Department</h5>
+		  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+		  <form id="addDepartmentSubmit">
+			<div class="form-floating mb-3">
+			  <input type="text" class="form-control" id="addDepDepartment" placeholder="Department" required>
+			  <label for="Department">Department</label>
+			</div>
+							
+			<div class="form-floating">
+			  <select class="form-select" id="addDepLocation" placeholder="Location">
+			  </select>
+			  <label for="Location">Location</label>
+			</div>  
+		  </form>
+		</div>
+		<div class="modal-footer">
+		  <button type="submit" form="addDepartmentSubmit" class="btn btn-outline-secondary btn-sm myBtn">SAVE</button>
+		  <button type="button" class="btn btn-outline-secondary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+<!-- Add Location Modal HTML -->
+
+<div id="addLocationModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="" aria-hidden="true">
+	<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+	  <div class="modal-content shadow"> 
+		<div class="modal-header bg-secondary bg-gradient text-white">
+		  <h5 class="modal-title">Add Location</h5>
+		  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+		  <form id="addLocationSubmit">
+			<div class="form-floating mb-3">
+			  <input type="text" class="form-control" id="addLocLocation" placeholder="Location" required>
+			  <label for="Location">Location</label>
+			</div>
+		  </form>
+		</div>
+		<div class="modal-footer">
+		  <button type="submit" form="addLocationSubmit" class="btn btn-outline-secondary btn-sm myBtn">SAVE</button>
+		  <button type="button" class="btn btn-outline-secondary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+<div id="addLocationModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">						
+					<h4 class="modal-title">Add Location</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<div class="form-group">
+						<label>Location</label>
+						<input id="addLocLocation" type="text" class="form-control" required>
+					</div>				
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input id="addLocationSubmit" type="submit" class="btn btn-success" value="Add">
+				</div>	
+			</form>
+		</div>
+	</div>
+</div>
 
 <!-- scripts: -->
 <script src="js/jquery-2.2.3.min.js"></script>
