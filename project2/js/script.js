@@ -134,84 +134,174 @@ $(getTableData());
 $('#pre-load').removeClass("fadeOut");
 
 
-function deleteDepartmentEntry(id){
+// delete department dependency check: 
+$(document).ready(function(){
+$(".deleteDepartmentButton").click(function() {
 	
+		console.log($(this).attr("data-id"));
 	$.ajax({
-		url: "php/getDepartmentByID.php",
+		url: "php/countDepartment.php",
 		type: 'POST',
 		dataType: 'json',
 		data: {
-			id: id
+			id: $(this).attr("data-id")
 		},
 		success: function(result) {
 
-		//console.log(JSON.stringify(result));
+			console.log(JSON.stringify(result));
 		  
 		if (result.status.name == "ok") {
 		  
-			deleteDepartment = result.data;
-			$("#lastDepartmentReview").html(`${deleteDepartment[0]['name']}`);
+			if (result.data[0]['departmentCount'] == 0){
+				console.log($(this).attr("data-id"))
+				$("#DeleteLocationName").text(result.data[0].departmentName);
+				$("#deletedepartmentID").val($(this).attr("data-id"));
+				$('#deleteDepartmentModal').modal("show");
 
-	  $("#finalDepartmentDelete").click(function() {
-
-		$("#deleteDepartmentModal").modal('hide');
-
-		$.ajax({
-			url: "php/countDepartment.php",
-			type: 'POST',
-			dataType: 'json',
-			data: {
-				id: id
-			},
-			success: function(result) {
-
-				//console.log(JSON.stringify(result));
-			  
-			if (result.status.name == "ok") {
-			  
-				if (result.data[0]['COUNT(departmentID)'] == 0){
-					$.ajax({
-						url: "php/deleteDepartmentByID.php",
-						type: 'POST',
-						dataType: 'json',
-						data: {
-							id: id
-						},
-						success: function(result) {
-					
-						//console.log(JSON.stringify(result));
-						  
-						if (result.status.name == "ok") {
-							getTableData();
-							$("#alertModalb").modal('hide');
-							$('#finalDepartmentDelete').off();
-							
-					  }},
-						error: function(jqXHR, textStatus, errorThrown) {
-						  console.log(jqXHR);
-						}
-					  })
-					
-				}
-				else {
-					$("#deleteDepartmentModal").modal('hide');
-					$("#alertModalb").modal('show');
-					$("#alertModalContentb").html(`${deleteDepartment[0]['name']} has ${result.data[0]["COUNT(departmentID)"]} employees and therefore cannot be deleted.`);
-				}
-				
-		  }},
-			error: function(jqXHR, textStatus, errorThrown) {
-			  console.log(jqXHR);
 			}
-		  })
+			else {
+				$("#cantDeleteDeptName").text(result.data[0].departmentName);
+				$("#pc").text(result.data[0].departmentCount);
+				$('#cantDeleteDepartmentModal').modal("show");  
+			}
+			
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })	
+})})
+// $('#deleteEmployeeModal').on('show.bs.modal', function (e) {
+
+// 	$.ajax({
+// 		url: "php/getEmployeeByID.php",
+// 		type: 'POST',
+// 		dataType: 'json',
+// 		data: {
+// 			id: $(e.relatedTarget).attr('data-id')
+// 		},
+// 		success: function(result) {
 	
-	})
-}},
-error: function(jqXHR, textStatus, errorThrown) {
-  console.log(jqXHR);
-}
-})
-};
+// 		//console.log(JSON.stringify(result));
+		  
+// 		if (result.status.name == "ok") {
+
+// 	$('#employeeID').val(result.data[0].id);
+// 	$('#DeleteEmployeeName').html(' ' + result.data[0].firstName + ' ' + result.data[0].lastName);
+			
+// 	  }},
+// 		error: function(jqXHR, textStatus, errorThrown) {
+// 		  console.log(jqXHR);
+// 		}
+// 	  })
+	  
+// 	  $('#deleteEmployeeFormSubmit').on("submit", function(e) {
+
+// 		e.preventDefault();
+		
+		
+// 	$.ajax({
+// 		url: "php/deleteEmployee.php",
+// 		type: 'POST',
+// 		dataType: 'json',
+// 		data: {
+// 			id: $('#employeeID').val()
+// 		},
+// 		success: function(result) {
+	
+// 		//console.log(JSON.stringify(result));
+		  
+// 		if (result.status.name == "ok") {
+			
+// 			$('#dleteEmployeeModal').modal('hide')
+// 			getTableData();
+			
+// 	  }},
+// 		error: function(jqXHR, textStatus, errorThrown) {
+// 		  console.log(jqXHR);
+// 		}
+// 	  })
+// 	})
+// 	})
+
+// function deleteDepartmentEntry(id){
+	
+// 	$.ajax({
+// 		url: "php/getDepartmentByID.php",
+// 		type: 'POST',
+// 		dataType: 'json',
+// 		data: {
+// 			id: id
+// 		},
+// 		success: function(result) {
+
+// 		//console.log(JSON.stringify(result));
+		  
+// 		if (result.status.name == "ok") {
+		  
+// 			deleteDepartment = result.data;
+// 			$("#lastDepartmentReview").html(`${deleteDepartment[0]['name']}`);
+
+// 	  $("#finalDepartmentDelete").click(function() {
+
+// 		$("#deleteDepartmentModal").modal('hide');
+
+// 		$.ajax({
+// 			url: "php/countDepartment.php",
+// 			type: 'POST',
+// 			dataType: 'json',
+// 			data: {
+// 				id: id
+// 			},
+// 			success: function(result) {
+
+// 				//console.log(JSON.stringify(result));
+			  
+// 			if (result.status.name == "ok") {
+			  
+// 				if (result.data[0]['COUNT(departmentID)'] == 0){
+// 					$.ajax({
+// 						url: "php/deleteDepartmentByID.php",
+// 						type: 'POST',
+// 						dataType: 'json',
+// 						data: {
+// 							id: id
+// 						},
+// 						success: function(result) {
+					
+// 						//console.log(JSON.stringify(result));
+						  
+// 						if (result.status.name == "ok") {
+// 							getTableData();
+// 							$("#alertModalb").modal('hide');
+// 							$('#finalDepartmentDelete').off();
+							
+// 					  }},
+// 						error: function(jqXHR, textStatus, errorThrown) {
+// 						  console.log(jqXHR);
+// 						}
+// 					  })
+					
+// 				}
+// 				else {
+// 					$("#deleteDepartmentModal").modal('hide');
+// 					$("#alertModalb").modal('show');
+// 					$("#alertModalContentb").html(`${deleteDepartment[0]['name']} has ${result.data[0]["COUNT(departmentID)"]} employees and therefore cannot be deleted.`);
+// 				}
+				
+// 		  }},
+// 			error: function(jqXHR, textStatus, errorThrown) {
+// 			  console.log(jqXHR);
+// 			}
+// 		  })
+	
+// 	})
+// }},
+// error: function(jqXHR, textStatus, errorThrown) {
+//   console.log(jqXHR);
+// }
+// })
+// };
 
 function deleteLocation (locationID) {
 	$.ajax({
@@ -792,7 +882,7 @@ $('#tableDatab').append(`
 
 <a href="" class="editButton" data-bs-toggle="modal" data-bs-target="#editDepartmentModal" data-id='${info[n].id}'><i class="material-icons" title="Edit" >&#xE254;</i></a>
 
-<a href="" class="deleteButton" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" data-id='${info[n].id}' ><i class="material-icons" title="Delete" >&#xE872;</i></a>
+<a href="" class="deleteDepartmentButton" data-id='${info[n].id}' ><i class="material-icons" title="Delete" >&#xE872;</i></a>
 
 </td>
 </tr>

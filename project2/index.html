@@ -106,7 +106,7 @@
     
 <!-- Edit employee/personnel Modal HTML -->
 
-<div id="editEmployeeModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div id="editEmployeeModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="" aria-hidden="true">
 	<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
 	  <div class="modal-content shadow"> 
 		<div class="modal-header bg-secondary bg-gradient text-white">
@@ -145,7 +145,7 @@
 
   <!-- Edit employee/personnel Modal HTML -->
 
-<div id="editDepartmentModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div id="editDepartmentModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="" aria-hidden="true">
 	<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
 	  <div class="modal-content shadow"> 
 		<div class="modal-header bg-secondary bg-gradient text-white">
@@ -176,7 +176,7 @@
 
   <!-- Delete employee/personnel Modal HTML -->
 
-<div id="deleteEmployeeModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div id="deleteEmployeeModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="" aria-hidden="true">
 	<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
 	  <div class="modal-content shadow"> 
 		<div class="modal-header bg-secondary bg-gradient text-white">
@@ -197,9 +197,51 @@
 	</div>
   </div>
 
+    <!-- Delete Department Modal HTML -->
+
+<div id="deleteDepartmentModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="" aria-hidden="true">
+	<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+	  <div class="modal-content shadow"> 
+		<div class="modal-header bg-secondary bg-gradient text-white">
+		  <h5 class="modal-title">Delete Department</h5>
+		  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+        <div class="modal-body">
+            <form id="deleteDepartmentSubmit">
+              <input type="hidden" id="deletedepartmentID">
+              <p>Are you sure that you want to remove department:<span id="DeleteLocationName"></span>?</p>
+            </form>
+          </div>
+		<div class="modal-footer">
+		  <button type="submit" form="deleteDepartmentSubmit" class="btn btn-outline-warning btn-sm myBtn">DELETE</button>
+		  <button type="button" class="btn btn-outline-secondary btn-sm myBtn" data-bs-dismiss="modal">CANCEL</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+  <!-- can't delete department modal:  -->
+
+  <div id="cantDeleteDepartmentModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+	  <div class="modal-content shadow"> 
+		<div class="modal-header">
+		  <h5 class="modal-title">Cannot remove department ...</h5>
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+		  You cannot remove the entry for <span id="cantDeleteDeptName" class="fw-bold"></span> because it has <span id="pc" class="fw-bold"></span> employees assigned to it.
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">OK</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
   <!-- Search employee/personnel Modal HTML -->
 
-<div id="searchEmployeeModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div id="searchEmployeeModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="" aria-hidden="true">
 	<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
 	  <div class="modal-content shadow"> 
 		<div class="modal-header bg-secondary bg-gradient text-white">
@@ -229,7 +271,7 @@
 
 <!-- Add employee/personnel Modal HTML -->
 
-<div id="addEmployeeModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div id="addEmployeeModal" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="" aria-hidden="true">
 	<div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
 	  <div class="modal-content shadow"> 
 		<div class="modal-header bg-secondary bg-gradient text-white">
