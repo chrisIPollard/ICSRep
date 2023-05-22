@@ -136,27 +136,25 @@ $('#pre-load').removeClass("fadeOut");
 
 
 // delete department dependency check: 
-$(document).ready(function(){
-$(".deleteDepartmentButton").click(function() {
+function deleteDepDependency(id) {
 	
-		console.log($(this).attr("data-id"));
 	$.ajax({
 		url: "php/countDepartment.php",
 		type: 'POST',
 		dataType: 'json',
 		data: {
-			id: $(this).attr("data-id")
+			id: id
 		},
 		success: function(result) {
 
-			console.log(JSON.stringify(result));
+			//console.log(JSON.stringify(result));
 		  
 		if (result.status.name == "ok") {
 		  
 			if (result.data[0]['departmentCount'] == 0){
-				console.log($(this).attr("data-id"))
-				$("#DeleteLocationName").text(result.data[0].departmentName);
-				$("#deletedepartmentID").val($(this).attr("data-id"));
+				
+				$("#DeleteDepartmentName").text(result.data[0].departmentName);
+				$("#deletedepartmentID").val(id);
 				$('#deleteDepartmentModal').modal("show");
 
 			}
@@ -171,215 +169,95 @@ $(".deleteDepartmentButton").click(function() {
 		  console.log(jqXHR);
 		}
 	  })	
-})})
-// $('#deleteEmployeeModal').on('show.bs.modal', function (e) {
+}
+$('#deleteDepartmentModal').on("submit", function (e) {
 
-// 	$.ajax({
-// 		url: "php/getEmployeeByID.php",
-// 		type: 'POST',
-// 		dataType: 'json',
-// 		data: {
-// 			id: $(e.relatedTarget).attr('data-id')
-// 		},
-// 		success: function(result) {
-	
-// 		//console.log(JSON.stringify(result));
-		  
-// 		if (result.status.name == "ok") {
-
-// 	$('#employeeID').val(result.data[0].id);
-// 	$('#DeleteEmployeeName').html(' ' + result.data[0].firstName + ' ' + result.data[0].lastName);
-			
-// 	  }},
-// 		error: function(jqXHR, textStatus, errorThrown) {
-// 		  console.log(jqXHR);
-// 		}
-// 	  })
-	  
-// 	  $('#deleteEmployeeFormSubmit').on("submit", function(e) {
-
-// 		e.preventDefault();
+	e.preventDefault();
 		
-		
-// 	$.ajax({
-// 		url: "php/deleteEmployee.php",
-// 		type: 'POST',
-// 		dataType: 'json',
-// 		data: {
-// 			id: $('#employeeID').val()
-// 		},
-// 		success: function(result) {
-	
-// 		//console.log(JSON.stringify(result));
-		  
-// 		if (result.status.name == "ok") {
-			
-// 			$('#dleteEmployeeModal').modal('hide')
-// 			getTableData();
-			
-// 	  }},
-// 		error: function(jqXHR, textStatus, errorThrown) {
-// 		  console.log(jqXHR);
-// 		}
-// 	  })
-// 	})
-// 	})
-
-// function deleteDepartmentEntry(id){
-	
-// 	$.ajax({
-// 		url: "php/getDepartmentByID.php",
-// 		type: 'POST',
-// 		dataType: 'json',
-// 		data: {
-// 			id: id
-// 		},
-// 		success: function(result) {
-
-// 		//console.log(JSON.stringify(result));
-		  
-// 		if (result.status.name == "ok") {
-		  
-// 			deleteDepartment = result.data;
-// 			$("#lastDepartmentReview").html(`${deleteDepartment[0]['name']}`);
-
-// 	  $("#finalDepartmentDelete").click(function() {
-
-// 		$("#deleteDepartmentModal").modal('hide');
-
-// 		$.ajax({
-// 			url: "php/countDepartment.php",
-// 			type: 'POST',
-// 			dataType: 'json',
-// 			data: {
-// 				id: id
-// 			},
-// 			success: function(result) {
-
-// 				//console.log(JSON.stringify(result));
-			  
-// 			if (result.status.name == "ok") {
-			  
-// 				if (result.data[0]['COUNT(departmentID)'] == 0){
-// 					$.ajax({
-// 						url: "php/deleteDepartmentByID.php",
-// 						type: 'POST',
-// 						dataType: 'json',
-// 						data: {
-// 							id: id
-// 						},
-// 						success: function(result) {
-					
-// 						//console.log(JSON.stringify(result));
-						  
-// 						if (result.status.name == "ok") {
-// 							getTableData();
-// 							$("#alertModalb").modal('hide');
-// 							$('#finalDepartmentDelete').off();
-							
-// 					  }},
-// 						error: function(jqXHR, textStatus, errorThrown) {
-// 						  console.log(jqXHR);
-// 						}
-// 					  })
-					
-// 				}
-// 				else {
-// 					$("#deleteDepartmentModal").modal('hide');
-// 					$("#alertModalb").modal('show');
-// 					$("#alertModalContentb").html(`${deleteDepartment[0]['name']} has ${result.data[0]["COUNT(departmentID)"]} employees and therefore cannot be deleted.`);
-// 				}
-				
-// 		  }},
-// 			error: function(jqXHR, textStatus, errorThrown) {
-// 			  console.log(jqXHR);
-// 			}
-// 		  })
-	
-// 	})
-// }},
-// error: function(jqXHR, textStatus, errorThrown) {
-//   console.log(jqXHR);
-// }
-// })
-// };
-
-function deleteLocation (locationID) {
 	$.ajax({
-		url: "php/getLocationByID.php",
+		url: "php/deleteDepartmentByID.php",
 		type: 'POST',
 		dataType: 'json',
 		data: {
-			id: locationID
+			id: $("#deletedepartmentID").val()
 		},
 		success: function(result) {
 	
 		//console.log(JSON.stringify(result));
 		  
 		if (result.status.name == "ok") {
-		  
-			delLocation = result.data;
-			$("#lastLocationReview").html(`${delLocation[0]['name']}`);
 			
-			$("#finalLocationDelete").click(function() {
-				
-				$.ajax({
-					url: "php/countLocation.php",
-					type: 'POST',
-					dataType: 'json',
-					data: {
-						id: locationID
-					},
-					success: function(result) {
-					  
-						//console.log(JSON.stringify(result));
-
-					if (result.status.name == "ok") {
-					  
-						if (result.data[0]['COUNT(locationID)'] == 0){
-							$.ajax({
-								url: "php/deleteLocationByID.php",
-								type: 'POST',
-								dataType: 'json',
-								data: {
-									id: locationID
-								},
-								success: function(result) {
-							
-								//console.log(JSON.stringify(result));
-								  
-								if (result.status.name == "ok") {
-									$('#finallocationDelete').off();
-									$("#deleteLocationModal").modal('hide');
-									$("#alertModalf").modal('hide');
-									getTableData();
-									
-							  }},
-								error: function(jqXHR, textStatus, errorThrown) {
-								  console.log(jqXHR);
-								}
-							  })
-							
-						}
-						else {
-							$("#deleteLocationModal").modal('hide');
-							$("#alertModalf").modal('show');
-							$("#alertModalContentf").html(`${delLocation[0]['name']} has ${result.data[0]['COUNT(locationID)']} departments and therefore cannot be deleted.`);
-						}
-						
-				  }},
-					error: function(jqXHR, textStatus, errorThrown) {
-					  console.log(jqXHR);
-					}
-				  })
+			$('#deleteDepartmentModal').modal('hide')
+			getTableData();
 			
-			})
 	  }},
 		error: function(jqXHR, textStatus, errorThrown) {
 		  console.log(jqXHR);
 		}
 	  })
-};
+	})
+
+// delete location dependency check: 
+function deleteLocDependency(id) {
+	
+	$.ajax({
+		url: "php/countLocation.php",
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			id: id
+		},
+		success: function(result) {
+
+			//console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+		  
+			if (result.data[0]['locationCount'] == 0){
+				
+				$("#DeleteLocationName").text(result.data[0].locationName);
+				$("#deleteLocationID").val(id);
+				$('#deleteLocationModal').modal("show");
+
+			}
+			else {
+				$("#cantDeleteLocName").text(result.data[0].locationName);
+				$("#lc").text(result.data[0].locationCount);
+				$('#cantDeleteLocationModal').modal("show");  
+			}
+			
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })	
+}
+$('#deleteLocationModal').on("submit", function (e) {
+
+	e.preventDefault();
+		
+	$.ajax({
+		url: "php/deleteLocationByID.php",
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			id: $("#deleteLocationID").val()
+		},
+		success: function(result) {
+	
+		//console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+			
+			$('#deleteLocationModal').modal('hide')
+			getTableData();
+			
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+	})
 
 // this function is for the location edit buttons & modal with editButton class: 
 
@@ -644,7 +522,7 @@ $('#deleteEmployeeModal').on('show.bs.modal', function (e) {
 			  
 			if (result.status.name == "ok") {
 				
-				$('#dleteEmployeeModal').modal('hide')
+				$('#deleteEmployeeModal').modal('hide')
 				getTableData();
 				
 		  }},
@@ -723,7 +601,7 @@ $('#addDepartmentModal').on("submit", function(e) {
 		if (result.status.name == "ok") {
 			
 			getTableData();	
-			$('addDepartmentModal').modal('hide');	
+			$('#addDepartmentModal').modal('hide');	
 
 	  }},
 		error: function(jqXHR, textStatus, errorThrown) {
@@ -879,7 +757,7 @@ $('#tableDatab').append(`
 
 <a href="" class="editButton" data-bs-toggle="modal" data-bs-target="#editDepartmentModal" data-id='${info[n].id}'><i class="material-icons" title="Edit" >&#xE254;</i></a>
 
-<a href="" class="deleteDepartmentButton" data-id='${info[n].id}' ><i class="material-icons" title="Delete" >&#xE872;</i></a>
+<a href="#" class="deleteDepartmentButton" onclick="deleteDepDependency(${info[n].id})" data-id='${info[n].id}' ><i class="material-icons" title="Delete" >&#xE872;</i></a>
 
 </td>
 </tr>
@@ -898,7 +776,7 @@ function populateLocationTab(info) {
 				<td class="actions">
 				<a href="" class="editButton" data-bs-toggle="modal" data-bs-target="#editLocationModal" data-id='${info[n].id}'><i class="material-icons" title="Edit">&#xE254;</i></a>
 
-				<a href="" class="deleteButton" data-bs-toggle="modal" data-bs-target="#deleteLocationModal" data-id='${info[n].id}' ><i class="material-icons" title="Delete">&#xE872;</i></a>
+				<a href="#" class="deleteLocationButton" onclick="deleteLocDependency(${info[n].id})" data-id='${info[n].id}' ><i class="material-icons" title="Delete" >&#xE872;</i></a>
 				</td>
 				</tr>
 				`);

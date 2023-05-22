@@ -27,7 +27,7 @@
 
     }   
 
-    $query = $conn->prepare('SELECT locationID, COUNT(locationID) FROM department WHERE locationID = ?');
+    $query = $conn->prepare('SELECT count(d.id) as locationCount, l.name as locationName FROM department d LEFT JOIN location l ON ( l.id = d.locationID) WHERE l.id =  ?');
 
 	$query->bind_param("i", $_REQUEST['id']);
 
