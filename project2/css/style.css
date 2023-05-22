@@ -7,6 +7,22 @@
 		top: 0; 
 		z-index: 1; }  
 
+	#departmentTable        { overflow: auto; height: calc(100vh - 112px); }
+
+	#departmentTable thead th, #departmentTable thead tr, #departmentTable thead { 
+		position: sticky; 
+		background-color: white;
+		top: 0; 
+		z-index: 1; }  
+
+	#locationTable        { overflow: auto; height: calc(100vh - 112px); }
+
+	#locationTable thead th, #locationTable thead tr, #locationTable thead { 
+		position: sticky; 
+		background-color: white;
+		top: 0; 
+		z-index: 1; }  	
+
 @media screen and (max-width: 800px) {
 	.department {
 	  display: none;

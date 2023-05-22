@@ -126,90 +126,13 @@ function getTableData(){
   })
   }
 
-// 2) running the function on startup:
+// 2) running data function on startup:
+
 $(getTableData()); 
+
+// for the removal of the pre loader: 
 $('#pre-load').removeClass("fadeOut");
-// this function is for the employee delete buttons & modal with deleteButton class: 
 
-
-
-//this function takes in the department ID and provides a last review before submitting the correct data:
-
-function editDepartmentEntry(id){
-
-	$.ajax({
-		url: "php/getDepartmentByID.php",
-		type: 'POST',
-		dataType: 'json',
-		data: {
-			id: id
-			
-		},
-		success: function(result) {
-	
-		//console.log(JSON.stringify(result));
-		  
-		if (result.status.name == "ok") {
-		
-		editDepartment = result.data;
-		
-		$('#editDepartmentDepartment').val(editDepartment[0]['name'])	
-		$('#editDepartmentLocation').val(editDepartment[0]['locationID'])	
-			
-	  }},
-		error: function(jqXHR, textStatus, errorThrown) {
-		  console.log(jqXHR);
-		}
-	  })
-
-		$('#editDepartmentSave').click(function() {
-			$('#alertModale').modal('show');
-			$("#editDepartmentModal").modal('hide');
-			$("#alertModalContente").empty();
-			$("#alertModalContente").append(`<p>Are you sure you want to replace:
-			<ul>${editDepartment[0]['name']}</ul>
-			<ul>${locations[editDepartment[0]['locationID']]}</ul>
-			with
-			<ul>${$('#editDepartmentDepartment').val()}</ul>
-			<ul>${$('#editDepartmentLocation option:selected').text()}</ul>
-			</p>`)
-			
-			$("#cancelCommite").click(()=>{$("#editDepartmentModal").modal('show');})
-	
-			$("#alertModalConfirme").click(()=>{
-
-	$.ajax({
-		url: "php/updateDepartment.php",
-		type: 'POST',
-		dataType: 'json',
-		data: {
-			id: id,
-			name: $('#editDepartmentDepartment').val(),
-			locationID: $('#editDepartmentLocation').val(),
-		},
-		success: function(result) {
-	
-		//console.log(JSON.stringify(result));
-		  
-		if (result.status.name == "ok") {
-		  
-			$("#alertModale").modal('hide');
-			$('#lertModalConfirme').off();
-			getTableData();
-			
-			
-	  }},
-		error: function(jqXHR, textStatus, errorThrown) {
-		  console.log(jqXHR);
-		}
-	  })
-
-	  $("#editDepartmentModal").modal('hide');
-
-	})
-	
-	})
-}
 
 function deleteDepartmentEntry(id){
 	
@@ -444,7 +367,6 @@ function editLocationEntry(locationID){
 
 $('#editEmployeeModal').on('show.bs.modal', function (e) {
 	
-	
     $.ajax({
       url: "php/getEmployeeByID.php",
       type: 'POST',
@@ -468,13 +390,13 @@ $('#editEmployeeModal').on('show.bs.modal', function (e) {
         
       } else {
 
-        $('#exampleModal .modal-title').replaceWith("Error retrieving data");
+        $('#editEmployeeModal.modal-title').replaceWith("Error retrieving data");
 
       } 
 
     },
     error: function (jqXHR, textStatus, errorThrown) {
-      $('#exampleModal .modal-title').replaceWith("Error retrieving data");
+      $('#editEmployeeModal.modal-title').replaceWith("Error retrieving data");
     }
   });
 })
@@ -514,15 +436,81 @@ $('#editEmployeeFormSubmit').on("submit", function(e) {
   
 })
 
-$('#exampleModal').on('shown.bs.modal', function () {
+$('#editEmployeeModal').on('shown.bs.modal', function () {
   
-  $('##editEmployeeModal').focus();
+  $('#editFormFirstName').focus();
   
 });
 
-$('#editEmployeeModal').on('hidden.bs.modal', function () {
+// this function is for the department edit buttons & modal with editButton class: 
 
-	//anything to rest on hiding goes here
+$('#editDepartmentModal').on('show.bs.modal', function (e) {
+	
+    $.ajax({
+      url: "php/getDepartmentByID.php",
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        id: $(e.relatedTarget).attr('data-id')
+      },
+      success: function (result) {
+            
+      //console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+        
+			$('#departmentID').val($(e.relatedTarget).attr('data-id'))	
+			$('#editDepartmentDepartment').val(result.data[0]['name'])	
+			$('#editDepartmentLocation').val(result.data[0]['locationID'])	
+        
+      } else {
+
+        $('#editDepartmentModal.modal-title').replaceWith("Error retrieving data");
+
+      } 
+
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      $('#editDepartmentModal.modal-title').replaceWith("Error retrieving data");
+    }
+  });
+})
+
+$('#editDepartmentSubmit').on("submit", function(e) {
+  
+  e.preventDefault();
+  
+  $.ajax({
+	url: "php/updateDepartment.php",
+	type: 'POST',
+	dataType: 'json',
+	data: {
+
+		id: $('#departmentID').val(),
+		name: $('#editDepartmentDepartment').val(),
+		locationID: $('#editDepartmentLocation').val(),
+		
+	},
+	success: function(result) {
+
+	//console.log(JSON.stringify(result));
+	  
+	if (result.status.name == "ok") {
+	  
+		$('#editDepartmentModal').modal('hide')
+		getTableData();
+			
+  }},
+	error: function(jqXHR, textStatus, errorThrown) {
+	  console.log(jqXHR);
+	}
+  })
+   
+})
+
+$('#editDepartmentModal').on('shown.bs.modal', function () {
+  
+  $('#editDepartmentDepartment').focus();
   
 });
 
@@ -584,58 +572,49 @@ $('#deleteEmployeeModal').on('show.bs.modal', function (e) {
 
 //on submitting a completed form in the add employee modal to update the database: 
 
-	$('#addEmployeeSubmit').click(
-		
-		function() {
-			
-			$('#alertModal').modal('show');
-		$("#addEmployeeModal").modal('hide');
-		$("#alertModalContent").empty();
-		$("#alertModalContent").append(`<p>Are you sure you want to add:</p>
-		<ul>${$('#addFormFirstName').val()} ${$('#addFormLastName').val()}</ul>
-		<ul>${$('#addFormEmail').val()}</ul>
-		<ul>${$('#addFormDepartment option:selected').text()}</ul>
-		`)
-		$("#cancelCommit").click(()=>{$("#addEmployeeModal").modal('show');})
+$('#addEmployeeModal').on("submit", function(e) {
+  
+	e.preventDefault();
+	
+	$.ajax({
+		url: "php/insertEmployee.php",
+		type: 'POST',
+		dataType: 'json',
+		data: {
+			firstName: $('#addEmployeeFirstName').val(),
+			lastName: $('#addEmployeeLastName').val(),
+			email: $('#addEmployeeEmail').val(),
+			departmentID: $('#addFormDepartment').val()
+		},
+		success: function(result) {
 
-		$("#alertModalConfirm").click(()=>{
+			//console.log(JSON.stringify(result));
+		  
+		if (result.status.name == "ok") {
+		  
+			$("#addEmployeeModal").modal('hide');
+			getTableData();		
 
-			$.ajax({
-				url: "php/insertEmployee.php",
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					firstName: $('#addFormFirstName').val(),
-					lastName: $('#addFormLastName').val(),
-					email: $('#addFormEmail').val(),
-					departmentID: $('#addFormDepartment').val()
-				},
-				success: function(result) {
-
-					//console.log(JSON.stringify(result));
-				  
-				if (result.status.name == "ok") {
-				  
-					$("#alertModal").modal('hide');
-					$('#addFormFirstName').val('');
-					$('#addFormLastName').val('');
-					$('#addFormEmail').val('');
-					$("#alertModalConfirm").off();
-					getTableData();		
-
-			  }},
-				error: function(jqXHR, textStatus, errorThrown) {
-				  console.log(jqXHR);
-				}
-			  })
-			  
-			  $("#addEmployeeModal").modal('hide');
-		
-			})
-			}
-		
-		
-		)
+	  }},
+		error: function(jqXHR, textStatus, errorThrown) {
+		  console.log(jqXHR);
+		}
+	  })
+	
+	
+  })
+  
+  $('#addEmployeeModal').on('shown.bs.modal', function () {
+	
+	$('#addEmployeeFirstName').focus();
+	
+  });
+  
+  $('#addEmployeeModal').on('hidden.bs.modal', function () {
+  
+	  $('#addEmployeeFormSubmit')[0].reset();
+	
+  });
 
 //on submitting a completed form in the add department modal to update the database: 
 
@@ -731,6 +710,8 @@ $(document).ready(function(){
 	
 	searchModalID = 'searchEmployeeModal';
 	$('#searchAll').attr('data-bs-target', '#' + searchModalID);
+	addModalID = 'addEmployeeModal';
+	$('#addAll').attr('data-bs-target', '#' + addModalID);
 
 	$('#locationTab').click(
 		()=>{
@@ -740,6 +721,8 @@ $(document).ready(function(){
 			$('#departmentTable').hide();
 			searchModalID = 'searchlocationModal';
 			$('#searchAll').attr('data-bs-target', '#' + searchModalID);
+			addModalID = 'addLocationModal';
+			$('#addAll').attr('data-bs-target', '#' + addModalID);
 		}
 	);
 
@@ -751,6 +734,8 @@ $(document).ready(function(){
 			$('#departmentTable').show();
 			searchModalID = 'searchDepartmentModal';
 			$('#searchAll').attr('data-bs-target', '#' + searchModalID);
+			addModalID = 'addDepartmentModal';
+			$('#addAll').attr('data-bs-target', '#' + addModalID);
 		}
 	);
 
@@ -762,6 +747,8 @@ $(document).ready(function(){
 			$('#departmentTable').hide();
 			searchModalID = 'searchEmployeeModal';
 			$('#searchAll').attr('data-bs-target', '#' + searchModalID);
+			addModalID = 'addEmployeeModal';
+			$('#addAll').attr('data-bs-target', '#' + addModalID);
 		}
 	);
 
@@ -805,7 +792,7 @@ $('#tableDatab').append(`
 
 <a href="" class="editButton" data-bs-toggle="modal" data-bs-target="#editDepartmentModal" data-id='${info[n].id}'><i class="material-icons" title="Edit" >&#xE254;</i></a>
 
-<a href="" class="deleteButton" data-toggle="modal" data-bs-target="#deleteDepartmentModal" data-id='${info[n].id}' ><i class="material-icons" title="Delete" >&#xE872;</i></a>
+<a href="" class="deleteButton" data-bs-toggle="modal" data-bs-target="#deleteDepartmentModal" data-id='${info[n].id}' ><i class="material-icons" title="Delete" >&#xE872;</i></a>
 
 </td>
 </tr>
@@ -824,72 +811,57 @@ function populateLocationTab(info) {
 				<td class="actions">
 				<a href="" class="editButton" data-bs-toggle="modal" data-bs-target="#editLocationModal" id='${info[n].id}'><i class="material-icons" title="Edit">&#xE254;</i></a>
 
-				<a href="" class="deleteButton" data-toggle="modal" data-bs-target="#deleteLocationModal" id='${info[n].id}' ><i class="material-icons" title="Delete">&#xE872;</i></a>
+				<a href="" class="deleteButton" data-bs-toggle="modal" data-bs-target="#deleteLocationModal" id='${info[n].id}' ><i class="material-icons" title="Delete">&#xE872;</i></a>
 				</td>
 				</tr>
 				`);
-				}
-		
-				// running a function for the location delete button & modal with deleteButtonc class: 
-
-				deleteButtons = document.querySelectorAll('.deleteButtonc');
-		
-				deleteButtons.forEach(deleteButtonc => {
-				deleteButtonc.addEventListener('click', event => {
-
-				let locID = event.target.id;	
-
-				deleteLocation(locID);
-				})})
-		
-				// function for the edit location & modal with the editButtonc class: 
-		
-				editButtons = document.querySelectorAll('.editButtonc');
-		
-				editButtons.forEach(editButtonc => {
-				editButtonc.addEventListener('click', event => {
-				
-				let locID = event.target.id;	
-
-				editLocationEntry(locID);
-				})})
-}
+				}}
 
 //search functions: 
 
 //search employee:
-$(function (){
-	$('#searchEmployeeSubmit').click(
-		
-		function searchEmployees() {
 
-			$.ajax({
-				url: "php/searchEmployee.php",
-				type: 'POST',
-				dataType: 'json',
-				data: {
-					firstName: $('#searchEmployeeFirstName').val(),
-					lastName: $('#searchEmployeeLastName').val()
-				},
-				success: function(result) {
+$('#searchEmployeeModal').on("submit", function(e) {
+  
+  e.preventDefault();
+  
+  $.ajax({
+	url: "php/searchEmployee.php",
+	type: 'POST',
+	dataType: 'json',
+	data: {
+		firstName: $('#searchEmployeeFirstName').val(),
+		lastName: $('#searchEmployeeLastName').val()
+	},
+	success: function(result) {
 
-					//console.log(JSON.stringify(result));
-				  
-				if (result.status.name == "ok") {
-						
-					searchEmployeeResult = result.data;
-					populatePersonnelTab(searchEmployeeResult)
-			  }},
-				error: function(jqXHR, textStatus, errorThrown) {
-				  console.log(jqXHR);
-				}
-			  })
-			  
-			  	$('#searchEmployeeModal').modal('hide');
-				$('#searchEmployeeFirstName').val('');
-				$('#searchEmployeeLastName').val('');
-		
-		})})
+		//console.log(JSON.stringify(result));
+	  
+	if (result.status.name == "ok") {
+			
+		searchEmployeeResult = result.data;
+		populatePersonnelTab(searchEmployeeResult);
+		$('#searchEmployeeModal').modal('hide');
+  }},
+	error: function(jqXHR, textStatus, errorThrown) {
+	  console.log(jqXHR);
+	}
+  })
+  
+  
+})
+
+$('#searchEmployeeModal').on('shown.bs.modal', function () {
+  
+  $('#editEmployeeFirstName').focus();
+  
+});
+
+$('#searchEmployeeModal').on('hidden.bs.modal', function () {
+
+	$('#searchEmployeeSubmit')[0].reset();
+  
+});
 
 //search department
 
