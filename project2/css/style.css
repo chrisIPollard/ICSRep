@@ -30,6 +30,12 @@
   }
 
   @media screen and (max-width: 700px) {
+    .jobTitle {
+      display: none;
+    }
+    }
+
+  @media screen and (max-width: 1000px) {
 	.location {
 	  display: none;
 	}

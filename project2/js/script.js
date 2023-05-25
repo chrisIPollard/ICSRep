@@ -547,6 +547,7 @@ $('#addEmployeeModal').on("submit", function(e) {
 		data: {
 			firstName: $('#addEmployeeFirstName').val(),
 			lastName: $('#addEmployeeLastName').val(),
+			jobTitle: $('#addEmployeeJobTitle').val(),
 			email: $('#addEmployeeEmail').val(),
 			departmentID: $('#addFormDepartment').val()
 		},
@@ -731,6 +732,7 @@ for (let n = 0; n < info.length; n ++){
 	$('#tableData').append(`
 	<tr>
 	<td class="name">${info[n].lastName + ', ' + info[n].firstName}</td>
+	<td class="jobTitle">${info[n].jobTitle}</td>
 	<td class="email">${info[n].email}</td>
 	<td class="department">${info[n].department}</td>
 	<td class="location">${info[n].location}</td>
